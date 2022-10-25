@@ -1,8 +1,8 @@
 {
 	"pages": [
 		{
-			"label": "Docs",
-			"route": "/docs",
+			"label": "Tasks",
+			"route": "/tasks",
 			"subPages": []
 		},
 		{
@@ -11,8 +11,8 @@
 			"subPages": []
 		},
 		{
-			"label": "Tasks",
-			"route": "/tasks",
+			"label": "Docs",
+			"route": "/docs",
 			"subPages": []
 		},
 		{
