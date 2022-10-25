@@ -1,0 +1,24 @@
+{
+	"pages": [
+		{
+			"label": "Docs",
+			"route": "/docs",
+			"subPages": []
+		},
+		{
+			"label": "Forums",
+			"route": "/forums",
+			"subPages": []
+		},
+		{
+			"label": "Tasks",
+			"route": "/tasks",
+			"subPages": []
+		},
+		{
+			"label": "HR ",
+			"route": "/HR",
+			"subPages": []
+		}
+	]
+}
