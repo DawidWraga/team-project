@@ -11,7 +11,7 @@ import { FaTasks } from 'react-icons/fa';
 interface IProps {}
 
 const iconProps = {
-	fontSize: '1.2rem',
+	fontSize: '1.1rem',
 	className: 'text-secondary-contrast',
 };
 
@@ -36,16 +36,20 @@ export default function SideNavContent(props: IProps) {
 			</header>
 			<nav className="grow">
 				{pages.pages.map(({ label, route }) => {
+					const isActive = router.pathname === route;
 					return (
 						<div
 							key={route}
-							className={`w-full px-2 gap-2 flex justify-start items-center hover:cursor-pointer hover:bg-secondary-light text-secondary-contrast  ${
-								router.pathname === route ? '!text-brand child:!text-brand' : ''
+							className={`w-full px-3 py-1 gap-3 flex justify-start items-center hover:cursor-pointer hover:bg-secondary-light text-secondary-contrast relative ${
+								isActive ? 'font-semibold' : ''
 							}`}
 							onClick={() => router.push(route)}
 						>
+							{isActive && (
+								<span className="w-1 h-full rounded-full absolute left-0  bg-brand"></span>
+							)}
 							<div className="inline-block">{routeToIconMap[route]}</div>
-							<span className="text-lg">{label}</span>
+							<span className="text-[.95rem]">{label}</span>
 						</div>
 					);
 				})}
