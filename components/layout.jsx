@@ -50,7 +50,7 @@ export default function Layout(props) {
 				<div
 					onClick={() => setSideNavIsOpen(false)}
 					className={`bg-slate-800  fixed w-screen h-screen z-30
-        trasnition duration-300 hover:cursor-pointer
+        transition duration-300 backdrop-blur-lg
         ${sideNavIsOpen ? 'opacity-70' : 'opacity-0'}`}
 				></div>
 				<header
