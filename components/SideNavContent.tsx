@@ -1,7 +1,6 @@
 import { SignOutBtn } from 'components/SignOutBtn';
 import Avatar from 'components/Avatar';
 import pages from 'db/pages.json';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { getCurrentUser } from 'controllers/auth';
 import { MdForum, MdPeopleAlt } from 'react-icons/md';
