@@ -21,6 +21,7 @@ function MyApp({ Component, pageProps }) {
 	// ======CHECK AUTH STATE; REDIRECT IF NOT AUTHENTICATED======
 	const [loading, setLoading] = useState(true);
 	useEffect(() => {
+		window.scrollTo(0, 1);
 		(async () => {
 			setLoading(true);
 
