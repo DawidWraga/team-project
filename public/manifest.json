@@ -1,0 +1,9 @@
+{
+	"name": "Make-it-all Portal",
+	"short_name": "Portal",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#90cdf4",
+	"theme_color": "#ffa31a",
+	"orientation": "portrait-primary"
+}

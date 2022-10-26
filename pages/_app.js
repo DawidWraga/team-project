@@ -13,6 +13,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { theme } from 'styles/chakra-theme';
 import 'styles/nprogress.css';
 import NProgress from '../components/nprogress';
+import Head from 'next/head';
 
 function MyApp({ Component, pageProps }) {
 	const router = useRouter();
@@ -36,6 +37,11 @@ function MyApp({ Component, pageProps }) {
 
 	return (
 		<>
+			<Head>
+				<meta name="apple-mobile-web-app-capable" content="yes" />
+				<meta name="mobile-web-app-capable" content="yes" />
+				<link rel="manifest" href="/manifest.json" />
+			</Head>
 			<NProgress />
 			<ToastContainer
 				position="top-right"
