@@ -48,7 +48,7 @@ export default function SideNavContent(props: IProps) {
 				p="1"
 				justifyContent={'start'}
 				alignItems="center"
-				sx={{ position: 'relative' }}
+				sx={{ position: 'relative', bottom: window.scrollY }}
 			>
 				<Avatar size="sm" />
 				<Flex alignContent="center" flexDir={'column'}>
