@@ -41,7 +41,7 @@ export default function AuthPage(props) {
 
 	return (
 		<div className="bg-pale-main w-screen h-screen grid place-content-center">
-			<main className="bg-white w-[clamp(320px,75vw,500px)] h-[600px] rounded-lg shadow-xl ">
+			<main className="bg-white w-[clamp(320px,75vw,500px)] h-[clamp(400px,50vh,600px)] rounded-lg shadow-xl ">
 				<form
 					onSubmit={handleSubmit(onSubmit)}
 					className="flex flex-col justify-center items-center w-full child:my-5 child:w-full px-12"
