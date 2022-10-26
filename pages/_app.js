@@ -9,6 +9,10 @@ import { signOut } from '/controllers/auth';
 import { toast } from 'react-toastify';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import Layout from '../components/layout';
+import { ChakraProvider } from '@chakra-ui/react';
+import { theme } from 'styles/chakra-theme';
+import 'styles/nprogress.css';
+import NProgress from '../components/nprogress';
 
 function MyApp({ Component, pageProps }) {
 	const router = useRouter();
@@ -32,6 +36,7 @@ function MyApp({ Component, pageProps }) {
 
 	return (
 		<>
+			<NProgress />
 			<ToastContainer
 				position="top-right"
 				autoClose={2000}
@@ -45,9 +50,11 @@ function MyApp({ Component, pageProps }) {
 				theme="light"
 				transition={Slide}
 			/>
-			<Layout>
-				<Component {...pageProps} />
-			</Layout>
+			<ChakraProvider theme={theme}>
+				<Layout>
+					<Component {...pageProps} />
+				</Layout>
+			</ChakraProvider>
 		</>
 	);
 }

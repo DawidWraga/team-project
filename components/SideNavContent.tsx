@@ -1,11 +1,24 @@
 import { SignOutBtn } from 'components/SignOutBtn';
-import Avatar from 'components/Avatar';
 import pages from 'db/pages.json';
 import { useRouter } from 'next/router';
-import { getCurrentUser } from 'controllers/auth';
+import { getCurrentUser, signOut } from 'controllers/auth';
 import { MdForum, MdPeopleAlt } from 'react-icons/md';
 import { HiDocumentText } from 'react-icons/hi';
 import { FaTasks } from 'react-icons/fa';
+import {
+	Flex,
+	Avatar,
+	Text,
+	Menu,
+	MenuButton,
+	MenuList,
+	MenuItem,
+	IconButton,
+	Box,
+} from '@chakra-ui/react';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { FiLogOut } from 'react-icons/fi';
+import { RiDashboardFill } from 'react-icons/ri';
 
 interface IProps {}
 
@@ -19,20 +32,64 @@ const routeToIconMap = {
 	'/docs': <HiDocumentText {...iconProps} />,
 	'/tasks': <FaTasks {...iconProps} />,
 	'/HR': <MdPeopleAlt {...iconProps} />,
+	'/dashboard': <RiDashboardFill {...iconProps} />,
 };
 
 export default function SideNavContent(props: IProps) {
 	const router = useRouter();
 	const user = getCurrentUser();
 
+	function Footer() {
+		return (
+			<Flex
+				h="52px"
+				textColor={'white'}
+				gap="2"
+				p="1"
+				justifyContent={'start'}
+				alignItems="center"
+				sx={{ position: 'relative' }}
+			>
+				<Avatar size="sm" />
+				<Flex alignContent="center" flexDir={'column'}>
+					<Text fontSize={'sm'}>{user.name}</Text>
+					<Text fontSize={'xs'}>{user.email}</Text>
+				</Flex>
+				<Box position="absolute" right="0">
+					<Menu placement="right" colorScheme="gray" offset={[-10, 1]}>
+						<MenuButton
+							as={IconButton}
+							aria-label="Options"
+							icon={<BsThreeDotsVertical color="white" />}
+							variant="link"
+							w="50px"
+						/>
+						<MenuList color="gray">
+							<MenuItem
+								icon={<FiLogOut className="rotate-180" />}
+								onClick={() => {
+									signOut();
+									router.replace('/auth');
+								}}
+							>
+								sign out
+							</MenuItem>
+						</MenuList>
+					</Menu>
+				</Box>
+			</Flex>
+		);
+	}
+
 	return (
 		<div className="flex flex-col relative h-full ">
-			<header
-				className=" hover:cursor-pointer h-[52px] flex items-center justify-center text-secondary-contrast"
+			<Flex
+				as="header"
+				className=" hover:cursor-pointer h-[52px] items-center justify-center text-secondary-contrast"
 				onClick={() => router.push('/')}
 			>
 				logo + title
-			</header>
+			</Flex>
 			<nav className="grow">
 				{pages.pages.map(({ label, route }) => {
 					const isActive = router.pathname === route;
@@ -48,18 +105,12 @@ export default function SideNavContent(props: IProps) {
 								<span className="w-1 h-full rounded-full absolute left-0  bg-brand"></span>
 							)}
 							<div className="inline-block">{routeToIconMap[route]}</div>
-							<span className="text-[.95rem]">{label}</span>
+							<span className="text-[1.25rem] lg:text-[1.05rem]">{label}</span>
 						</div>
 					);
 				})}
 			</nav>
-			<footer className="flex gap-1 h-[52px] p-1 text-secondary-contrast">
-				<Avatar />
-				<div className="flex flex-col items-start">
-					<span className="text-sm m-0">{user.email}</span>
-					<SignOutBtn />
-				</div>
-			</footer>
+			<Footer />
 		</div>
 	);
 }

@@ -1,6 +1,11 @@
 {
 	"pages": [
 		{
+			"label": "Dashboard",
+			"route": "/dashboard",
+			"subPages": []
+		},
+		{
 			"label": "Tasks",
 			"route": "/tasks",
 			"subPages": []
@@ -16,7 +21,7 @@
 			"subPages": []
 		},
 		{
-			"label": "HR ",
+			"label": "Users ",
 			"route": "/HR",
 			"subPages": []
 		}

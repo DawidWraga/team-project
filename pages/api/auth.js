@@ -10,12 +10,10 @@ export default async function handler(req, res) {
 			return true;
 		});
 
-		if (userDetails)
-			return res.status(200).json({
-				email: userDetails.email,
-				role: userDetails.role,
-			});
-		else {
+		if (userDetails) {
+			delete userDetails.password;
+			return res.status(200).json(userDetails);
+		} else {
 			return res.status(403).json({ msg: 'user not found' });
 		}
 	} catch (e) {

@@ -1,31 +1,20 @@
-// JS CEX
-// must return JSX
-// Capitalize
-// EX Export
-
-import Button from './Button';
-
-
-// You should use getServerSideProps when:
-// - Only if you need to pre-render a page whose data must be fetched at request time
-export const getServerSideProps = async (ctx) => {
-	const { data } = await fetch('some url') // your fetch function here 
-
-	return {
-		props: {
-			data
-		}
-	}
-}
+import { Box, ButtonGroup, Button } from '@chakra-ui/react';
+// import Button from './Button';
 
 export default function DocsPage(props) {
-	const {data} = props;
+	const {} = props;
 
 	return (
 		<div>
 			this is the docs page
-			<Button variant="primary" />
-			<Button variant="secondary" />
+			{/* <Box w="100px" bgColor="error">
+				test
+			</Box>
+			<ButtonGroup>
+				<Button colorScheme={'gray'}>press me </Button>
+				<Button>press me </Button>
+				<Button>press me </Button>
+			</ButtonGroup> */}
 		</div>
 	);
 }

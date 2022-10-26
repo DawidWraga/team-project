@@ -1,16 +1,19 @@
 {
 	"users": [
 		{
+			"name": "John smith1",
 			"email": "admin@client.com",
 			"password": "testA1!",
 			"role": "admin"
 		},
 		{
+			"name": "John smith2",
 			"email": "emp@client.com",
 			"password": "testA1!",
 			"role": "emp"
 		},
 		{
+			"name": "John smith3",
 			"email": "manager@client.com",
 			"password": "testA1!",
 			"role": "manager"
