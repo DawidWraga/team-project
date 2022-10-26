@@ -13,8 +13,8 @@ import Layout from '../components/layout';
 function MyApp({ Component, pageProps }) {
 	const router = useRouter();
 
+	// ======CHECK AUTH STATE; REDIRECT IF NOT AUTHENTICATED======
 	const [loading, setLoading] = useState(true);
-
 	useEffect(() => {
 		(async () => {
 			setLoading(true);

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { ScreenDependent } from './deviceTypes';
 import { TbMenu } from 'react-icons/tb';
 import { MdClose } from 'react-icons/md';
-import { SignOutBtn } from './SignOutBtn';
 import SideNavContent from 'components/SideNavContent';
 import { useRouter } from 'next/router';
 
@@ -10,9 +9,8 @@ export default function Layout(props) {
 	const { children } = props;
 	const router = useRouter();
 
+	// hide layout on auth page
 	if (router.pathname === '/auth') return <>{children}</>;
-
-	const headerClasses = '';
 
 	const Desktop = () => (
 		<>
