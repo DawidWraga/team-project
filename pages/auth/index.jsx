@@ -4,53 +4,38 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import {
+	Button,
+	FormControl,
+	FormErrorMessage,
+	FormHelperText,
+	FormLabel,
+	Heading,
+	Input,
+} from '@chakra-ui/react';
+import { getCurrentUser } from '/controllers/auth';
 
 export default function AuthPage(props) {
 	const {} = props;
 
 	const router = useRouter();
+	const user = getCurrentUser();
+	if (user) router.replace('/');
+
 	const {
 		register,
 		handleSubmit,
-		formState,
-		formState: { errors, isSubmitSuccessful },
+		formState: { errors, isSubmitSuccessful, isSubmitting },
 	} = useForm();
 
-	const [isServerSuccessful, setIsServerSuccessful] = useState(false);
-
 	const onSubmit = async (data) => {
-		setIsServerSuccessful(false);
-
-		toast.promise(
-			axios.post('/api/auth', data),
-			{
-				pending: 'Validating credentials...',
-				success: {
-					render(res) {
-						setIsServerSuccessful(true);
-						executeSignIn(res.data.data.email, res.data.data.role);
-						router.replace('/');
-
-						return `Sign in successful `;
-					},
-				},
-				error: 'Sign in failed',
-			}
-			// { hideProgressBar: true }
-		);
-	};
-
-	// ======================= SIGN IN ERROR HANDLER ===================
-	const onSubmitError = () => {
-		if (errors.email?.type === 'validate') {
-			toast.error('Only internal emails are allowed');
-		}
-
-		if (errors.password?.type === 'pattern') {
-			toast.error(
-				'Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character',
-				{ autoClose: 5000 }
-			);
+		try {
+			const res = await axios.post('/api/auth', data);
+			const userData = res.data;
+			executeSignIn(userData);
+			router.replace('/');
+		} catch (e) {
+			console.log(e);
 		}
 	};
 
@@ -58,19 +43,22 @@ export default function AuthPage(props) {
 		<div className="bg-pale-main w-screen h-screen grid place-content-center">
 			<main className="bg-white w-[clamp(320px,75vw,500px)] h-[600px] rounded-lg shadow-xl ">
 				<form
-					onSubmit={handleSubmit(onSubmit, onSubmitError)}
+					onSubmit={handleSubmit(onSubmit)}
 					className="flex flex-col justify-center items-center w-full child:my-5 child:w-full px-12"
 					id="login-form"
 				>
-					<h1
-						className="text-4xl text-pale-contrast"
-						onClick={() => toast.success('success')}
+					<Heading
+						size={'lg'}
+						mx="auto"
+						textAlign={'center'}
+						fontWeight="semibold"
 					>
-						Login
-					</h1>
-					<label className="text-pale-contrast">
-						Email
-						<input
+						Make-it-all Portal
+					</Heading>
+					<FormControl isRequired isInvalid={errors.email}>
+						<FormLabel>Email</FormLabel>
+
+						<Input
 							type="email"
 							placeholder="johnsmith@client.com"
 							className="input-outline mt-px "
@@ -80,10 +68,15 @@ export default function AuthPage(props) {
 								validate: (email) => email.includes('@client.com'),
 							})}
 						/>
-					</label>
-					<label className="text-pale-contrast">
-						Password
-						<input
+						{errors.email?.type === 'validate' && (
+							<FormErrorMessage>
+								Only internal emails are allowed
+							</FormErrorMessage>
+						)}
+					</FormControl>
+					<FormControl isRequired isInvalid={errors.password}>
+						<FormLabel>Password</FormLabel>
+						<Input
 							type="password"
 							placeholder="**********"
 							className="input-outline"
@@ -94,10 +87,21 @@ export default function AuthPage(props) {
 									/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{4,}$/,
 							})}
 						/>
-					</label>
-					<button className="btn-outline hover:btn-full" type="submit">
+						{errors.password?.type === 'pattern' && (
+							<FormErrorMessage>
+								Minimum eight characters, at least one uppercase letter, one
+								lowercase letter, one number and one special character,
+							</FormErrorMessage>
+						)}
+					</FormControl>
+					<Button
+						type="submit"
+						colorScheme={isSubmitSuccessful ? 'green' : 'brand'}
+						variant="solid"
+						isLoading={isSubmitting}
+					>
 						Login
-					</button>
+					</Button>
 				</form>
 			</main>
 		</div>

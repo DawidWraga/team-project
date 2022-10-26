@@ -1,5 +1,5 @@
-export const executeSignIn = async (email, role) => {
-	localStorage.setItem('user', JSON.stringify({ email, role }));
+export const executeSignIn = async (user) => {
+	localStorage.setItem('user', JSON.stringify(user));
 };
 
 export const getCurrentUser = () => {
