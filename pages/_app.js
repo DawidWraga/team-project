@@ -14,18 +14,23 @@ import { theme } from 'styles/chakra-theme';
 import 'styles/nprogress.css';
 import NProgress from '../components/nprogress';
 import Head from 'next/head';
+import Loading from 'components/loading';
+import { AnimateSharedLayout } from 'framer-motion';
 
 function MyApp({ Component, pageProps }) {
 	const router = useRouter();
 
 	// ======CHECK AUTH STATE; REDIRECT IF NOT AUTHENTICATED======
+
+	// function AuthGuard() {
+	// }
 	const [loading, setLoading] = useState(true);
 	useEffect(() => {
 		window.scrollTo(0, 1);
 		(async () => {
 			setLoading(true);
 
-			const user = getCurrentUser();
+			const user = await getCurrentUser();
 			if (!user) {
 				router.replace('/auth');
 				await setTimeoutPromise(200);
@@ -33,8 +38,11 @@ function MyApp({ Component, pageProps }) {
 			setLoading(false);
 		})();
 	}, []);
+	// if (loading) return ;
 
-	if (loading) return <div>loading...</div>;
+	// const user = getCurrentUser();
+	// if (isBrowser() && router.pathname !== '/auth' && !user)
+	// 	router.replace('/auth');
 
 	return (
 		<>
@@ -43,7 +51,6 @@ function MyApp({ Component, pageProps }) {
 				<meta name="mobile-web-app-capable" content="yes" />
 				<link rel="manifest" href="/manifest.json" />
 			</Head>
-			<NProgress />
 			<ToastContainer
 				position="top-right"
 				autoClose={2000}
@@ -58,10 +65,15 @@ function MyApp({ Component, pageProps }) {
 				transition={Slide}
 			/>
 			<ChakraProvider theme={theme}>
-				<Layout>
-					<Component {...pageProps} />
-				</Layout>
+				{loading ? (
+					<Loading />
+				) : (
+					<Layout>
+						<Component {...pageProps} />
+					</Layout>
+				)}
 			</ChakraProvider>
+			<NProgress />
 		</>
 	);
 }

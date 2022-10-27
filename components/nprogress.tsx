@@ -12,9 +12,10 @@ export default function Progress() {
 			timeout = setTimeout(NProgress.start, 100);
 		};
 
-		const done = () => {
+		const done = (ev) => {
 			clearTimeout(timeout);
 			NProgress.done();
+			// console.log('done', ev);
 		};
 
 		router.events.on('routeChangeStart', start);

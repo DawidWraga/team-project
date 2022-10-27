@@ -6,32 +6,41 @@ const config = {
 	useSystemColorMode: false,
 };
 
+// const breakpoints = {
+// base: ABOVE 0px
+// sm: ABOVE 480px
+// md: ABOVE 768px ,
+// lg: ABOVE 992px ,
+// xl: ABOVE 1280px ,
+// '2xl': ABOVE 1536px ,
+// }
+
 // 2. Extend the theme to include custom colors, fonts, etc
 const colors = {
 	brand: {
-		50: '#fff4da',
-		100: '#ffe0ae',
-		200: '#ffcc7d',
-		300: '#ffb84b',
-		400: '#ffa31a',
-		500: '#e68a00',
-		600: '#b36b00',
-		700: '#814d00',
-		800: '#4f2d00',
-		900: '#1f0d00',
-		main: '#ffa31a',
+		50: 'hsl(37, 100%, 93%)',
+		100: 'hsl(33, 100%, 84%)',
+		200: 'hsl(35, 100%, 75%)',
+		300: 'hsl(36, 100%, 65%)',
+		400: 'hsl(32, 100%, 60%)',
+		500: 'hsl(32, 100%, 53%)',
+		600: 'hsl(28, 96%, 48%)',
+		700: 'hsl(26, 100%, 42%)',
+		800: 'hsl(22, 100%, 35%)',
+		900: 'hsl(18, 100%, 30%)',
+		main: 'hsl(36, 100%, 55%)',
 	},
 	shade: {
 		light: 'hsl(210, 18%, 30%)',
 		main: '	hsl(210, 18%, 20%)',
 		dark: '	hsl(210, 18%, 15%)',
-		inv: '#fff',
+		inv: 'hsl(0, 0%, 100%)',
 	},
 	pale: {
 		light: 'hsl(204, 10%,99%)',
 		main: 'hsl(204, 15%,93%)',
 		dark: 'hsl(198, 15%, 83%)',
-		inv: '#fff',
+		inv: 'hsl(0, 0%, 100%)',
 	},
 	error: 'hsl(4,80%,58%)',
 	success: 'hsl(87,50%,59%)',
