@@ -1,17 +1,23 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { ScreenDependent } from './deviceTypes';
 import { TbMenu } from 'react-icons/tb';
-import { MdClose, MdMenu } from 'react-icons/md';
+import { MdClose, MdMenu, MdSearch } from 'react-icons/md';
 import SideNavContent from 'components/SideNavContent';
 import { useRouter } from 'next/router';
-import { Flex, Icon, IconButton, Box } from '@chakra-ui/react';
+import { Flex, Heading, IconButton, Box } from '@chakra-ui/react';
+import pages from 'db/pages.json';
 
 export default function Layout(props) {
 	const { children } = props;
 	const router = useRouter();
 
+	const SavedSideNavContent = useCallback(SideNavContent, []);
+
 	// hide layout on auth page
 	if (router.pathname === '/auth') return <>{children}</>;
+
+	const pageData =
+		pages.pages.find((page) => page.route === router.pathname) || 'home';
 
 	const Desktop = () => (
 		<>
@@ -20,12 +26,12 @@ export default function Layout(props) {
 				bgColor="shade.main"
 				className={`fixed top-0 w-[175px] h-screen `}
 			>
-				<SideNavContent />
+				<SavedSideNavContent />
 			</Box>
 			<header
 				className={`fixed top-0 w-[calc(100vw_-_175px)] ml-[175px] h-[52px] bg-secondary-main text-secondary-contrast flex items-center px-2`}
 			>
-				header
+				{pageData.label}
 			</header>
 		</>
 	);
@@ -50,7 +56,7 @@ export default function Layout(props) {
 					>
 						<MdClose fontSize={'1.5rem'} color="gray" />
 					</button>
-					<SideNavContent />
+					<SavedSideNavContent />
 				</Box>
 				<div
 					onClick={() => setSideNavIsOpen(false)}
@@ -65,7 +71,7 @@ export default function Layout(props) {
 					w="100vw"
 					bgColor={'shade.main'}
 					zIndex="40"
-					justifyContent={'start'}
+					justifyContent={'space-between'}
 					alignItems="center"
 					h="52px"
 					gap="2"
@@ -78,7 +84,10 @@ export default function Layout(props) {
 					>
 						<MdMenu color="white" fontSize="2rem" />
 					</IconButton>
-					<h2>header</h2>
+					<Heading size="md"> {pageData.label}</Heading>
+					<IconButton variant={'unstyled'}>
+						<MdSearch color="white" fontSize="2rem" />
+					</IconButton>
 				</Flex>
 				{/* <header
 					className={`fixed top-0 w-screen h-[52px] bg-secondary-main z-40 flex flex-row items-center space-x-1 px-1 text-secondary-contrast`}

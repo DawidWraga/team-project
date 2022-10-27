@@ -12,15 +12,21 @@ import {
 	FormLabel,
 	Heading,
 	Input,
+	Box,
 } from '@chakra-ui/react';
 import { getCurrentUser } from '/controllers/auth';
+import { setTimeoutPromise } from 'utils/setTimeoutPromise';
+import { MdCheck } from 'react-icons/md';
 
 export default function AuthPage(props) {
 	const {} = props;
-
 	const router = useRouter();
-	const user = getCurrentUser();
-	if (user) router.replace('/');
+
+	useEffect(() => {
+		// if (!isBrowser()) return;
+		const user = getCurrentUser();
+		if (user) router.replace('/');
+	}, []);
 
 	const {
 		register,
@@ -28,27 +34,39 @@ export default function AuthPage(props) {
 		formState: { errors, isSubmitSuccessful, isSubmitting },
 	} = useForm();
 
+	const [isServerSuccess, setIsServerSuccess] = useState(false);
+
 	const onSubmit = async (data) => {
 		try {
 			const res = await axios.post('/api/auth', data);
 			const userData = res.data;
 			executeSignIn(userData);
-			router.replace('/');
+			setIsServerSuccess(true);
+			await setTimeoutPromise(180);
+			router.push('/');
 		} catch (e) {
-			console.log(e);
+			// console.log(e);
+			toast.error('Invalid credentials', { position: 'top-center' });
 		}
 	};
 
 	return (
 		<div className="bg-pale-main w-screen h-screen grid place-content-center">
-			<main className="bg-white w-[clamp(320px,75vw,500px)] h-[clamp(400px,50vh,600px)] rounded-lg shadow-xl ">
-				<form
+			<Box
+				as="main"
+				className="bg-white w-screen max-w-[450px] h-screen justify-center  rounded-lg shadow-xl "
+				h={{ base: '100vh', sm: '500px' }}
+				pt={{ base: '20%', sm: '10%' }}
+			>
+				<Box
+					as="form"
 					onSubmit={handleSubmit(onSubmit)}
-					className="flex flex-col justify-center items-center w-full child:my-5 child:w-full px-12"
+					className="flex flex-col justify-center items-center w-full child:my-5 child:w-full "
+					px={{ base: 3, sm: 6, lg: 8 }}
 					id="login-form"
 				>
 					<Heading
-						size={'lg'}
+						size={{ base: 'xl', sm: 'lg' }}
 						mx="auto"
 						textAlign={'center'}
 						fontWeight="semibold"
@@ -96,14 +114,16 @@ export default function AuthPage(props) {
 					</FormControl>
 					<Button
 						type="submit"
-						colorScheme={isSubmitSuccessful ? 'green' : 'brand'}
+						colorScheme={isServerSuccess ? 'green' : 'brand'}
 						variant="solid"
 						isLoading={isSubmitting}
+						loadingText="Submitting"
+						leftIcon={isServerSuccess && <MdCheck fontSize="1.5rem" />}
 					>
-						Login
+						{isServerSuccess ? 'Success!' : 'Login'}
 					</Button>
-				</form>
-			</main>
+				</Box>
+			</Box>
 		</div>
 	);
 }

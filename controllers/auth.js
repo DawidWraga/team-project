@@ -1,11 +1,16 @@
 export const executeSignIn = async (user) => {
-	localStorage.setItem('user', JSON.stringify(user));
+	typeof window !== 'undefined' &&
+		localStorage.setItem('user', JSON.stringify(user));
 };
 
 export const getCurrentUser = () => {
-	return JSON.parse(localStorage.getItem('user')) || false;
+	return (
+		(typeof window !== 'undefined' &&
+			JSON.parse(localStorage.getItem('user'))) ||
+		false
+	);
 };
 
 export const signOut = () => {
-	return localStorage.removeItem('user');
+	return typeof window !== 'undefined' && localStorage.removeItem('user');
 };

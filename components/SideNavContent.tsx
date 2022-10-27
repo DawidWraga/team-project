@@ -1,6 +1,7 @@
 import { SignOutBtn } from 'components/SignOutBtn';
 import pages from 'db/pages.json';
 import { useRouter } from 'next/router';
+
 import { getCurrentUser, signOut } from 'controllers/auth';
 import { MdForum, MdPeopleAlt } from 'react-icons/md';
 import { HiDocumentText } from 'react-icons/hi';
@@ -19,6 +20,9 @@ import {
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FiLogOut } from 'react-icons/fi';
 import { RiDashboardFill } from 'react-icons/ri';
+import { motion } from 'framer-motion';
+
+// const getCurrentUser = dynamic(()=>import('controllers/auth'),{ssr:false}))
 
 interface IProps {}
 
@@ -93,16 +97,30 @@ export default function SideNavContent(props: IProps) {
 			<nav className="grow">
 				{pages.pages.map(({ label, route }) => {
 					const isActive = router.pathname === route;
+
 					return (
 						<div
 							key={route}
-							className={`w-full px-3 py-1 gap-3 flex justify-start items-center hover:cursor-pointer hover:bg-secondary-light text-secondary-contrast relative ${
+							className={`w-full px-3 py-1 gap-3 flex justify-start items-center hover:cursor-pointer transition hover:bg-secondary-light text-secondary-contrast relative ${
 								isActive ? 'font-semibold' : ''
 							}`}
 							onClick={() => router.push(route)}
 						>
 							{isActive && (
-								<span className="w-1 h-full rounded-full absolute left-0  bg-brand"></span>
+								<Box
+									as={motion.div}
+									layoutId="highlight"
+									initial={false}
+									animate={{
+										backgroundColor: 'rgb(255, 152, 0)',
+										transition: {
+											type: 'spring',
+											stiffness: 500,
+											damping: 30,
+										},
+									}}
+									className="w-1 h-full rounded-full absolute left-0 block"
+								></Box>
 							)}
 							<div className="inline-block">{routeToIconMap[route]}</div>
 							<span className="text-[1.25rem] lg:text-[1.05rem]">{label}</span>
