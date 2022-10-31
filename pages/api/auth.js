@@ -2,7 +2,7 @@ import query from 'controllers/query';
 
 export default async function handler(req, res) {
 	try {
-		const validUsers = (await query('users')).users;
+		const validUsers = await query('users');
 
 		const userDetails = validUsers.find((user) => {
 			if (user.email !== req.body.email) return false;

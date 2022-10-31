@@ -13,8 +13,8 @@ export default function Layout(props) {
 
 	const SavedSideNavContent = useCallback(SideNavContent, []);
 
-	// hide layout on auth page
-	if (router.pathname === '/auth') return <>{children}</>;
+	// hide layout on specified pages
+	if (['/auth', '/register'].includes(router.pathname)) return <>{children}</>;
 
 	const pageData =
 		pages.pages.find((page) => page.route === router.pathname) || 'home';
@@ -100,7 +100,7 @@ export default function Layout(props) {
 	return (
 		<>
 			<ScreenDependent Mobile={Mobile} Desktop={Desktop} />
-			<div className="w-screen top-[52px] fixed lg:w-[calc(100vw_-_175px)] lg:left-[175px] ">
+			<div className="w-screen top-[52px] fixed lg:w-[calc(100vw_-_175px)] lg:left-[175px] z-[1000]">
 				{children}
 			</div>
 		</>

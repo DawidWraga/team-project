@@ -5,8 +5,6 @@ import { Slide } from 'react-toastify';
 import { getCurrentUser } from '/controllers/auth';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { signOut } from '/controllers/auth';
-import { toast } from 'react-toastify';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import Layout from '../components/layout';
 import { ChakraProvider } from '@chakra-ui/react';
@@ -15,7 +13,6 @@ import 'styles/nprogress.css';
 import NProgress from '../components/nprogress';
 import Head from 'next/head';
 import Loading from 'components/loading';
-import { AnimateSharedLayout } from 'framer-motion';
 
 function MyApp({ Component, pageProps }) {
 	const router = useRouter();

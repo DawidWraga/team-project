@@ -22,9 +22,9 @@ import { FiLogOut } from 'react-icons/fi';
 import { RiDashboardFill } from 'react-icons/ri';
 import { motion } from 'framer-motion';
 
-// const getCurrentUser = dynamic(()=>import('controllers/auth'),{ssr:false}))
-
-interface IProps {}
+interface IProps {
+	setSideNavIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 const iconProps = {
 	fontSize: '1.1rem',
@@ -40,6 +40,7 @@ const routeToIconMap = {
 };
 
 export default function SideNavContent(props: IProps) {
+	const { setSideNavIsOpen } = props;
 	const router = useRouter();
 	const user = getCurrentUser();
 
@@ -90,7 +91,7 @@ export default function SideNavContent(props: IProps) {
 			<Flex
 				as="header"
 				className=" hover:cursor-pointer h-[52px] items-center justify-center text-secondary-contrast"
-				onClick={() => router.push('/')}
+				// onClick={() => router.push('/')}
 			>
 				logo + title
 			</Flex>
@@ -104,13 +105,17 @@ export default function SideNavContent(props: IProps) {
 							className={`w-full px-3 py-1 gap-3 flex justify-start items-center hover:cursor-pointer transition hover:bg-secondary-light text-secondary-contrast relative ${
 								isActive ? 'font-semibold' : ''
 							}`}
-							onClick={() => router.push(route)}
+							onClick={() => {
+								setSideNavIsOpen && setSideNavIsOpen(false);
+								router.push(route);
+							}}
 						>
 							{isActive && (
 								<Box
 									as={motion.div}
 									layoutId="highlight"
-									initial={false}
+									initial={{ backgroundColor: 'none' }}
+									exit={{ backgroundColor: 'none' }}
 									animate={{
 										backgroundColor: 'rgb(255, 152, 0)',
 										transition: {
