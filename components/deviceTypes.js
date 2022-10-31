@@ -1,13 +1,15 @@
+import { Box } from '@chakra-ui/react';
+
 export function MobileOnly(props) {
 	const { children, display } = props;
 
 	return (
-		<div
+		<Box
 			{...props}
 			className={`${display ? display : 'inline-block'} lg:hidden`}
 		>
 			{children}
-		</div>
+		</Box>
 	);
 }
 
@@ -17,12 +19,12 @@ export function DesktopOnly(props) {
 	// MUST USE lg: inside dispaly prop as tailwind dows not allow dynamic creation of classnames
 
 	return (
-		<div
+		<Box
 			{...props}
 			className={`hidden ${display ? display : 'lg:inline-block'}`}
 		>
 			{children}
-		</div>
+		</Box>
 	);
 }
 

@@ -1,0 +1,16 @@
+{
+	"posts": [
+		{
+			"title": "Lizard",
+			"src": "https://mui.com/static/images/cards/contemplative-reptile.jpg"
+		},
+		{
+			"title": "lion",
+			"src": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Lion_waiting_in_Namibia.jpg/1200px-Lion_waiting_in_Namibia.jpg"
+		},
+		{
+			"title": "Lizard",
+			"src": "https://cdn.pushfar.com/250x250/user/08/ed/1b/08ed1b4908bedf674c3dff683c01d2f2.jpg"
+		}
+	]
+}

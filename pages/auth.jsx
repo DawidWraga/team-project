@@ -8,15 +8,18 @@ import {
 	Button,
 	FormControl,
 	FormErrorMessage,
-	FormHelperText,
 	FormLabel,
-	Heading,
 	Input,
 	Box,
+	Heading,
+	Link as StyledLink,
 } from '@chakra-ui/react';
 import { getCurrentUser } from '/controllers/auth';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import { MdCheck } from 'react-icons/md';
+import Link from 'next/link';
+import { Logo } from 'components/Logo';
+import { DesktopOnly, MobileOnly } from 'components/deviceTypes';
 
 export default function AuthPage(props) {
 	const {} = props;
@@ -58,6 +61,14 @@ export default function AuthPage(props) {
 				h={{ base: '100vh', sm: '500px' }}
 				pt={{ base: '20%', sm: '10%' }}
 			>
+				<DesktopOnly w="100%">
+					<Heading size="lg" fontWeight={600} textAlign="center">
+						Sign into Portal
+					</Heading>
+				</DesktopOnly>
+				<MobileOnly w="100%">
+					<Logo />
+				</MobileOnly>
 				<Box
 					as="form"
 					onSubmit={handleSubmit(onSubmit)}
@@ -65,14 +76,15 @@ export default function AuthPage(props) {
 					px={{ base: 3, sm: 6, lg: 8 }}
 					id="login-form"
 				>
-					<Heading
+					{/* <Heading
 						size={{ base: 'xl', sm: 'lg' }}
 						mx="auto"
 						textAlign={'center'}
 						fontWeight="semibold"
 					>
 						Make-it-all Portal
-					</Heading>
+					</Heading> */}
+
 					<FormControl isRequired isInvalid={errors.email}>
 						<FormLabel>Email</FormLabel>
 
@@ -122,6 +134,11 @@ export default function AuthPage(props) {
 					>
 						{isServerSuccess ? 'Success!' : 'Login'}
 					</Button>
+					<Link href="register" passHref>
+						<StyledLink textAlign="center" textColor={'gray.500'} my="0">
+							register
+						</StyledLink>
+					</Link>
 				</Box>
 			</Box>
 		</div>
