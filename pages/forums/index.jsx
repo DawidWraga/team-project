@@ -74,7 +74,7 @@ export default function ForumsPage(props) {
       height="100vh"
     >
       {posts.map((post) => (
-        <Post post={post} />
+        <Post post={post} key={post.id} />
       ))}
     </Flex>
   );
