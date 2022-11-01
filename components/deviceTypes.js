@@ -21,7 +21,11 @@ export function DesktopOnly(props) {
 	return (
 		<Box
 			{...props}
-			className={`hidden ${display ? display : 'lg:inline-block'}`}
+			display={{
+				base: 'none',
+
+				lg: display ? display : 'inline-block',
+			}}
 		>
 			{children}
 		</Box>
