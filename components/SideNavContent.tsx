@@ -1,9 +1,9 @@
-import { SignOutBtn } from 'components/SignOutBtn';
+import InviteTeamModal from 'components/InviteTeamModal';
 import pages from 'db/pages.json';
 import { useRouter } from 'next/router';
 
 import { getCurrentUser, signOut } from 'controllers/auth';
-import { MdForum, MdPeopleAlt } from 'react-icons/md';
+import { MdForum, MdPeopleAlt, MdGroupAdd } from 'react-icons/md';
 import { HiDocumentText } from 'react-icons/hi';
 import { FaTasks } from 'react-icons/fa';
 import {
@@ -16,11 +16,13 @@ import {
 	MenuItem,
 	IconButton,
 	Box,
+	useDisclosure,
 } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FiLogOut } from 'react-icons/fi';
 import { RiDashboardFill } from 'react-icons/ri';
 import { motion } from 'framer-motion';
+import { Logo } from 'components/Logo';
 
 interface IProps {
 	setSideNavIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -44,45 +46,56 @@ export default function SideNavContent(props: IProps) {
 	const router = useRouter();
 	const user = getCurrentUser();
 
+	const { isOpen, onOpen, onClose } = useDisclosure();
+
 	function Footer() {
 		return (
-			<Flex
-				h="52px"
-				textColor={'white'}
-				gap="2"
-				p="1"
-				justifyContent={'start'}
-				alignItems="center"
-				sx={{ position: 'relative', bottom: { base: '100px', lg: 0 } }}
-			>
-				<Avatar size="sm" />
-				<Flex alignContent="center" flexDir={'column'}>
-					<Text fontSize={'sm'}>{user.name}</Text>
-					<Text fontSize={'xs'}>{user.email}</Text>
+			<>
+				<InviteTeamModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
+				<Flex
+					h="52px"
+					textColor={'white'}
+					gap="2"
+					p="1"
+					justifyContent={'start'}
+					alignItems="center"
+					sx={{ position: 'relative', bottom: { base: '100px', lg: 0 } }}
+				>
+					<Avatar size="sm" />
+					<Flex alignContent="center" flexDir={'column'}>
+						<Text fontSize={'sm'}>{user.name}</Text>
+						<Text fontSize={'xs'}>{user.email}</Text>
+					</Flex>
+					<Box position="absolute" right="0">
+						<Menu placement="right" colorScheme="gray" offset={[-10, 1]}>
+							<MenuButton
+								as={IconButton}
+								aria-label="Options"
+								icon={<BsThreeDotsVertical color="white" />}
+								variant="link"
+								w="50px"
+							/>
+							<MenuList color="gray">
+								<MenuItem
+									icon={<MdGroupAdd fontSize="1.25rem" />}
+									onClick={onOpen}
+								>
+									Invite team
+								</MenuItem>
+								<MenuItem
+									icon={<FiLogOut fontSize="1.25rem" className="rotate-180" />}
+									onClick={() => {
+										signOut();
+										router.replace('/auth');
+									}}
+								>
+									sign out
+								</MenuItem>
+							</MenuList>
+						</Menu>
+					</Box>
 				</Flex>
-				<Box position="absolute" right="0">
-					<Menu placement="right" colorScheme="gray" offset={[-10, 1]}>
-						<MenuButton
-							as={IconButton}
-							aria-label="Options"
-							icon={<BsThreeDotsVertical color="white" />}
-							variant="link"
-							w="50px"
-						/>
-						<MenuList color="gray">
-							<MenuItem
-								icon={<FiLogOut className="rotate-180" />}
-								onClick={() => {
-									signOut();
-									router.replace('/auth');
-								}}
-							>
-								sign out
-							</MenuItem>
-						</MenuList>
-					</Menu>
-				</Box>
-			</Flex>
+			</>
 		);
 	}
 
@@ -93,7 +106,7 @@ export default function SideNavContent(props: IProps) {
 				className=" hover:cursor-pointer h-[52px] items-center justify-center text-secondary-contrast"
 				// onClick={() => router.push('/')}
 			>
-				logo + title
+				<Logo headingSize="md" logoSize="2rem" headingColor="white" />
 			</Flex>
 			<nav className="grow">
 				{pages.pages.map(({ label, route }) => {

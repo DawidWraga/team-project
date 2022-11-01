@@ -13,6 +13,7 @@ import {
 	Box,
 	Heading,
 	Link as StyledLink,
+	Flex,
 } from '@chakra-ui/react';
 import { getCurrentUser } from '/controllers/auth';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
@@ -54,12 +55,26 @@ export default function AuthPage(props) {
 	};
 
 	return (
-		<div className="bg-pale-main w-screen h-screen grid place-content-center">
-			<Box
+		<Flex
+			className="bg-pale-main w-screen h-screen grid"
+			// placeContent={{ base: 'center', lg: 'end' }}
+			w="100vw"
+			h="100vh"
+			justifyContent={'center'}
+		>
+			<Flex
 				as="main"
-				className="bg-white w-screen max-w-[450px] h-screen justify-center  rounded-lg shadow-xl "
-				h={{ base: '100vh', sm: '500px' }}
-				pt={{ base: '20%', sm: '10%' }}
+				className="bg-white justify-center  rounded-lg shadow-xl "
+				h={{ base: '100vh' }}
+				w="100vw"
+				maxW={{ base: '100vw', lg: '650px' }}
+				alignContent="center"
+				alignItems="center"
+				justifyItems={'center'}
+				roundedRight={{ lg: '3xl' }}
+				// mr={{ lg: 'auto' }}
+				// pt={{ base: '20%', sm: '10%' }}
+				flexDir="column"
 			>
 				<DesktopOnly w="100%">
 					<Heading size="lg" fontWeight={600} textAlign="center">
@@ -69,10 +84,10 @@ export default function AuthPage(props) {
 				<MobileOnly w="100%">
 					<Logo />
 				</MobileOnly>
-				<Box
+				<Flex
 					as="form"
 					onSubmit={handleSubmit(onSubmit)}
-					className="flex flex-col justify-center items-center w-full child:my-5 child:w-full "
+					className="flex flex-col justify-center items-center w-full child:my-5 child:w-full child:max-w-[450px]"
 					px={{ base: 3, sm: 6, lg: 8 }}
 					id="login-form"
 				>
@@ -135,12 +150,25 @@ export default function AuthPage(props) {
 						{isServerSuccess ? 'Success!' : 'Login'}
 					</Button>
 					<Link href="register" passHref>
-						<StyledLink textAlign="center" textColor={'gray.500'} my="0">
+						<StyledLink
+							textAlign="center"
+							textColor={'gray.500'}
+							my="0"
+							fontSize="sm"
+						>
 							register
 						</StyledLink>
 					</Link>
-				</Box>
-			</Box>
-		</div>
+				</Flex>
+			</Flex>
+			<DesktopOnly w="100%" h="100vh" display="flex" justifyContent="center">
+				<Logo
+					sx={{
+						'& > svg': { fontSize: '7rem' },
+						'& > h2': { fontSize: '4rem' },
+					}}
+				/>
+			</DesktopOnly>
+		</Flex>
 	);
 }

@@ -55,7 +55,7 @@ export default function RegisterPage(props) {
 			router.push('/auth');
 		} catch (e) {
 			const errors = e.response.data;
-			console.log(errors);
+			console.log(errors.type);
 
 			// if (errors.type === 'email') {
 			setError(errors.type, {
@@ -74,7 +74,10 @@ export default function RegisterPage(props) {
 	};
 
 	return (
-		<div className="bg-pale-main w-screen h-screen grid place-content-center">
+		<div
+			className="bg-pale-main w-screen h-screen grid place-content-center"
+			onClick={() => console.log(errors.confirmPassword?.type)}
+		>
 			<Box
 				as="main"
 				className="bg-white w-screen max-w-[450px]  justify-center rounded-lg shadow-xl "
@@ -165,10 +168,7 @@ export default function RegisterPage(props) {
 						)}
 					</FormControl>
 
-					<FormControl
-						isRequired
-						isInvalid={errors.confirmPassword?.type === 'unmatchingPasswords'}
-					>
+					<FormControl isRequired isInvalid={errors.confirmPassword}>
 						<FormLabel>Confirm Password</FormLabel>
 						<Input
 							type="password"
@@ -183,6 +183,12 @@ export default function RegisterPage(props) {
 						/>
 						{errors?.confirmPassword?.type === 'unmatchingPasswords' && (
 							<FormErrorMessage>Passwords are not matching!</FormErrorMessage>
+						)}
+						{errors.confirmPassword?.type === 'pattern' && (
+							<FormErrorMessage>
+								Minimum eight characters, at least one uppercase letter, one
+								lowercase letter, one number and one special character,
+							</FormErrorMessage>
 						)}
 					</FormControl>
 
