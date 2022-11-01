@@ -1,13 +1,4 @@
-import {
-  Box,
-  ButtonGroup,
-  Button,
-  Flex,
-  Spacer,
-  Center,
-  Text,
-} from '@chakra-ui/react';
-// import Button from './Button';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 
 import topics from 'db/postTopics.json';
 
@@ -31,11 +22,11 @@ export default function DocsPage(props) {
           >
             <Button
               p="3"
+              variant={'ghost'}
               w="100%"
               h="100%"
               textAlign={'left'}
               alignSelf={'center'}
-              variant={'ghost'}
               colorScheme={'whiteAlpha'}
               color="white"
             >
