@@ -3,7 +3,6 @@ import fs from 'fs/promises';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 
 export default async function handler(req, res) {
-	console.log('working!');
 	async function validateUnique(array, key, value) {
 		const existingIndex = array.findIndex((item) => {
 			if (item[key] === value) return true;
