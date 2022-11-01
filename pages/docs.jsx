@@ -31,11 +31,11 @@ export default function DocsPage(props) {
           >
             <Button
               p="3"
-              variant={'ghost'}
               w="100%"
               h="100%"
               textAlign={'left'}
               alignSelf={'center'}
+              variant={'ghost'}
               colorScheme={'whiteAlpha'}
               color="white"
             >
