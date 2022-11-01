@@ -1,0 +1,31 @@
+{
+  "posts": [
+    {
+      "title": "This is a very long title for testing and shi also more shi also more shi",
+      "src": "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      "replies": "17",
+      "name": "John Smith",
+      "timesince": "14 hours",
+      "solved": true,
+      "id": 1
+    },
+    {
+      "title": "Help with printing",
+      "src": "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      "replies": "5",
+      "name": "John Smith",
+      "timesince": "30 minutes",
+      "solved": true,
+      "id": 2
+    },
+    {
+      "title": "Does anyone else hate the painting in the employee lounge?",
+      "src": "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      "replies": "1730",
+      "name": "John Smith",
+      "timesince": "3 days",
+      "solved": false,
+      "id": 3
+    }
+  ]
+}
