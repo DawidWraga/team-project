@@ -31,7 +31,7 @@ export default function Layout(props) {
 			<header
 				className={`fixed top-0 w-[calc(100vw_-_175px)] ml-[175px] h-[52px] bg-secondary-main text-secondary-contrast flex items-center px-2`}
 			>
-				{pageData.label} test
+				{pageData.label}
 			</header>
 		</>
 	);
