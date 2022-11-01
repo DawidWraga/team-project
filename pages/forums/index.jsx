@@ -9,6 +9,7 @@ import {
   Flex,
   Avatar,
   AvatarGroup,
+  Link,
 } from '@chakra-ui/react';
 import { title } from 'process';
 import { toast } from 'react-toastify';
@@ -36,8 +37,13 @@ export default function ForumsPage(props) {
         <Avatar size={'md'} src={usericon}></Avatar>
         <Flex fontSize={'sm'} flexDirection={'column'} flexGrow="1" padding="2">
           <Text
+            as={Link}
             onClick={() => {
-              router.push('forums/' + id);
+              router.push('/forums/' + id);
+              console.log('test');
+            }}
+            _hover={{
+              textColor: 'blue.500',
             }}
             fontWeight={'semibold'}
             fontSize={'md'}
