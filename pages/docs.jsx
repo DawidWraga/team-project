@@ -1,4 +1,4 @@
-xport default function DocsPage(props) {
+export default function DocsPage(props) {
 	const {} = props;
 
 	return <>test</>;
