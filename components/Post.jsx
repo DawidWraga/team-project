@@ -10,7 +10,7 @@ export function Post(props) {
     <Flex
       backgroundColor={'white'}
       //minW="50vw"
-      w="clamp(350px,80vw,750px)"
+      w="clamp(350px,90vw,750px)"
       minH={'80px'}
       py="2"
       px="4"
