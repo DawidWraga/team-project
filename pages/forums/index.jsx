@@ -31,8 +31,10 @@ export default function ForumsPage(props) {
         //minW="50vw"
         w="clamp(350px,80vw,750px)"
         minH={'80px'}
-        padding="2"
+        py="2"
+        px="4"
         align={'center'}
+        rounded="sm"
       >
         <Avatar size={'md'} src={usericon}></Avatar>
         <Flex fontSize={'sm'} flexDirection={'column'} flexGrow="1" padding="2">
