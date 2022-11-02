@@ -26,8 +26,8 @@ export default function AuthPage(props) {
 	const {} = props;
 	const router = useRouter();
 
+	// If user is already signed in then change route
 	useEffect(() => {
-		// if (!isBrowser()) return;
 		const user = getCurrentUser();
 		if (user) router.replace('/');
 	}, []);
@@ -35,7 +35,7 @@ export default function AuthPage(props) {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isSubmitSuccessful, isSubmitting },
+		formState: { errors, isSubmitting },
 	} = useForm();
 
 	const [isServerSuccess, setIsServerSuccess] = useState(false);
@@ -49,7 +49,6 @@ export default function AuthPage(props) {
 			await setTimeoutPromise(180);
 			router.push('/');
 		} catch (e) {
-			// console.log(e);
 			toast.error('Invalid credentials', { position: 'top-center' });
 		}
 	};
@@ -57,7 +56,6 @@ export default function AuthPage(props) {
 	return (
 		<Flex
 			className="bg-pale-main w-screen h-screen grid"
-			// placeContent={{ base: 'center', lg: 'end' }}
 			w="100vw"
 			h="100vh"
 			justifyContent={'center'}
@@ -72,8 +70,6 @@ export default function AuthPage(props) {
 				alignItems="center"
 				justifyItems={'center'}
 				roundedRight={{ lg: '3xl' }}
-				// mr={{ lg: 'auto' }}
-				// pt={{ base: '20%', sm: '10%' }}
 				flexDir="column"
 			>
 				<DesktopOnly w="100%">

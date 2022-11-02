@@ -10,7 +10,7 @@ export default function DocsPage(props) {
 
     <Box>
       <Box>
-        {topics.map((topic) => (
+        {topics.map((topic, i) => (
           //map through JSON
 
           <Flex
@@ -19,6 +19,7 @@ export default function DocsPage(props) {
             p="3px"
             maxW="200px"
             gap="3"
+            key={i}
           >
             <Button
               p="3"
