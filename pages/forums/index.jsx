@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import { posts } from 'db/posts';
 import { topics } from 'db/topics';
 import { Post } from 'components/Post';
@@ -16,20 +16,44 @@ export default function ForumsPage(props) {
 
   return (
     <Flex
-      gap={'5px'}
+      gap={'20px'}
       padding={'10px'}
-      flexDirection={'column'}
-      alignItems={'center'}
       w="100%"
       bgColor={'gray.200'}
       height="100vh"
     >
-      {posts.map((post) => (
-        <Post post={post} key={post.id} />
-      ))}
-      {topics.map((topic) => (
-        <Topic topic={topic} key={topic.id} />
-      ))}
+      <Flex gap={'5px'} flexDirection={'column'}>
+        <Text
+          backgroundColor={'white'}
+          w="clamp(200px,20vw,750px)"
+          py="2"
+          px="4"
+          rounded="sm"
+          fontSize={'xl'}
+          fontWeight={'semibold'}
+        >
+          Topics
+        </Text>
+        {topics.map((topic) => (
+          <Topic topic={topic} key={topic.id} />
+        ))}
+      </Flex>
+      <Flex gap={'5px'} flexDirection={'column'}>
+        <Text
+          backgroundColor={'white'}
+          w="clamp(350px,60vw,750px)"
+          py="2"
+          px="4"
+          rounded="sm"
+          fontSize={'xl'}
+          fontWeight={'semibold'}
+        >
+          Posts
+        </Text>
+        {posts.map((post) => (
+          <Post post={post} key={post.id} />
+        ))}
+      </Flex>
       {/* <Button onClick={toggleForm}>Show/Hide form</Button> }
       {formActive && <AddPostForm />} */}
       <AddPostForm />
