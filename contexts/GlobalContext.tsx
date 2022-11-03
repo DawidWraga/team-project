@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState } from 'react';
 
 export interface IGlobalContext {
-	sideNavIsOpen: boolean;
-	setSideNavIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	activePage: { [key: string]: any };
+	setActivePage: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>;
 }
 
 export const GlobalContext = createContext<IGlobalContext>(
@@ -12,13 +12,13 @@ export const GlobalContext = createContext<IGlobalContext>(
 export const GlobalContextProvider: React.FC<{
 	children: React.ReactNode;
 }> = ({ children }) => {
-	const [sideNavIsOpen, setSideNavIsOpen] = useState(false);
+	const [activePage, setActivePage] = useState(null);
 
 	return (
 		<GlobalContext.Provider
 			value={{
-				sideNavIsOpen,
-				setSideNavIsOpen,
+				activePage,
+				setActivePage,
 			}}
 		>
 			{children}

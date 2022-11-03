@@ -1,17 +1,35 @@
 import { Box } from '@chakra-ui/react';
-import PageIcons from './PageIcons';
+import PageNavBar from './PageNavBar';
 import SideNav from './SideNav';
 import Header from './Header';
-import { useState } from 'react';
-// import { useRouter } from 'next/router';
-// import pages from 'db/pages.json';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import pages from 'db/pages.json';
+import { useGlobalContext } from 'contexts/GlobalContext';
 
 export default function Layout(props) {
-	const { page, SideNavContent, HeaderContent } = props;
+	const { children, SideNavContent, HeaderContent } = props;
 
-	// const router = useRouter();
-	// const pageData =
-	// 	pages.find((page) => page.route === router.pathname) || 'home';
+	const router = useRouter();
+	const { activePage, setActivePage } = useGlobalContext();
+
+	// router.events.on('routeChangeComplete', () => {});
+
+	useEffect(() => {
+		const currentPage =
+			pages.find((page) => page.route === router.pathname) || 'home';
+
+		// console.log({ currentPage, activePage });
+
+		if (!activePage) return setActivePage(currentPage);
+
+		if (activePage.route !== currentPage.route) setActivePage(currentPage);
+
+		// if (!currentPage || !activePage) setActivePage(currentPage);
+
+		// if (currentPage.route !== activePage?.route) setActivePage(currentPage);
+		console.count('changed global');
+	}, [router.pathname]);
 
 	const [sideNavIsOpen, setSideNavIsOpen] = useState(false);
 
@@ -29,14 +47,14 @@ export default function Layout(props) {
 						sideNavIsOpen={sideNavIsOpen}
 						setSideNavIsOpen={setSideNavIsOpen}
 					>
-						{<SideNavContent /> || <>no side nav </>}
+						{/* {<SideNavContent /> || <>no side nav </>} */}
 					</SideNav>
 				}
 				<Header
 					sideNavIsOpen={sideNavIsOpen}
 					setSideNavIsOpen={setSideNavIsOpen}
 				>
-					{<HeaderContent /> || <>no header content</>}
+					{/* {<HeaderContent /> || <>no header content</>} */}
 				</Header>
 				<Box
 					ml={{
@@ -47,10 +65,10 @@ export default function Layout(props) {
 					mt="60px"
 					h="calc(100vh - 60px)"
 				>
-					{page}
+					{children}
 				</Box>
 			</Box>
-			<PageIcons />
+			<PageNavBar />
 		</>
 	);
 }

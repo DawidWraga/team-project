@@ -10,8 +10,6 @@ import posts from 'db/posts';
 import { useState } from 'react';
 import { Post } from 'components/Post';
 import { AddPostForm } from 'components/AddPostForm';
-import SideNav from '../../components/SideNav';
-// import Button from './Button';
 
 export default function ForumsPage(props) {
 	const {} = props;
@@ -23,7 +21,6 @@ export default function ForumsPage(props) {
 
 	return (
 		<>
-			<SideNav>testing</SideNav>
 			<Flex
 				gap={'5px'}
 				padding={'10px'}

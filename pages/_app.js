@@ -12,6 +12,8 @@ import 'styles/nprogress.css';
 import NProgress from '../components/nprogress';
 import Head from 'next/head';
 import Loading from 'components/loading';
+import MainLayout from 'components/layout/MainLayout';
+import { GlobalContextProvider } from 'contexts/GlobalContext';
 
 function MyApp({ Component, pageProps }) {
 	const router = useRouter();
@@ -41,9 +43,8 @@ function MyApp({ Component, pageProps }) {
 	// 	router.replace('/auth');
 
 	// Use the layout defined at the page level, if available
-	const getLayout = Component.getLayout || ((page) => page);
+	// const getLayout = Component.getLayout || ((page) => page);
 
-	getLayout(<Component {...pageProps} />);
 	return (
 		<>
 			<Head>
@@ -65,14 +66,16 @@ function MyApp({ Component, pageProps }) {
 				transition={Slide}
 			/>
 			<ChakraProvider theme={theme}>
-				{loading ? (
-					<Loading />
-				) : (
-					getLayout(<Component {...pageProps} />)
-					// <Layout>
-					// 	<Component {...pageProps} />
-					// </Layout>
-				)}
+				<GlobalContextProvider>
+					{loading ? (
+						<Loading />
+					) : (
+						// getLayout(<Component {...pageProps} />)
+						<MainLayout>
+							<Component {...pageProps} />
+						</MainLayout>
+					)}
+				</GlobalContextProvider>
 			</ChakraProvider>
 			<NProgress />
 		</>

@@ -3,8 +3,9 @@ import { useGlobalContext } from 'contexts/GlobalContext';
 import { MdClose } from 'react-icons/md';
 
 export default function SideNav(props) {
-	const { children, sideNavIsOpen, setSideNavIsOpen  } = props;
+	const { children, sideNavIsOpen, setSideNavIsOpen } = props;
 
+	const { activePage } = useGlobalContext();
 
 	return (
 		<>
@@ -35,10 +36,9 @@ export default function SideNav(props) {
 					fontSize={'1.5rem'}
 					color="gray.100"
 				/>
+				{activePage?.label}
 				{children}
 			</Box>
-
-
 		</>
 	);
 }
