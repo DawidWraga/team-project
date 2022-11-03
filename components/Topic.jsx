@@ -8,7 +8,7 @@ export function Topic(props) {
     <Flex
       backgroundColor={'white'}
       //minW="50vw"
-      w="clamp(350px,90vw,750px)"
+      w="clamp(200px,20vw,750px)"
       minH={'80px'}
       py="2"
       px="4"
@@ -29,9 +29,11 @@ export function Topic(props) {
         <Text fontSize={'sm'}>{numPosts} posts</Text>
       </Flex>
       <Flex>
-        <IconButton icon={<ArrowRight />} rounded={'lg'} colorScheme={'brand'}>
-          Test
-        </IconButton>
+        <IconButton
+          icon={<ArrowRight />}
+          rounded={'lg'}
+          colorScheme={'brand'}
+        ></IconButton>
       </Flex>
     </Flex>
   );
