@@ -1,6 +1,16 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { HStack, Box, Button, Flex, Text, extendTheme } from '@chakra-ui/react';
 
 import topics from 'db/postTopics.json';
+
+const theme = extendTheme({
+  colors: {
+    brand: {
+      50: '#44337A',
+      100: '#B794F4',
+      500: '#B794F4', // you need this
+    },
+  },
+});
 
 export default function DocsPage(props) {
   const {} = props;
@@ -9,45 +19,55 @@ export default function DocsPage(props) {
     //HTML BELOW
 
     <Box>
-      <Box>
+      <Box w="300px" h="calc(100vh)" bgColor={'blue.800'}>
         {topics.map((topic, i) => (
           //map through JSON
 
-          <Flex
-            bgColor="blue.800"
+          <HStack //button box
             color="whiteAlpha.900"
-            p="3px"
-            maxW="200px"
-            gap="3"
+            p="4px"
             key={i}
+            alignContent="center"
           >
-            <Button
+            <Button //topic title button
               p="3"
               variant={'ghost'}
               w="100%"
-              h="100%"
-              textAlign={'left'}
-              alignSelf={'center'}
-              colorScheme={'whiteAlpha'}
-              color="white"
+              h="50px"
+              alignSelf={'left'}
+              color="whiteAlpha.700"
+              fontWeight={'normal'}
+              justifyContent="left"
+              _hover={{
+                //hover button theme
+                bg: 'whiteAlpha.200',
+                color: 'white',
+                fontWeight: 'semibold',
+              }}
+              _active={{
+                //active button theme
+                bg: 'whiteAlpha.300',
+                transform: 'scale(0.97)',
+                borderColor: '#2477b3',
+                color: 'white',
+              }}
             >
-              <Text mr={'auto'} textAlign="left">
+              <Text w="100%" textAlign={'left'}>
                 {topic.name}
               </Text>
-            </Button>
 
-            {/* numPosts box */}
-            <Box
-              p="1"
-              minW="3ch"
-              bg=""
-              color="whiteAlpha.900"
-              alignSelf={'center'}
-              textAlign={'center'}
-            >
-              {topic.numPosts}
-            </Box>
-          </Flex>
+              {/* numPosts box */}
+              <Text
+                p="0"
+                minW="9ch"
+                alignSelf={'right'}
+                textAlign={'left'}
+                justifyContent="flex-end"
+              >
+                {topic.numPosts} posts
+              </Text>
+            </Button>
+          </HStack>
         ))}
       </Box>
     </Box>
