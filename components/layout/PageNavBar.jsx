@@ -25,7 +25,7 @@ export default function PageNavBar(props) {
 			bgColor={'shade.main'}
 			bottom={0}
 			top={{ lg: 0 }}
-			zIndex="overlay"
+			zIndex="banner"
 			py={{ lg: 2 }}
 		>
 			<DesktopOnly mb="30px">

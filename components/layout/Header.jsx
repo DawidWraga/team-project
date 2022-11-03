@@ -7,8 +7,8 @@ import { useGlobalContext } from 'contexts/GlobalContext';
 import { SpinnerIcon } from '@chakra-ui/icons';
 
 export default function Header(props) {
-	const { children, sideNavIsOpen, setSideNavIsOpen } = props;
-	const { activePage } = useGlobalContext();
+	const {} = props;
+	const { activePage, sideNavIsOpen, setSideNavIsOpen } = useGlobalContext();
 
 	function HeaderContent() {
 		if (!activePage) return <SpinnerIcon />;
@@ -36,6 +36,7 @@ export default function Header(props) {
 				ml={{ lg: sideNavIsOpen ? '180px' : '0' }}
 				transition="all 150ms"
 				alignItems="center"
+				zIndex={'banner'}
 			>
 				<IconButton
 					variant={'unstyled'}
@@ -49,7 +50,7 @@ export default function Header(props) {
 					/>
 				</IconButton>
 				{activePage && <HeaderContent />}
-				{children}
+				{/* {children} */}
 				<MobileOnly position="absolute" right="3" top="4">
 					<ProfileMenu offset={[10, 15]} />
 				</MobileOnly>
