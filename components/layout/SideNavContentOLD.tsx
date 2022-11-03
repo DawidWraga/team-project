@@ -1,11 +1,10 @@
 import InviteTeamModal from 'components/InviteTeamModal';
 import pages from 'db/pages.json';
 import { useRouter } from 'next/router';
+import { routeToIconMap } from 'constants/routeToIconMap';
 
 import { getCurrentUser, signOut } from 'controllers/auth';
-import { MdForum, MdPeopleAlt, MdGroupAdd } from 'react-icons/md';
-import { HiDocumentText } from 'react-icons/hi';
-import { FaTasks } from 'react-icons/fa';
+import { MdGroupAdd } from 'react-icons/md';
 import {
 	Flex,
 	Avatar,
@@ -20,26 +19,12 @@ import {
 } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FiLogOut } from 'react-icons/fi';
-import { RiDashboardFill } from 'react-icons/ri';
 import { motion } from 'framer-motion';
 import { Logo } from 'components/Logo';
 
 interface IProps {
 	setSideNavIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-const iconProps = {
-	fontSize: '1.1rem',
-	className: 'text-secondary-contrast',
-};
-
-const routeToIconMap = {
-	'/forums': <MdForum {...iconProps} />,
-	'/docs': <HiDocumentText {...iconProps} />,
-	'/tasks': <FaTasks {...iconProps} />,
-	'/HR': <MdPeopleAlt {...iconProps} />,
-	'/dashboard': <RiDashboardFill {...iconProps} />,
-};
 
 export default function SideNavContent(props: IProps) {
 	const { setSideNavIsOpen } = props;
@@ -67,32 +52,7 @@ export default function SideNavContent(props: IProps) {
 						<Text fontSize={'xs'}>{user.email}</Text>
 					</Flex>
 					<Box position="absolute" right="0">
-						<Menu placement="right" colorScheme="gray" offset={[-10, 1]}>
-							<MenuButton
-								as={IconButton}
-								aria-label="Options"
-								icon={<BsThreeDotsVertical color="white" />}
-								variant="link"
-								w="50px"
-							/>
-							<MenuList color="gray">
-								<MenuItem
-									icon={<MdGroupAdd fontSize="1.25rem" />}
-									onClick={onOpen}
-								>
-									Invite team
-								</MenuItem>
-								<MenuItem
-									icon={<FiLogOut fontSize="1.25rem" className="rotate-180" />}
-									onClick={() => {
-										signOut();
-										router.replace('/auth');
-									}}
-								>
-									sign out
-								</MenuItem>
-							</MenuList>
-						</Menu>
+
 					</Box>
 				</Flex>
 			</>
@@ -109,7 +69,7 @@ export default function SideNavContent(props: IProps) {
 				<Logo headingSize="md" logoSize="2rem" headingColor="white" />
 			</Flex>
 			<nav className="grow">
-				{pages.pages.map(({ label, route }) => {
+				{pages.map(({ label, route }) => {
 					const isActive = router.pathname === route;
 
 					return (

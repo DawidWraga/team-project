@@ -1,14 +1,24 @@
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
 
 import topics from 'db/postTopics.json';
+import MainLayout from 'components/layout/MainLayout';
 
 export default function DocsPage(props) {
 	const {} = props;
 
-	return (
-		//HTML BELOW
+	return <>docs content here</>;
+}
 
-		<Box>
+DocsPage.getLayout = function getLayout(page) {
+	function HeaderContent() {
+		return (
+			<>
+				<Text>Documentation</Text>
+			</>
+		);
+	}
+	function SideNavContent() {
+		return (
 			<Box>
 				{topics.map((topic, i) => (
 					//map through JSON
@@ -17,14 +27,13 @@ export default function DocsPage(props) {
 						bgColor="blue.800"
 						color="whiteAlpha.900"
 						p="3px"
-						maxW="200px"
+						w="100%"
 						gap="3"
 						key={i}
 					>
 						<Button
 							p="3"
 							variant={'ghost'}
-							w="100%"
 							h="100%"
 							textAlign={'left'}
 							alignSelf={'center'}
@@ -36,7 +45,6 @@ export default function DocsPage(props) {
 							</Text>
 						</Button>
 
-						{/* numPosts box */}
 						<Box
 							p="1"
 							minW="3ch"
@@ -44,21 +52,18 @@ export default function DocsPage(props) {
 							color="whiteAlpha.900"
 							alignSelf={'center'}
 							textAlign={'center'}
-						>
-							{topic.numPosts}
-						</Box>
+						></Box>
 					</Flex>
 				))}
 			</Box>
-		</Box>
+		);
+	}
+
+	return (
+		<MainLayout
+			page={page}
+			SideNavContent={SideNavContent}
+			HeaderContent={HeaderContent}
+		/>
 	);
-}
-
-// create card
-// have props
-// loop through cards-assign diff titles to each one
-
-// make a json inside db
-// loop thru json
-// create compnents using chakra
-// pass topic name inside props
+};

@@ -1,12 +1,11 @@
 import { ToastContainer } from 'react-toastify';
-import '../styles/globals.css';
+import 'styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { Slide } from 'react-toastify';
 import { getCurrentUser } from '/controllers/auth';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
-import Layout from '../components/layout';
 import { ChakraProvider } from '@chakra-ui/react';
 import { theme } from 'styles/chakra-theme';
 import 'styles/nprogress.css';
@@ -41,6 +40,10 @@ function MyApp({ Component, pageProps }) {
 	// if (isBrowser() && router.pathname !== '/auth' && !user)
 	// 	router.replace('/auth');
 
+	// Use the layout defined at the page level, if available
+	const getLayout = Component.getLayout || ((page) => page);
+
+	getLayout(<Component {...pageProps} />);
 	return (
 		<>
 			<Head>
@@ -65,9 +68,10 @@ function MyApp({ Component, pageProps }) {
 				{loading ? (
 					<Loading />
 				) : (
-					<Layout>
-						<Component {...pageProps} />
-					</Layout>
+					getLayout(<Component {...pageProps} />)
+					// <Layout>
+					// 	<Component {...pageProps} />
+					// </Layout>
 				)}
 			</ChakraProvider>
 			<NProgress />

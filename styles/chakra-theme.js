@@ -31,9 +31,11 @@ const colors = {
 		main: 'hsl(36, 100%, 55%)',
 	},
 	shade: {
-		light: 'hsl(210, 18%, 30%)',
+		min: 'hsl(210, 18%, 32%)',
+		light: 'hsl(210, 18%, 26%)',
 		main: '	hsl(210, 18%, 20%)',
 		dark: '	hsl(210, 18%, 15%)',
+		max: '	hsl(210, 18%, 10%)',
 		inv: 'hsl(0, 0%, 100%)',
 	},
 	pale: {
