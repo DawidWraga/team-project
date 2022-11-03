@@ -1,6 +1,8 @@
 import { Flex } from '@chakra-ui/react';
 import { posts } from 'db/posts';
+import { topics } from 'db/topics';
 import { Post } from 'components/Post';
+import { Topic } from 'components/Topic';
 import { AddPostForm } from 'components/AddPostForm';
 // import Button from './Button';
 
@@ -24,6 +26,9 @@ export default function ForumsPage(props) {
     >
       {posts.map((post) => (
         <Post post={post} key={post.id} />
+      ))}
+      {topics.map((topic) => (
+        <Topic topic={topic} key={topic.id} />
       ))}
       {/* <Button onClick={toggleForm}>Show/Hide form</Button> }
       {formActive && <AddPostForm />} */}
