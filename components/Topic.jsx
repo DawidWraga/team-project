@@ -1,8 +1,9 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Button, Flex, IconButton, Link, Text } from '@chakra-ui/react';
+import { HiArrowRight as ArrowRight } from 'react-icons/hi';
 
 export function Topic(props) {
   const { topic } = props;
-  const { name, numposts } = topic;
+  const { name, numPosts } = topic;
   return (
     <Flex
       backgroundColor={'white'}
@@ -14,7 +15,24 @@ export function Topic(props) {
       align={'center'}
       rounded="sm"
     >
-      <Flex>{name}</Flex>
+      <Flex flexDirection={'column'} flexGrow="1">
+        <Text
+          as={Link}
+          _hover={{
+            textColor: 'blue.500',
+          }}
+          fontSize={'md'}
+          fontWeight={'semibold'}
+        >
+          {name}
+        </Text>
+        <Text fontSize={'sm'}>{numPosts} posts</Text>
+      </Flex>
+      <Flex>
+        <IconButton icon={<ArrowRight />} rounded={'lg'} colorScheme={'brand'}>
+          Test
+        </IconButton>
+      </Flex>
     </Flex>
   );
 }
