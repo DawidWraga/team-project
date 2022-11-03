@@ -1,29 +1,27 @@
-{
-	"pages": [
-		{
-			"label": "Dashboard",
-			"route": "/dashboard",
-			"subPages": []
-		},
-		{
-			"label": "Tasks",
-			"route": "/tasks",
-			"subPages": []
-		},
-		{
-			"label": "Forums",
-			"route": "/forums",
-			"subPages": []
-		},
-		{
-			"label": "Docs",
-			"route": "/docs",
-			"subPages": []
-		},
-		{
-			"label": "Users ",
-			"route": "/HR",
-			"subPages": []
-		}
-	]
-}
+[
+	{
+		"label": "Home",
+		"route": "/dashboard",
+		"subPages": []
+	},
+	{
+		"label": "Projects",
+		"route": "/tasks",
+		"subPages": []
+	},
+	{
+		"label": "Forums",
+		"route": "/forums",
+		"subPages": []
+	},
+	{
+		"label": "Docs",
+		"route": "/docs",
+		"subPages": []
+	},
+	{
+		"label": "Users ",
+		"route": "/HR",
+		"subPages": []
+	}
+]

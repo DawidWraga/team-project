@@ -4,6 +4,12 @@
 
 /* DO NOT USE */
 
+/* body {
+	margin: 0;
+	height: 100%;
+	background-color: '#e2e8f0';
+} */
+
 @layer components {
 	.btn {
 		@apply transition-all duration-300 border  rounded-md font-semibold uppercase p-1.5 shadow-sm;
