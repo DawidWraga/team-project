@@ -31,18 +31,20 @@ function Form() {
       <FormControl isRequired>
         <FormLabel>Title</FormLabel>
       </FormControl>
-      <Input />
+      <Input errorBorderColor="red.500" />
       <FormLabel>Description</FormLabel>
       <Input />
+      <FormLabel>Attach a file</FormLabel>
+      <Input type={'file'} />
       <FormControl isRequired>
         <FormLabel>Topic</FormLabel>
-        <Select placeholder="Choose topic">
+        <Select errorBorderColor="red.500" placeholder="Choose topic">
           <option>Printing</option>
           <option>Death beams</option>
           <option>Stolen lunch</option>
         </Select>
       </FormControl>
-      <FormLabel as="legend">Make as announcement</FormLabel>
+      <FormLabel>Make as announcement</FormLabel>
       <Checkbox value="announcement" />
     </form>
   );
