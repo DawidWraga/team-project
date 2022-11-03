@@ -17,7 +17,8 @@
 	{
 		"label": "Docs",
 		"route": "/docs",
-		"subPages": []
+		"subPages": [],
+		"sideNav": "custom"
 	},
 	{
 		"label": "Users ",

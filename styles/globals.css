@@ -4,11 +4,9 @@
 
 /* DO NOT USE */
 
-/* body {
-	margin: 0;
-	height: 100%;
-	background-color: '#e2e8f0';
-} */
+body {
+	overflow: 'hidden';
+}
 
 @layer components {
 	.btn {

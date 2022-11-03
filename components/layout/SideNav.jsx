@@ -1,11 +1,33 @@
-import { Box, Icon } from '@chakra-ui/react';
+import { SpinnerIcon } from '@chakra-ui/icons';
+import { Box, Icon, Text } from '@chakra-ui/react';
 import { useGlobalContext } from 'contexts/GlobalContext';
 import { MdClose } from 'react-icons/md';
+import { lazy, Suspense } from 'react';
+import { isMobile } from 'utils/checkScreenWidth';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export default function SideNav(props) {
-	const { children, sideNavIsOpen, setSideNavIsOpen } = props;
+	const {} = props;
 
-	const { activePage } = useGlobalContext();
+	const { activePage, sideNavIsOpen, setSideNavIsOpen } = useGlobalContext();
+
+	if (!activePage) return <>no active page</>;
+
+	function SideNavContent() {
+		if (!activePage?.route) return <>no route</>;
+		if (!activePage?.sideNav || activePage.sideNav !== 'custom')
+			return <Text textColor="white">default side nav</Text>;
+
+		const DynamicComponent = lazy(() =>
+			import(`components/layout/sideNavContent${activePage.route}`)
+		);
+
+		return (
+			<Suspense fallback={<SpinnerIcon />}>
+				<DynamicComponent {...props} />
+			</Suspense>
+		);
+	}
 
 	return (
 		<>
@@ -19,7 +41,7 @@ export default function SideNav(props) {
 					lg: sideNavIsOpen ? '60px' : '-180px',
 				}}
 				top="0"
-				zIndex="100"
+				zIndex={{ base: 'popover', lg: 'sticky' }}
 				className="dingbop"
 				transition="all 150ms"
 				sx={{ '& > .chakra-text, & > p': { textColor: 'shade.inv' } }}
@@ -36,9 +58,26 @@ export default function SideNav(props) {
 					fontSize={'1.5rem'}
 					color="gray.100"
 				/>
-				{activePage?.label}
-				{children}
+				{<SideNavContent />}
 			</Box>
+			<AnimatePresence>
+				{sideNavIsOpen && isMobile() && (
+					<Box
+						as={motion.div}
+						w="100vw"
+						h="100vh"
+						top="0"
+						bgColor={'blackAlpha.900'}
+						zIndex="overlay"
+						position="fixed"
+						initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+						animate={{ opacity: 0.5, backdropFilter: 'blur(5px)' }}
+						exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+						transition={{ duration: 100 }}
+						onClick={() => setSideNavIsOpen(false)}
+					/>
+				)}
+			</AnimatePresence>
 		</>
 	);
 }
