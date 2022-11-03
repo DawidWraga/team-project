@@ -15,11 +15,15 @@ export default function SideNav(props) {
 
 	function SideNavContent() {
 		if (!activePage?.route) return <>no route</>;
-		if (!activePage?.sideNav || activePage.sideNav !== 'custom')
-			return <Text textColor="white">default side nav</Text>;
+		// if (!activePage?.sideNav || activePage.sideNav !== 'custom')
+		// 	return <Text textColor="white">default side nav</Text>;
 
 		const DynamicComponent = lazy(() =>
-			import(`components/layout/sideNavContent${activePage.route}`)
+			import(`components/layout/sideNavContent${activePage.route}`).catch(
+				() => ({
+					default: () => <Text color="white">{activePage.label} sidenav</Text>,
+				})
+			)
 		);
 
 		return (

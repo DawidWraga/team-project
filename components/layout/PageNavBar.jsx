@@ -5,13 +5,12 @@ import { DesktopOnly } from '../deviceTypes';
 import PageNavItem from './PageNavItem';
 import { LogoIcon } from 'components/Logo';
 import ProfileMenu from 'components/ProfileMenu';
+import { useGlobalContext } from 'contexts/GlobalContext';
 
 export default function PageNavBar(props) {
 	const {} = props;
 	const router = useRouter();
-
-	const activePage =
-		pages.find((page) => router.pathname.includes(page.route)) || 'home';
+	const { activePage } = useGlobalContext();
 
 	return (
 		<Flex

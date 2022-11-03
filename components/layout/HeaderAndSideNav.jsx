@@ -13,7 +13,10 @@ export default function HeaderAndSideNav(props) {
 
 	useEffect(() => {
 		const currentPage =
-			pages.find((page) => page.route === router.pathname) || 'home';
+			pages.find((page) =>
+				router.pathname.split('/')[1].includes(page.route.slice(1))
+			) || 'home';
+
 		// remove || home as this is not an object
 
 		if (!activePage) return setActivePage(currentPage);
