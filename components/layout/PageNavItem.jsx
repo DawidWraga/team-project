@@ -8,11 +8,11 @@ import { motion } from 'framer-motion';
 import { isMobile } from 'utils/checkScreenWidth';
 import { useGlobalContext } from 'contexts/GlobalContext';
 
-export default function NavIcon(props) {
+export default function PageNavItem(props) {
 	const { route, label, isActive } = props;
 
 	const router = useRouter();
-	const { sideNavIsOpen, setSideNavIsOpen } = useGlobalContext();
+	// const { sideNavIsOpen, setSideNavIsOpen } = useGlobalContext();
 
 	const routeToIconMap = {
 		'/forums': MdForum,
@@ -30,7 +30,7 @@ export default function NavIcon(props) {
 			alignItems="center"
 			onClick={() => {
 				router.push(route);
-				if (!isMobile() && !sideNavIsOpen) setSideNavIsOpen(true);
+				// if (!isMobile() && !sideNavIsOpen) setSideNavIsOpen(true);
 			}}
 			bgColor={isActive ? 'shade.light' : ''}
 			_hover={{
