@@ -6,7 +6,7 @@
 	},
 	{
 		"label": "Projects",
-		"route": "/tasks",
+		"route": "/projects",
 		"subPages": []
 	},
 	{

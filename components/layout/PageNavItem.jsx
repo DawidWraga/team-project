@@ -12,12 +12,12 @@ export default function PageNavItem(props) {
 	const { route, label, isActive } = props;
 
 	const router = useRouter();
-	// const { sideNavIsOpen, setSideNavIsOpen } = useGlobalContext();
+	const { sideNavIsOpen, setSideNavIsOpen } = useGlobalContext();
 
 	const routeToIconMap = {
 		'/forums': MdForum,
 		'/docs': HiDocumentText,
-		'/tasks': FaTasks,
+		'/projects': FaTasks,
 		'/HR': MdPeopleAlt,
 		'/dashboard': RiDashboardFill,
 	};
@@ -30,7 +30,7 @@ export default function PageNavItem(props) {
 			alignItems="center"
 			onClick={() => {
 				router.push(route);
-				// if (!isMobile() && !sideNavIsOpen) setSideNavIsOpen(true);
+				if (!isMobile() && !sideNavIsOpen) setSideNavIsOpen(true);
 			}}
 			bgColor={isActive ? 'shade.light' : ''}
 			_hover={{
@@ -42,6 +42,16 @@ export default function PageNavItem(props) {
 				'& > .page-nav-icon': {
 					fontSize: '1.5rem',
 				},
+			}}
+			sx={{
+				...(isActive && {
+					'& > .chakra-text': {
+						fontSize: 'sm',
+					},
+					'& > .page-nav-icon': {
+						fontSize: '1.5rem',
+					},
+				}),
 			}}
 			position="relative"
 			p="1"
