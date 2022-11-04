@@ -1,15 +1,30 @@
 import { useRouter } from 'next/router';
 import { posts } from 'db/posts';
+import { comments } from 'db/postComments';
+import { Reply } from 'components/Reply';
+import { useState } from 'react';
 import { Avatar, Box, Flex, Heading, Text, Button } from '@chakra-ui/react';
+import { AddReply } from 'components/addReply';
+import { comment } from 'postcss';
 
 export default function ForumPost(props) {
 	const {} = props;
+  const [replyActive, setReplyActive] = useState(false);
 
 	const router = useRouter();
 	const { id } = router.query;
 
 	const post = posts.find((item) => +id === item.id);
 	if (!post) return <div>No post</div>;
+
+  function toggleRepBox() {
+    setReplyActive((replyActive) => ! replyActive);
+  }
+
+  function filterReplies(comments, posts){
+     return(comments.filter(comment => id==comment.postid))
+  }
+
 
   return (
     <Box backgroundColor={'white'} py="2" px="4">
@@ -25,8 +40,14 @@ export default function ForumPost(props) {
           {post.title}
         </Text>
         <Text>{post.desc}</Text>
-        <Button>Reply</Button>
+        <Button onClick={toggleRepBox}>Reply</Button>
+        {replyActive && <AddReply />}
       </Box>
+      <Flex justifyContent={"center"} gap="4px" flexDirection={"column"}>{
+        filterReplies(comments, posts).map(
+          (comment)=>(<Reply comment={comment} key={comment.id}/>))
+      }
+      </Flex>
     </Box>
   );
 }
