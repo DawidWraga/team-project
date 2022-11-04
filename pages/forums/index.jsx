@@ -7,11 +7,6 @@ import { AddPostForm } from 'components/AddPostForm';
 
 export default function ForumsPage(props) {
   const {} = props;
-  // const [formActive, setFormActive] = useState(false);
-
-  // function toggleForm() {
-  //   setFormActive((formActive) => !formActive);
-  // }
 
   return (
     <Flex
