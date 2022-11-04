@@ -23,12 +23,18 @@ import {
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
+import { getCurrentUser } from 'controllers/auth';
 
 function Form() {
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
     try {
-      const res = await axios.post('/api/addForumPost', data);
+      const newData = {
+        ...data,
+        name: getCurrentUser().name,
+      };
+      console.log(newData);
+      const res = await axios.post('/api/addForumPost', newData);
       toast.success(JSON.stringify(res.data));
       console.log(res);
     } catch (e) {
