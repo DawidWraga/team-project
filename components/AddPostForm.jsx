@@ -1,6 +1,6 @@
 //import { Box, Button, Input, FormLabel, FormControl } from '@chakra-ui/react';
 // import { useForm } from 'react-hook-form';
-// import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { HiPlus as Plus } from 'react-icons/hi';
 
 import {
@@ -21,31 +21,47 @@ import {
   Select,
   useDisclosure,
 } from '@chakra-ui/react';
+import axios from 'axios';
 import { useForm } from 'react-hook-form';
 
 function Form() {
   const { register, handleSubmit } = useForm();
-  const onSubmit = (data) => toast.success(JSON.stringify(data));
+  const onSubmit = async (data) => {
+    try {
+      const res = await axios.post('/api/addForumPost', data);
+      toast.success(JSON.stringify(res.data));
+      console.log(res);
+    } catch (e) {
+      console.error(e);
+    }
+  };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <FormControl isRequired>
         <FormLabel>Title</FormLabel>
       </FormControl>
-      <Input errorBorderColor="red.500" />
+      <Input errorBorderColor="red.500" {...register('title')} />
       <FormLabel>Description</FormLabel>
-      <Input />
+      <Input {...register('desc')} />
       <FormLabel>Attach a file</FormLabel>
-      <Input type={'file'} />
+      <Input {...register('file')} type={'file'} />
       <FormControl isRequired>
         <FormLabel>Topic</FormLabel>
-        <Select errorBorderColor="red.500" placeholder="Choose topic">
+        <Select
+          errorBorderColor="red.500"
+          placeholder="Choose topic"
+          {...register('topic')}
+        >
           <option>Printing</option>
           <option>Death beams</option>
           <option>Stolen lunch</option>
         </Select>
       </FormControl>
       <FormLabel>Make as announcement</FormLabel>
-      <Checkbox value="announcement" />
+      <Checkbox value="announcement" {...register('accouncement')} />
+      <Button type="submit" colorScheme={'brand'}>
+        Post
+      </Button>
     </form>
   );
 }
@@ -94,11 +110,6 @@ export function AddPostForm() {
           <ModalBody>
             <Form />
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={onPost} colorScheme={'brand'}>
-              Post
-            </Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </>
