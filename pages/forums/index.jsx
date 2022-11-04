@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import { posts } from 'db/posts';
+import posts from 'db/posts';
 import { topics } from 'db/topics';
 import { Post } from 'components/Post';
 import { Topic } from 'components/Topic';

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { posts } from 'db/posts';
+import posts from 'db/posts';
 import {
   Avatar,
   Box,
@@ -16,7 +16,7 @@ export default function ForumPost(props) {
   const router = useRouter();
   const { id } = router.query;
 
-  const post = posts.find((item) => +id === item.id);
+  const post = posts.find((item) => id === item.id);
   if (!post) return <div>No post</div>;
 
   return (
