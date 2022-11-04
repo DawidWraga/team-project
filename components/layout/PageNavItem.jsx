@@ -18,7 +18,7 @@ export default function PageNavItem(props) {
 		'/forums': MdForum,
 		'/docs': HiDocumentText,
 		'/projects': FaTasks,
-		'/HR': MdPeopleAlt,
+		'/users': MdPeopleAlt,
 		'/dashboard': RiDashboardFill,
 	};
 

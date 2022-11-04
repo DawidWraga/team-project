@@ -10,9 +10,12 @@ import { MdGroupAdd } from 'react-icons/md';
 import { BsPersonCircle } from 'react-icons/bs';
 import { FiLogOut } from 'react-icons/fi';
 import { isMobile } from 'utils/checkScreenWidth';
+import { signOut } from '../controllers/auth';
+import { useRouter } from 'next/router';
 
 export default function ProfileMenu(props) {
 	const {} = props;
+	const router = useRouter();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	return (
