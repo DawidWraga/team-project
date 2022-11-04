@@ -1,14 +1,7 @@
 import { useRouter } from 'next/router';
 import posts from 'db/posts';
-import {
-  Avatar,
-  Box,
-  Flex,
-  Heading,
-  Text,
-  Button,
-  Spacer,
-} from '@chakra-ui/react';
+import { Avatar, Box, Flex, Text, Button, Spacer } from '@chakra-ui/react';
+import { getCurrentUser } from 'controllers/auth';
 
 export default function ForumPost(props) {
   const {} = props;
