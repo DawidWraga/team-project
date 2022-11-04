@@ -1,33 +1,14 @@
-import { Flex, Heading, Icon, IconButton, Box, Text } from '@chakra-ui/react';
+import { Flex, Icon, IconButton } from '@chakra-ui/react';
 import { MdMenu, MdMenuOpen } from 'react-icons/md';
 import { isMobile } from 'utils/checkScreenWidth';
 import { MobileOnly } from '../deviceTypes';
 import ProfileMenu from '../ProfileMenu';
 import { useGlobalContext } from 'contexts/GlobalContext';
-import { SpinnerIcon } from '@chakra-ui/icons';
-import { lazy, Suspense } from 'react';
+import HeaderContent from './HeaderContent';
 
 export default function Header(props) {
 	const {} = props;
 	const { activePage, sideNavIsOpen, setSideNavIsOpen } = useGlobalContext();
-
-	function HeaderContent() {
-		if (!activePage?.route) return <>no route</>;
-
-		const DynamicComponent = lazy(() =>
-			import(`components/layout/headerContent${activePage.route}`).catch(
-				() => ({
-					default: () => <></>,
-				})
-			)
-		);
-
-		return (
-			<Suspense fallback={<SpinnerIcon />}>
-				<DynamicComponent {...props} />
-			</Suspense>
-		);
-	}
 
 	return (
 		<>
@@ -53,18 +34,7 @@ export default function Header(props) {
 						fontSize="1.7rem"
 					/>
 				</IconButton>
-				<Flex h="100%" alignItems="center" gap="5">
-					<Heading
-						mx={{ base: 'auto', lg: 5 }}
-						fontSize="1.5rem"
-						fontWeight="semibold"
-						textColor={'shade.inv'}
-					>
-						{activePage?.label || 'page not found'}
-					</Heading>
-					<HeaderContent />
-				</Flex>
-				{/* {children} */}
+				<HeaderContent />
 				<MobileOnly position="absolute" right="3" top="4">
 					<ProfileMenu offset={[10, 15]} />
 				</MobileOnly>
@@ -72,3 +42,21 @@ export default function Header(props) {
 		</>
 	);
 }
+
+// function HeaderContent() {
+// 	if (!activePage?.parentLink.route) return <>no route</>;
+
+// 	const DynamicComponent = lazy(() =>
+// 		import(`components/layout/headerContent${activePage.route}`).catch(
+// 			() => ({
+// 				default: () => <></>,
+// 			})
+// 		)
+// 	);
+
+// 	return (
+// 		<Suspense fallback={<></>}>
+// 			<DynamicComponent {...props} />
+// 		</Suspense>
+// 	);
+// }

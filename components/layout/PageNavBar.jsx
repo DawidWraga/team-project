@@ -1,11 +1,11 @@
 import { Flex } from '@chakra-ui/react';
-import pages from 'db/pages.json';
 import { useRouter } from 'next/router';
 import { DesktopOnly } from '../deviceTypes';
 import PageNavItem from './PageNavItem';
 import { LogoIcon } from 'components/Logo';
 import ProfileMenu from 'components/ProfileMenu';
 import { useGlobalContext } from 'contexts/GlobalContext';
+import pages from 'config/pages';
 
 export default function PageNavBar(props) {
 	const {} = props;
@@ -34,10 +34,10 @@ export default function PageNavBar(props) {
 			{pages.map((page) => {
 				return (
 					<PageNavItem
-						key={page.route}
-						route={page.route}
-						label={page.label}
-						isActive={activePage?.route?.includes(page.route)}
+						key={page.parentLink.route}
+						route={page.parentLink.route}
+						label={page.parentLink.label}
+						isActive={activePage?.route?.includes(page.parentLink.route)}
 					/>
 				);
 			})}

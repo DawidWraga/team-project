@@ -5,33 +5,18 @@ import { MdClose } from 'react-icons/md';
 import { lazy, Suspense } from 'react';
 import { isMobile } from 'utils/checkScreenWidth';
 import { AnimatePresence, motion } from 'framer-motion';
+import SideNavContent from './SideNavContent';
 
 export default function SideNav(props) {
 	const {} = props;
 
-	const { activePage, sideNavIsOpen, setSideNavIsOpen } = useGlobalContext();
+	const { sideNavIsOpen, setSideNavIsOpen } = useGlobalContext();
 
-	if (!activePage) return <>no active page</>;
+	// if (!activePage) return <>no active page</>;
 
-	function SideNavContent() {
-		if (!activePage?.route) return <>no route</>;
-		// if (!activePage?.sideNav || activePage.sideNav !== 'custom')
-		// 	return <Text textColor="white">default side nav</Text>;
-
-		const DynamicComponent = lazy(() =>
-			import(`components/layout/sideNavContent${activePage.route}`).catch(
-				() => ({
-					default: () => <Text color="white">{activePage.label} sidenav</Text>,
-				})
-			)
-		);
-
-		return (
-			<Suspense fallback={<SpinnerIcon />}>
-				<DynamicComponent {...props} />
-			</Suspense>
-		);
-	}
+	// function SideNavContent() {
+	// 	if (!activePage?.parentLink.route) return <>no route</>;
+	// }
 
 	return (
 		<>
@@ -62,7 +47,7 @@ export default function SideNav(props) {
 					fontSize={'1.5rem'}
 					color="gray.100"
 				/>
-				{<SideNavContent />}
+				<SideNavContent />
 			</Box>
 			<AnimatePresence>
 				{sideNavIsOpen && isMobile() && (
@@ -85,3 +70,25 @@ export default function SideNav(props) {
 		</>
 	);
 }
+
+// function SideNavContent() {
+// 	if (!activePage?.parentLink.route) return <>no route</>;
+// 	// if (!activePage?.sideNav || activePage.sideNav !== 'custom')
+// 	// 	return <Text textColor="white">default side nav</Text>;
+
+// 	const DynamicComponent = lazy(() =>
+// 		import(`components/layout/sideNavContent${activePage.route}`).catch(
+// 			() => ({
+// 				default: () => (
+// 					<Text color="white">{activePage.parentLink.label} sidenav</Text>
+// 				),
+// 			})
+// 		)
+// 	);
+
+// 	return (
+// 		<Suspense fallback={<></>}>
+// 			<DynamicComponent {...props} />
+// 		</Suspense>
+// 	);
+// }

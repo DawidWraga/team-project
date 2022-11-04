@@ -1,0 +1,29 @@
+[
+	{
+		"id": 1,
+		"title": "Ecommerce website",
+		"dateCreated": "01/01/2022",
+		"dueDate": "01/01/2023",
+		"assignee_ids": [1, 2, 3],
+		"manager_ids": [1],
+		"taskIds": [1, 2, 3]
+	},
+	{
+		"id": 2,
+		"title": "Mobile app",
+		"dateCreated": "01/01/2022",
+		"dueDate": "01/01/2023",
+		"assignee_ids": [1, 2, 4],
+		"manager_ids": [1],
+		"taskIds": [4, 5, 6]
+	},
+	{
+		"id": 3,
+		"title": "New Marketing Campaign",
+		"dateCreated": "01/01/2022",
+		"dueDate": "01/01/2023",
+		"assignee_ids": [3, 4, 5],
+		"manager_ids": [2],
+		"taskIds": [7, 8, 9]
+	}
+]

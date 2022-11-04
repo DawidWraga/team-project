@@ -2,7 +2,7 @@ import SideNav from './SideNav';
 import Header from './Header';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import pages from 'db/pages.json';
+import pages from 'config/pages';
 import { useGlobalContext } from 'contexts/GlobalContext';
 
 export default function HeaderAndSideNav(props) {
@@ -12,18 +12,17 @@ export default function HeaderAndSideNav(props) {
 	const { activePage, setActivePage } = useGlobalContext();
 
 	useEffect(() => {
-		const currentPage =
-			pages.find((page) =>
-				router.pathname.split('/')[1].includes(page.route.slice(1))
-			) || 'home';
+		const currentPage = pages.find((page) => {
+			const activeParent =
+				router.pathname === '/' ? '/' : '/' + router.pathname.split('/')[1];
 
-		// remove || home as this is not an object
+			return activeParent === page.parentLink.route;
+		});
 
 		if (!activePage) return setActivePage(currentPage);
 
-		if (activePage.route !== currentPage.route) setActivePage(currentPage);
-
-		console.count('changed global');
+		if (activePage?.parentLink?.route !== currentPage?.parentLink?.route)
+			setActivePage(currentPage);
 	}, [router.pathname]);
 
 	return (
