@@ -2,15 +2,12 @@ import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
   Tag,
   TagRightIcon,
-  CircularProgress,
 } from '@chakra-ui/react';
 
 import { FaCheck, FaTimes } from 'react-icons/fa';
