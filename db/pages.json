@@ -1,7 +1,7 @@
 {
 	"pages": [
 		{
-			"label": "Dashoard",
+			"label": "Dashboard",
 			"route": "/dashboard",
 			"subPages": []
 		},
