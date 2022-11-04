@@ -1,35 +1,60 @@
-import { HStack, Box, Button, Flex, Text, extendTheme } from '@chakra-ui/react';
-
-import topics from 'db/postTopics.json';
-
-const theme = extendTheme({
-  colors: {
-    brand: {
-      50: '#44337A',
-      100: '#B794F4',
-      500: '#B794F4', // you need this
-    },
-  },
-});
+import {
+  HStack,
+  Box,
+  Button,
+  Flex,
+  Text,
+  extendTheme,
+  Wrap,
+  useControllableState,
+} from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import topics from 'db/docTopics.json';
+import posts from 'db/docPosts.json';
 
 export default function DocsPage(props) {
   const {} = props;
+  const [currentTopic, setTopic] = useControllableState({
+    defaultValue: 'printing',
+  });
+
+  function Listdocs(props) {
+    const {} = props;
+    const requestedTopic = props.topic;
+
+    return (
+      <Box>
+        {posts.map((post) => {
+          if (post.topic == requestedTopic) {
+            return <Text>{post.title}</Text>;
+          }
+        })}
+      </Box>
+    );
+    //return <div>{JSON.stringify(posts[0])}</div>;
+  }
 
   return (
     //HTML BELOW
 
-    <Box>
-      <Box w="300px" h="calc(100vh)" bgColor={'blue.800'}>
+    <Wrap>
+      <Box //sidebar box
+        w="300px"
+        h="calc(100vh)"
+        bgColor={'blue.800'}
+      >
         {topics.map((topic, i) => (
           //map through JSON
 
-          <HStack //button box
+          <Box //individual button box
             color="whiteAlpha.900"
             p="4px"
             key={i}
             alignContent="center"
           >
-            <Button //topic title button
+            <Button
+              //topic title button
+              onClick={() => setTopic(topic.name)}
               p="3"
               variant={'ghost'}
               w="100%"
@@ -67,18 +92,13 @@ export default function DocsPage(props) {
                 {topic.numPosts} posts
               </Text>
             </Button>
-          </HStack>
+          </Box>
         ))}
       </Box>
-    </Box>
+
+      <Box>
+        <Listdocs topic={currentTopic}></Listdocs>
+      </Box>
+    </Wrap>
   );
 }
-
-// create card
-// have props
-// loop through cards-assign diff titles to each one
-
-// make a json inside db
-// loop thru json
-// create compnents using chakra
-// pass topic name inside props
