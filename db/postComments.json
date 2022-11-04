@@ -1,0 +1,19 @@
+{
+    "comments":[
+        {
+            "id": 1,
+            "name": "John Smith",
+            "desc": "great post mi amigo",
+            "postdate": "02/11/2022",
+            "postid": 1,
+            "solution": false
+        },
+        {   "id": 2,
+            "name": "John Smith",
+            "desc": "another great post my friend",
+            "postdate": "03/11/2022",
+            "postid": 1,
+            "solution": true
+        }
+    ]
+}
