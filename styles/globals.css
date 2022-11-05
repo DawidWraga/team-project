@@ -4,6 +4,10 @@
 
 /* DO NOT USE */
 
+body {
+	overflow: 'hidden';
+}
+
 @layer components {
 	.btn {
 		@apply transition-all duration-300 border  rounded-md font-semibold uppercase p-1.5 shadow-sm;

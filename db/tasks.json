@@ -1,0 +1,58 @@
+[
+	{
+		"id": 1,
+		"title": "Design Website",
+		"dateCreated": "01/01/2022",
+		"dueDate": "01/05/2022",
+		"status": "todo",
+		"description": "create prototypes in figma",
+		"listName": "design",
+		"projectId": 1,
+		"assigneeIds": [1]
+	},
+
+	{
+		"id": 2,
+		"title": "Develop website",
+		"dateCreated": "01/01/2022",
+		"dueDate": "01/05/2022",
+		"status": "in-progress",
+		"description": "Implement design into code",
+		"listName": "development",
+		"projectId": 1,
+		"assigneeIds": [2]
+	},
+	{
+		"id": 3,
+		"title": "Deploy Website",
+		"dateCreated": "01/01/2022",
+		"dueDate": "01/07/2022",
+		"status": "complete",
+		"description": "deploy server using vercel",
+		"listName": "devops",
+		"projectId": 1,
+		"assigneeIds": [1]
+	},
+	{
+		"id": 4,
+		"title": "Deploy Website this is a sample",
+		"dateCreated": "01/01/2022",
+		"dueDate": "01/07/2022",
+		"status": "complete",
+		"description": "deploy server using vercel",
+		"listName": "devops",
+		"projectId": 1,
+		"assigneeIds": [1]
+	},
+	{
+		"id": 5,
+		"title": "Deploy Website",
+		"dateCreated": "01/01/2022",
+		"dueDate": "01/07/2022",
+		"status": "complete",
+		"description": "deploy server using vercel",
+		"listName": "devops",
+		"projectId": 1,
+		"assigneeIds": [1]
+	}
+]
