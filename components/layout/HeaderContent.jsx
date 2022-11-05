@@ -7,14 +7,13 @@ export default function HeaderContent(props) {
 	const {} = props;
 	const router = useRouter();
 	const { activePage } = useGlobalContext();
+	const { activeSideNavLink } = useActiveSideNavLink();
 
 	if (!activePage) return <>no active</>;
 
 	let label = activePage.parentLink.label;
 
 	let headerLinkStart = '';
-
-	const { activeSideNavLink } = useActiveSideNavLink();
 
 	// label = activeSideNavLink.label;
 	// activePageIsParent = false;
