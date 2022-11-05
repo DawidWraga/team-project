@@ -42,8 +42,6 @@ export default function RegisterPage(props) {
 
 	const onSubmit = async (data) => {
 		try {
-			console.log(data);
-
 			if (data.password !== data.confirmPassword) {
 				console.log(data);
 				return setError('confirmPassword', { type: 'unmatchingPasswords' });

@@ -8,7 +8,7 @@ export default async function query(table: string) {
 	const objectData = JSON.parse(jsonData);
 
 	// simulate response delay
-	await setTimeoutPromise(500);
+	// await setTimeoutPromise(50);
 
 	return objectData;
 }

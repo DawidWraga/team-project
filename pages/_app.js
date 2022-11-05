@@ -1,18 +1,20 @@
 import { ToastContainer } from 'react-toastify';
-import '../styles/globals.css';
+import 'styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { Slide } from 'react-toastify';
 import { getCurrentUser } from '/controllers/auth';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
-import Layout from '../components/layout';
 import { ChakraProvider } from '@chakra-ui/react';
 import { theme } from 'styles/chakra-theme';
 import 'styles/nprogress.css';
 import NProgress from '../components/nprogress';
 import Head from 'next/head';
 import Loading from 'components/loading';
+import MainLayout from 'components/layout/MainLayout';
+import { GlobalContextProvider } from 'contexts/GlobalContext';
+import pages from 'config/pages';
 
 function MyApp({ Component, pageProps }) {
 	const router = useRouter();
@@ -21,28 +23,32 @@ function MyApp({ Component, pageProps }) {
 
 	// function AuthGuard() {
 	// }
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
+
+	// AUTH CHECK TOP ONE SHOULD BE  WORKING
 	useEffect(() => {
 		window.scrollTo(0, 1);
 		(async () => {
 			setLoading(true);
 
-			const user = await getCurrentUser();
-			if (!user) {
+			const isSignedIn = await getCurrentUser();
+			if (!isSignedIn) {
 				router.replace('/auth');
 				await setTimeoutPromise(200);
 			}
+
+			if (isSignedIn && router.pathname === '/') {
+				router.replace('/dashboard');
+			}
+
 			setLoading(false);
 		})();
 	}, []);
-	// if (loading) return ;
-
-	// const user = getCurrentUser();
-	// if (isBrowser() && router.pathname !== '/auth' && !user)
-	// 	router.replace('/auth');
 
 	return (
 		<>
+			<NProgress />
+
 			<Head>
 				<meta name="apple-mobile-web-app-capable" content="yes" />
 				<meta name="mobile-web-app-capable" content="yes" />
@@ -62,15 +68,17 @@ function MyApp({ Component, pageProps }) {
 				transition={Slide}
 			/>
 			<ChakraProvider theme={theme}>
-				{loading ? (
-					<Loading />
-				) : (
-					<Layout>
-						<Component {...pageProps} />
-					</Layout>
-				)}
+				<GlobalContextProvider>
+					{loading ? (
+						<Loading />
+					) : (
+						// getLayout(<Component {...pageProps} />)
+						<MainLayout>
+							<Component {...pageProps} />
+						</MainLayout>
+					)}
+				</GlobalContextProvider>
 			</ChakraProvider>
-			<NProgress />
 		</>
 	);
 }
