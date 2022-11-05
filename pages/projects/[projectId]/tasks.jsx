@@ -113,11 +113,7 @@ function ProgressTaskCol() {
 }
 
 function TaskHeader() {
-	return (
-		<Heading>
-			<Center pt={4}>Tasks</Center>
-		</Heading>
-	);
+	return <Heading>{/* <Center pt={4}>Tasks</Center> */}</Heading>;
 }
 
 function TaskBox() {

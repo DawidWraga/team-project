@@ -1,8 +1,11 @@
 import query from 'controllers/query';
+import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 
 export default async function handler(req, res) {
 	try {
 		const validUsers = await query('users');
+
+		await setTimeoutPromise(1500);
 
 		const userDetails = validUsers.find((user) => {
 			if (user.email !== req.body.email) return false;

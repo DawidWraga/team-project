@@ -1,5 +1,5 @@
 // 1. Import the extendTheme function
-import { extendTheme } from '@chakra-ui/react';
+import { defineStyleConfig, extendTheme } from '@chakra-ui/react';
 
 const config = {
 	initialColorMode: 'light',
@@ -48,4 +48,27 @@ const colors = {
 	success: 'hsl(87,50%,59%)',
 };
 
-export const theme = extendTheme({ colors, config });
+const Paper = defineStyleConfig({
+	// The styles all Cards have in common
+	baseStyle: {
+		display: 'flex',
+		backgroundColor: 'white',
+	},
+	// Two variants: rounded and smooth
+	variants: {
+		elevated: {
+			borderRadius: 'md',
+			boxShadow: 'lg',
+		},
+		smooth: {
+			borderRadius: 'sm',
+			boxShadow: 'sm',
+		},
+	},
+	// The default variant value
+	defaultProps: {
+		variant: 'smooth',
+	},
+});
+
+export const theme = extendTheme({ colors, config, components: { Paper } });

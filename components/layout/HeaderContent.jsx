@@ -1,28 +1,32 @@
-import { Box, Flex, Heading } from '@chakra-ui/react';
+import { Box, Flex, Heading, Button } from '@chakra-ui/react';
 import { useGlobalContext } from 'contexts/GlobalContext';
 import { useRouter } from 'next/router';
+import { useActiveSideNavLink } from 'utils/useActiveSideNavLink';
 
 export default function HeaderContent(props) {
 	const {} = props;
 	const router = useRouter();
-	const { activePage, sideNavIsOpen, setSideNavIsOpen } = useGlobalContext();
+	const { activePage } = useGlobalContext();
 
 	if (!activePage) return <>no active</>;
 
 	let label = activePage.parentLink.label;
 
-	const hasSideNav = activePage.sideNavLinks && activePage.sideNavLinks.length;
-	let activePageIsParent = true;
+	let headerLinkStart = '';
 
-	if (hasSideNav) {
-		const activeSideNavLink = activePage.sideNavLinks.find(
-			(link) => link.route === router.asPath
-		);
+	const { activeSideNavLink } = useActiveSideNavLink();
 
-		if (activeSideNavLink) {
-			label = activeSideNavLink.label;
-			activePageIsParent = false;
-		} else label = 'All ' + label;
+	// label = activeSideNavLink.label;
+	// activePageIsParent = false;
+
+	const urlArray = router.asPath.split('/');
+
+	if (urlArray.length === 2) {
+		headerLinkStart = router.asPath.split('&')[0];
+	} else {
+		urlArray.pop();
+
+		headerLinkStart = urlArray.join('/');
 	}
 
 	return (
@@ -33,24 +37,42 @@ export default function HeaderContent(props) {
 				fontWeight="semibold"
 				textColor={'shade.inv'}
 			>
-				{label || 'page not found'}
+				{activeSideNavLink?.label || activePage.parentLink.label}
 			</Heading>
 
 			{activePage.headerLinks && (
-				<Flex gap="5" pt="1">
+				<Flex gap={[2, 3, 4, 5, 6]} pt="1">
 					{activePage.headerLinks.map((link) => {
+						const isActive = activeSideNavLink?.route.includes(link.route);
+
 						return (
-							<Box
+							<Button
+								variant="link"
 								key={link.route}
-								color="white"
+								// color="white"
+								colorScheme="white"
 								verticalAlign={'center'}
 								h="100%"
 								fontSize="1.2rem"
-								onClick={() => router.push(link.route)}
+								onClick={() =>
+									router.push(
+										headerLinkStart +
+											(link.route.includes('&') &&
+											!headerLinkStart.includes('?')
+												? '?' + link.route
+												: link.route)
+									)
+								}
 								_hover={{ cursor: 'pointer' }}
+								// _active={{"& > .line":{
+								// 	width:"100%"
+								// }}}
+								textDecorationLine={isActive ? 'underline' : 'none'}
+								textDecorationColor={isActive ? 'brand' : 'none'}
+								color="white"
 							>
 								{link.label}
-							</Box>
+							</Button>
 						);
 					})}
 				</Flex>
