@@ -9,7 +9,7 @@ import {
   useControllableState,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import topics from 'db/topics.json';
+import topics from 'db/docTopics.json';
 import posts from 'db/docPosts.json';
 
 export default function DocsPage(props) {
