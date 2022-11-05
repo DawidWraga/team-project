@@ -1,5 +1,5 @@
-import { Flex, Icon, IconButton } from '@chakra-ui/react';
-import { MdMenu, MdMenuOpen } from 'react-icons/md';
+import { Flex, Icon, IconButton, Box } from '@chakra-ui/react';
+import { MdMenu, MdMenuOpen, MdSearch } from 'react-icons/md';
 import { isMobile } from 'utils/checkScreenWidth';
 import { MobileOnly } from '../deviceTypes';
 import ProfileMenu from '../ProfileMenu';
@@ -12,13 +12,21 @@ export default function Header(props) {
 
 	return (
 		<>
+			<Box
+				h="60px"
+				w="500px"
+				position="fixed"
+				top={0}
+				left={0}
+				bgColor="shade.main"
+			/>
 			<Flex
 				w="100%"
 				h="60px"
-				bgColor="shade.light"
+				bgColor="shade.main"
 				position="fixed"
 				top="0"
-				ml={{ lg: sideNavIsOpen ? '180px' : '0' }}
+				ml={{ lg: sideNavIsOpen ? '200px' : '0' }}
 				transition="all 150ms"
 				alignItems="center"
 				zIndex={'banner'}
@@ -35,9 +43,36 @@ export default function Header(props) {
 					/>
 				</IconButton>
 				<HeaderContent />
-				<MobileOnly position="absolute" right="3" top="4">
-					<ProfileMenu offset={[10, 15]} />
-				</MobileOnly>
+				<Flex
+					position="fixed"
+					right="2"
+					top={{ base: 4, lg: '3' }}
+					gap="3"
+					zIndex="999"
+				>
+					<IconButton
+						variant="unstyled"
+						rounded="full"
+						border="0px solid white"
+						_hover={{
+							cursor: 'pointer',
+							border: '1px solid white',
+							minW: '200px',
+						}}
+						transition="all 400ms"
+						position="relative"
+					>
+						<Icon
+							color="white"
+							fontSize="2rem"
+							as={MdSearch}
+							position="absolute"
+							left="2"
+							top="1.5"
+						/>
+					</IconButton>
+					<ProfileMenu offset={[4, 11]} />
+				</Flex>
 			</Flex>
 		</>
 	);

@@ -22,7 +22,7 @@ export default function SideNav(props) {
 		<>
 			<Box
 				h="100vh"
-				w={{ base: 'clamp(250px,70vw,350px)', lg: '180px' }}
+				w={{ base: 'clamp(250px,70vw,350px)', lg: '200px' }}
 				position="fixed"
 				bgColor="shade.light"
 				left={{

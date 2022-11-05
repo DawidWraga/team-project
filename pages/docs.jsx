@@ -1,8 +1,3 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
-
-import topics from 'db/postTopics.json';
-import MainLayout from 'components/layout/MainLayout';
-
 export default function DocsPage(props) {
 	const {} = props;
 

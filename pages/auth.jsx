@@ -19,7 +19,7 @@ import { getCurrentUser } from '/controllers/auth';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import { MdCheck } from 'react-icons/md';
 import Link from 'next/link';
-import { Logo } from 'components/Logo';
+import { Logo } from 'components/BrandLogo';
 import { DesktopOnly, MobileOnly } from 'components/deviceTypes';
 
 export default function AuthPage(props) {
@@ -47,7 +47,7 @@ export default function AuthPage(props) {
 			executeSignIn(userData);
 			setIsServerSuccess(true);
 			await setTimeoutPromise(180);
-			router.push('/');
+			router.push('/dashboard');
 		} catch (e) {
 			toast.error('Invalid credentials', { position: 'top-center' });
 		}
@@ -65,7 +65,7 @@ export default function AuthPage(props) {
 				className="bg-white justify-center  rounded-lg shadow-xl "
 				h={{ base: '100vh' }}
 				w="100vw"
-				maxW={{ base: '100vw', lg: '650px' }}
+				maxW={{ base: '100vw', md: '650px', lg: '750px' }}
 				alignContent="center"
 				alignItems="center"
 				justifyItems={'center'}
@@ -87,16 +87,7 @@ export default function AuthPage(props) {
 					px={{ base: 3, sm: 6, lg: 8 }}
 					id="login-form"
 				>
-					{/* <Heading
-						size={{ base: 'xl', sm: 'lg' }}
-						mx="auto"
-						textAlign={'center'}
-						fontWeight="semibold"
-					>
-						Make-it-all Portal
-					</Heading> */}
-
-					<FormControl isRequired isInvalid={errors.email}>
+					<FormControl isRequired>
 						<FormLabel>Email</FormLabel>
 
 						<Input
@@ -106,16 +97,10 @@ export default function AuthPage(props) {
 							required
 							{...register('email', {
 								required: true,
-								validate: (email) => email.includes('@client.com'),
 							})}
 						/>
-						{errors.email?.type === 'validate' && (
-							<FormErrorMessage>
-								Only internal emails are allowed
-							</FormErrorMessage>
-						)}
 					</FormControl>
-					<FormControl isRequired isInvalid={errors.password}>
+					<FormControl isRequired>
 						<FormLabel>Password</FormLabel>
 						<Input
 							type="password"
@@ -124,16 +109,8 @@ export default function AuthPage(props) {
 							required
 							{...register('password', {
 								required: true,
-								pattern:
-									/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{4,}$/,
 							})}
 						/>
-						{errors.password?.type === 'pattern' && (
-							<FormErrorMessage>
-								Minimum eight characters, at least one uppercase letter, one
-								lowercase letter, one number and one special character,
-							</FormErrorMessage>
-						)}
 					</FormControl>
 					<Button
 						type="submit"
@@ -145,16 +122,6 @@ export default function AuthPage(props) {
 					>
 						{isServerSuccess ? 'Success!' : 'Login'}
 					</Button>
-					<Link href="register" passHref>
-						<StyledLink
-							textAlign="center"
-							textColor={'gray.500'}
-							my="0"
-							fontSize="sm"
-						>
-							register
-						</StyledLink>
-					</Link>
 				</Flex>
 			</Flex>
 			<DesktopOnly w="100%" h="100vh" display="flex" justifyContent="center">

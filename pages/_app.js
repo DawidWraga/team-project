@@ -47,6 +47,8 @@ function MyApp({ Component, pageProps }) {
 
 	return (
 		<>
+			<NProgress />
+
 			<Head>
 				<meta name="apple-mobile-web-app-capable" content="yes" />
 				<meta name="mobile-web-app-capable" content="yes" />
@@ -77,7 +79,6 @@ function MyApp({ Component, pageProps }) {
 					)}
 				</GlobalContextProvider>
 			</ChakraProvider>
-			<NProgress />
 		</>
 	);
 }

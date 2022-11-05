@@ -12,7 +12,7 @@ export default function PageNavItem(props) {
 	const { route, label, isActive } = props;
 
 	const router = useRouter();
-	const { sideNavIsOpen, setSideNavIsOpen } = useGlobalContext();
+	// const { sideNavIsOpen, setSideNavIsOpen } = useGlobalContext();
 
 	const routeToIconMap = {
 		'/forums': MdForum,
@@ -29,8 +29,10 @@ export default function PageNavItem(props) {
 			justifyContent={'center'}
 			alignItems="center"
 			onClick={() => {
-				router.push(route);
-				if (!isMobile() && !sideNavIsOpen) setSideNavIsOpen(true);
+				// quick solutioin to navigate to first project default on routing to projects
+
+				router.push(route === '/projects' ? '/projects/1/dashboard' : route);
+				// if (!isMobile() && !sideNavIsOpen) setSideNavIsOpen(true);
 			}}
 			bgColor={isActive ? 'shade.light' : ''}
 			_hover={{

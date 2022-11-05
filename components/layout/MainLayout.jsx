@@ -3,6 +3,7 @@ import PageNavBar from './PageNavBar';
 import HeaderAndSideNav from './HeaderAndSideNav';
 import { useGlobalContext } from 'contexts/GlobalContext';
 import { useRouter } from 'next/router';
+import UserModal from 'components/UserModal';
 
 export default function Layout(props) {
 	const { children } = props;
@@ -15,19 +16,20 @@ export default function Layout(props) {
 	return (
 		<>
 			<PageNavBar />
+			{/* <UserModal /> */}
 
 			<Box
 				ml={{ lg: '60px' }}
 				mb={{ base: '60px', lg: 0 }}
 				// h="100vh"
 				zIndex="40"
-				bgColor="gray.200"
+				bgColor="blackAlpha.400"
 			>
 				<HeaderAndSideNav />
 				<Box
 					ml={{
 						base: 0,
-						lg: sideNavIsOpen ? '180px' : '0px',
+						lg: sideNavIsOpen ? '200px' : '0px',
 					}}
 					transition="margin-left 150ms"
 					mt="60px"
