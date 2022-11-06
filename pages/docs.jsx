@@ -31,7 +31,6 @@ export default function DocsPage(props) {
         })}
       </Box>
     );
-    //return <div>{JSON.stringify(posts[0])}</div>;
   }
 
   return (
