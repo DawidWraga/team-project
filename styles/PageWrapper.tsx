@@ -4,7 +4,7 @@ export function PageWrapper(props: ContainerProps) {
 	const { children } = props;
 
 	return (
-		<Container maxW="container.lg" my="8">
+		<Container {...props} maxW="container.lg" my="8">
 			{children}
 		</Container>
 	);
