@@ -4,9 +4,7 @@ import { toast } from 'react-toastify';
 import { HiPlus as Plus } from 'react-icons/hi';
 
 import {
-  Box,
   Button,
-  Checkbox,
   Flex,
   FormControl,
   FormLabel,
@@ -16,7 +14,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Select,
@@ -95,7 +92,10 @@ function TopicForm() {
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
     try {
-      const res = await axios.post('/api/addTopic', ...data);
+      const newData = {
+        ...data,
+      };
+      const res = await axios.post('/api/addTopic', newData);
       toast.success(JSON.stringify(res.data));
       console.log(res);
     } catch (e) {

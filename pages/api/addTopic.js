@@ -5,16 +5,17 @@ import { v4 as uuidv4 } from 'uuid';
 export default async function handler(req, res) {
   try {
     console.log(req.body);
-    const post = {
+    const topic = {
       ...req.body,
+      numPosts: '0',
       id: uuidv4(),
     };
-    const posts = await query('posts');
-    const newposts = [post, ...posts];
+    const topics = await query('topics');
+    const newtopics = [topic, ...topics];
 
-    console.log(newposts);
+    console.log(newtopics);
 
-    await writeToDb('posts', newposts);
+    await writeToDb('topics', newtopics);
   } catch (e) {
     res.status(400).send(e);
   }
