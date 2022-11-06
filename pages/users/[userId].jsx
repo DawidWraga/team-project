@@ -1,4 +1,4 @@
-import { UserDashboard } from 'components/UserDashboard';
+import { UserDashboard } from 'components/dashboards/UserDashboard';
 
 export default function IndividualUserPage(props) {
 	const {} = props;

@@ -12,17 +12,6 @@ import {
 
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import { RiLoader4Line } from 'react-icons/ri';
-import tasks from 'db/tasks.json';
-
-export function UserDashboard(props) {
-	const {} = props;
-
-	return (
-		<div>
-			HR Page content here <TaskTable />
-		</div>
-	);
-}
 
 const statusToColorMap = {
 	complete: 'green',
@@ -35,12 +24,9 @@ const statusToIconMap = {
 	'in-progress': () => <RiLoader4Line fontSize="16px" pl="8px" />,
 	todo: FaTimes,
 };
-// function Post(props) {
-//     const { post } = props;
-//     const { title, name, replies, timesince, usericon, solved, id } = post;
 
-function TaskTable(props) {
-	// const { task } = props;
+export function UserTasksList(props) {
+	const { tasks } = props;
 
 	return (
 		<TableContainer>
@@ -48,6 +34,7 @@ function TaskTable(props) {
 				<Thead>
 					<Tr>
 						<Th>Task name</Th>
+						<Th>Task description</Th>
 						<Th>Status</Th>
 						<Th>Due date</Th>
 					</Tr>
@@ -55,14 +42,18 @@ function TaskTable(props) {
 				<Tbody>
 					{tasks.map((task) => (
 						<Tr key={task.id}>
-							<Td>{task.title}</Td>
+							<Td>
+								{/* {task.projectName} */}
+								{task.title}
+							</Td>
+							<Td>{task.description}</Td>
 							<Td>
 								<Tag colorScheme={statusToColorMap[task.status]}>
 									{task.status}
 									<TagRightIcon as={statusToIconMap[task.status]} />
 								</Tag>
 							</Td>
-							<Td>{task.due}</Td>
+							<Td>{task.dueDate}</Td>
 						</Tr>
 					))}
 				</Tbody>
