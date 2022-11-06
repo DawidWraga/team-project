@@ -9,7 +9,7 @@ export default function HeaderContent(props) {
 	const { activePage } = useGlobalContext();
 	const { activeSideNavLink } = useActiveSideNavLink();
 
-	if (!activePage) return <>no active</>;
+	if (!activePage) return <></>;
 
 	let label = activePage.parentLink.label;
 
