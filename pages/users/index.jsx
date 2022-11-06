@@ -44,7 +44,7 @@ function UserTable(props) {
             <Tr key={user.fullName}>
               <Td>{user.fullName}</Td>
               <Td>{user.email}</Td>
-              <Td>{empToEmployee(user.role)}</Td>
+              <Td>{roleCapitalise(user.role)}</Td>
             </Tr>
           ))}
         </Tbody>
@@ -53,7 +53,7 @@ function UserTable(props) {
   );
 }
 
-function empToEmployee(role) {
+function roleCapitalise(role) {
   if (role == 'emp') {
     return 'Employee';
   } else if (role == 'admin') {
