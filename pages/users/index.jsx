@@ -58,6 +58,8 @@ function empToEmployee(role) {
     return 'Employee';
   } else if (role == 'admin') {
     return 'Admin';
+  } else if (role == 'manager') {
+    return 'Manager';
   } else {
     return role;
   }
