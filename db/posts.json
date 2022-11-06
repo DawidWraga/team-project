@@ -1,47 +1,62 @@
 [
-	{
-		"title": "test test",
-		"desc": "testasdfadsfdasf",
-		"file": {},
-		"topic": "Death beams",
-		"accouncement": false,
-		"id": "731cfcf8-0fe8-490d-a6f7-2dc90e558c05",
-		"timesince": "0 days",
-		"replies": "0",
-		"solved": false,
-		"topicId": 1
-	},
-	{
-		"title": "This is a very long title for testing and shi also more shi also more shi also more shi also more shi also more shi",
-		"src": "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-		"replies": "17",
-		"name": "John Smith",
-		"timesince": "14 hours",
-		"solved": true,
-		"id": "1",
-		"desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-		"topicId": 2
-	},
-	{
-		"title": "Help with printing",
-		"src": "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-		"replies": "5",
-		"name": "John Smith",
-		"timesince": "30 minutes",
-		"solved": true,
-		"id": "2",
-		"desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-		"topicId": 1
-	},
-	{
-		"title": "Does anyone else hate the painting in the employee lounge?",
-		"src": "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-		"replies": "1730",
-		"name": "John Smith",
-		"timesince": "3 days",
-		"solved": false,
-		"id": "3",
-		"desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-		"topicId": 3
-	}
+  {
+    "title": "Problem with viewing tasks",
+    "desc": "For some reason I can't see my tasks, has anyone else got this problem?",
+    "file": {},
+    "topicId": 1,
+    "accouncement": false,
+    "name": "John Smith",
+    "id": "e6183723-1ff6-4267-857f-682635243a23",
+    "timesince": "17 minutes",
+    "replies": "0",
+    "solved": false
+  },
+  {
+    "title": "Title",
+    "desc": "Description",
+    "file": {},
+    "topicId": 3,
+    "accouncement": false,
+    "name": "John Smith",
+    "id": "e6183723-1ff6-4267-857f-682635243a23",
+    "timesince": "0 days",
+    "replies": "0",
+    "solved": false
+  },
+  {
+    "title": "This is a very long title for testing and testing and testing and testing and testing and testing",
+    "replies": "17",
+    "name": "John Smith",
+    "timesince": "14 hours",
+    "solved": true,
+    "id": "1",
+    "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "topicId": 2,
+    "file": {},
+    "announcement": true
+  },
+  {
+    "title": "Help with printing",
+    "replies": "5",
+    "name": "John Smith",
+    "timesince": "30 minutes",
+    "solved": true,
+    "id": "2",
+    "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "topicId": 1,
+    "file": {},
+    "accouncement": false
+  },
+  {
+    "title": "Does anyone else hate the painting in the employee lounge?",
+    "replies": "1730",
+    "name": "John Smith",
+    "timesince": "3 days",
+    "solved": false,
+    "id": "3",
+    "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "topicId": 3,
+    "file": {},
+    "accouncement": false
+  }
 ]
