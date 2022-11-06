@@ -26,12 +26,12 @@ export function getLineChartDummyData() {
 export function LineChart(props) {
 	const { data } = props;
 
-	const colors = {
-		// primary: '#38A169',
-		// secondary: '#EDF2F7',
+	const defaultColors = {
 		primary: 'hsl(32, 100%, 53%)',
 		secondary: 'hsl(36, 100%, 65%)',
 	};
+
+	const colors = props.colors ?? defaultColors;
 
 	return (
 		<ResponsiveContainer width="100%">

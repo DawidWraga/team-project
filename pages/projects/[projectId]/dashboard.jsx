@@ -78,6 +78,31 @@ export default function ProjectDashboardPage(props) {
 function Stats(props) {
 	const {} = props;
 
+	// const statData = [
+	// 	{
+	// 		label: ,
+	// 		number: ,
+	// 		helper ,
+	// 	},
+	// 	{
+	// 		label: ,
+	// 		number: ,
+	// 		helper ,
+	// 	},
+	// 	{
+	// 		label: ,
+	// 		number: ,
+	// 		helper ,
+	// 	},
+	// 	{
+	// 		label: ,
+	// 		number: ,
+	// 		helper ,
+	// 	},
+	// ]
+
+	// statData.map(stat => <>  stat.label stat.number ....</>)
+
 	return (
 		<StatGroup
 			display="flex"

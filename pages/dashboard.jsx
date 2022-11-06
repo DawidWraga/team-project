@@ -1,24 +1,11 @@
-// import MainLayout from 'components/layout/MainLayout';
+import { UserDashboard } from 'components/UserDashboard';
 
 export default function DashboardPage(props) {
 	const {} = props;
 
-	return <div> dashboard page content</div>;
+	return (
+		<div>
+			<UserDashboard />
+		</div>
+	);
 }
-
-// DashboardPage.getLayout = function getLayout(page) {
-// 	function HeaderContent() {
-// 		return <></>;
-// 	}
-// 	function SideNavContent() {
-// 		return <></>;
-// 	}
-
-// 	return (
-// 		<MainLayout
-// 			page={page}
-// 			SideNavContent={SideNavContent}
-// 			HeaderContent={HeaderContent}
-// 		/>
-// 	);
-// };
