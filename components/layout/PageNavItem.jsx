@@ -29,9 +29,10 @@ export default function PageNavItem(props) {
 			onClick={() => {
 				// quick solutioin to navigate to first project default on routing to projects
 
-				if (route === '/projects') router.push('/projects/1/dashboard');
-				if (route === '/docs') router.push('/docs/welcome');
-				else router.push(route);
+				if (route === '/projects') return router.push('/projects/1/dashboard');
+				if (route === '/docs') return router.push('/docs/welcome');
+
+				router.push(route);
 
 				// if (!isMobile() && !sideNavIsOpen) setSideNavIsOpen(true);
 			}}
