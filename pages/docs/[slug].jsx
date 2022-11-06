@@ -65,8 +65,6 @@ export const getStaticProps = async (ctx) => {
 export const getStaticPaths = async (ctx) => {
 	const docs = getAllDocs(['slug']);
 
-	console.log(docs);
-
 	return {
 		paths: docs.map((doc) => {
 			return {
