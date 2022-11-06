@@ -50,7 +50,7 @@ export default function Header(props) {
 					gap="3"
 					zIndex="999"
 				>
-					<IconButton
+					{/* <IconButton
 						variant="unstyled"
 						rounded="full"
 						border="0px solid white"
@@ -70,7 +70,7 @@ export default function Header(props) {
 							left="2"
 							top="1.5"
 						/>
-					</IconButton>
+					</IconButton> */}
 					<ProfileMenu offset={[4, 11]} />
 				</Flex>
 			</Flex>
