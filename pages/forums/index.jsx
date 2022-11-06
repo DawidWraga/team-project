@@ -16,7 +16,9 @@ export default function ForumsPage(props) {
 
   let relevantPosts = [...posts];
   if (topicId)
-    relevantPosts = relevantPosts.filter((post) => post.topicId === +topicId);
+    relevantPosts = relevantPosts.filter(
+      (post) => `${post.topicId}` === topicId
+    );
 
   switch (solved) {
     case 'solved':
