@@ -37,7 +37,11 @@ export default function ForumPost(props) {
           {post.title}
         </Text>
         <Text>{post.desc}</Text>
-        <Button onClick={toggleRepBox}>Reply</Button>
+        <Flex paddingY={'2'}>
+          <Button onClick={toggleRepBox} colorScheme="brand">
+            Reply
+          </Button>
+        </Flex>
         {replyActive && <AddReply />}
       </Box>
       <Flex justifyContent={'center'} gap="4px" flexDirection={'column'}>

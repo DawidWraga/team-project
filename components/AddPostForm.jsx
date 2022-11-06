@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Flex,
   FormControl,
   FormLabel,
   IconButton,
@@ -45,15 +46,20 @@ function Form() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <FormControl isRequired>
         <FormLabel>Title</FormLabel>
+        <Input
+          focusBorderColor="brand.500"
+          errorBorderColor="red.500"
+          {...register('title')}
+        />
       </FormControl>
-      <Input errorBorderColor="red.500" {...register('title')} />
       <FormLabel>Description</FormLabel>
-      <Input {...register('desc')} />
+      <Input focusBorderColor="brand.500" {...register('desc')} />
       <FormLabel>Attach a file</FormLabel>
-      <Input {...register('file')} type={'file'} />
+      <Input focusBorderColor="brand.500" {...register('file')} type={'file'} />
       <FormControl isRequired>
         <FormLabel>Topic</FormLabel>
         <Select
+          focusBorderColor="brand.500"
           errorBorderColor="red.500"
           placeholder="Choose topic"
           {...register('topic')}
@@ -65,9 +71,11 @@ function Form() {
       </FormControl>
       <FormLabel>Make as announcement</FormLabel>
       <Checkbox value="announcement" {...register('accouncement')} />
-      <Button type="submit" colorScheme={'brand'}>
-        Post
-      </Button>
+      <Flex padding={'2'}>
+        <Button width={'full'} type="submit" colorScheme={'brand'}>
+          Post
+        </Button>
+      </Flex>
     </form>
   );
 }
@@ -98,7 +106,7 @@ export function AddPostForm() {
         colorScheme={'brand'}
         icon={<Plus />}
         position={'fixed'}
-        bottom={'10'}
+        bottom={{ base: '20', lg: '10' }}
         right={'10'}
         rounded={'full'}
         size={'lg'}
@@ -111,7 +119,9 @@ export function AddPostForm() {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create Post</ModalHeader>
+          <ModalHeader roundedBottom={'4'} bg={'brand.500'} textColor={'white'}>
+            Create Post
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Form />
