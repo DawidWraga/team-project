@@ -1,6 +1,9 @@
+import { getAllDocs } from 'controllers/docs';
+
 interface IRouteData {
 	label: string;
 	route: string;
+	defaultHeaderLink?: string;
 }
 
 interface IPage {
@@ -79,6 +82,38 @@ const pages: IPage[] = [
 			label: 'Docs',
 			route: '/docs',
 		},
+		sideNavLinks: [
+			{
+				label: 'Welcome to docs',
+				route: '/docs/welcome',
+				defaultHeaderLink: '',
+			},
+			{
+				label: 'Printing',
+				route: '/docs/printing',
+				defaultHeaderLink: '',
+			},
+			{
+				label: 'Software configs',
+				route: '/docs/software',
+				defaultHeaderLink: '',
+			},
+			{
+				label: 'Resources',
+				route: '/docs/resources',
+				defaultHeaderLink: '',
+			},
+			{
+				label: 'Contacts',
+				route: '/docs/contacts',
+				defaultHeaderLink: '',
+			},
+			{
+				label: 'Our mission',
+				route: '/docs/mission',
+				defaultHeaderLink: '',
+			},
+		],
 	},
 	{
 		parentLink: {
