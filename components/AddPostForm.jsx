@@ -20,13 +20,20 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  Switch,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Textarea,
   useDisclosure,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { getCurrentUser } from 'controllers/auth';
 
-function Form() {
+function PostForm() {
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
     try {
@@ -53,7 +60,7 @@ function Form() {
         />
       </FormControl>
       <FormLabel>Description</FormLabel>
-      <Input focusBorderColor="brand.500" {...register('desc')} />
+      <Textarea focusBorderColor="brand.500" {...register('desc')} />
       <FormLabel>Attach a file</FormLabel>
       <Input focusBorderColor="brand.500" {...register('file')} type={'file'} />
       <FormControl isRequired>
@@ -70,10 +77,45 @@ function Form() {
         </Select>
       </FormControl>
       <FormLabel>Make as announcement</FormLabel>
-      <Checkbox value="announcement" {...register('accouncement')} />
+      <Switch
+        colorScheme={'brand'}
+        value="announcement"
+        {...register('accouncement')}
+      />
       <Flex padding={'2'}>
         <Button width={'full'} type="submit" colorScheme={'brand'}>
           Post
+        </Button>
+      </Flex>
+    </form>
+  );
+}
+
+function TopicForm() {
+  const { register, handleSubmit } = useForm();
+  const onSubmit = async (data) => {
+    try {
+      const res = await axios.post('/api/addTopic', ...data);
+      toast.success(JSON.stringify(res.data));
+      console.log(res);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FormControl isRequired>
+        <FormLabel>Title</FormLabel>
+        <Input
+          focusBorderColor="brand.500"
+          errorBorderColor="red.500"
+          {...register('title')}
+        />
+      </FormControl>
+      <Flex padding={'2'}>
+        <Button width={'full'} type="submit" colorScheme={'brand'}>
+          Add
         </Button>
       </Flex>
     </form>
@@ -124,7 +166,20 @@ export function AddPostForm() {
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Form />
+            <Tabs colorScheme={'brand'} paddingBottom={'2'}>
+              <TabList>
+                <Tab>Add Post</Tab>
+                <Tab>Add Topic</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <PostForm />
+                </TabPanel>
+                <TabPanel>
+                  <TopicForm />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
           </ModalBody>
         </ModalContent>
       </Modal>
