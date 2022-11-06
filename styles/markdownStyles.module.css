@@ -1,0 +1,16 @@
+.markdown {
+	@apply text-lg;
+}
+
+.markdown h2 {
+	@apply text-3xl my-6;
+}
+.markdown h3 {
+	@apply text-2xl my-4;
+}
+
+.markdown p,
+.markdown ul,
+.markdown ol {
+	@apply mt-4;
+}

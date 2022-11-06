@@ -27,21 +27,21 @@ export default function ForumsPage(props) {
 			justifyContent="center"
 		>
 			{/* <Flex gap={'5px'} flexDirection={'column'}>
-				<Text
-					backgroundColor={'white'}
-					w="clamp(200px,20vw,750px)"
-					py="2"
-					px="4"
-					rounded="sm"
-					fontSize={'xl'}
-					fontWeight={'semibold'}
-				>
-					Topics
-				</Text>
-				{topics.map((topic) => (
-					<Topic topic={topic} key={topic.id} />
-				))}
-			</Flex> */}
+					<Text
+						backgroundColor={'white'}
+						w="clamp(200px,20vw,750px)"
+						py="2"
+						px="4"
+						rounded="sm"
+						fontSize={'xl'}
+						fontWeight={'semibold'}
+					>
+						Topics
+					</Text>
+					{topics.map((topic) => (
+						<Topic topic={topic} key={topic.id} />
+					))}
+				</Flex> */}
 			<Flex
 				gap={'5px'}
 				w={{ base: 'calc(100vw - 20px)', md: 'clamp(350px,75vw,950px)' }}

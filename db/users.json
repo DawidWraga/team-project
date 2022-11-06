@@ -4,33 +4,39 @@
 		"email": "admin@client.com",
 		"password": "testA1!",
 		"role": "admin",
-		"username": "adminUser"
+		"username": "adminUser",
+		"img": "http://www.nicesnippets.com/demo/profile-6.png"
 	},
 	{
 		"fullName": "John smith2",
 		"email": "emp@client.com",
 		"password": "testA1!",
 		"role": "emp",
-		"username": "empUser"
+		"username": "empUser",
+		"img": "https://media.creativemornings.com/uploads/user/avatar/49419/Bechtel_Profile_Square.jpg"
 	},
 	{
 		"fullName": "John smith3",
 		"email": "manager@client.com",
 		"password": "testA1!",
 		"role": "manager",
-		"username": "empUser"
+		"username": "empUser",
+		"img": "https://dieteticallyspeaking.com/wp-content/uploads/2017/01/profile-square.jpg"
 	},
 	{
 		"fullName": "test test",
 		"email": "test@client.com",
 		"password": "testA1!",
-		"role": "emp"
+		"role": "emp",
+		"img": "https://images.squarespace-cdn.com/content/v1/5bfc8dbab40b9d7dd9054f41/1543424201416-S6Q5OPV25MXETU154ZLQ/Randy+Krum+Profile+Photo+square.jpg?format=1000w"
 	},
 	{
+		"id": 1,
 		"fullName": "dawid wragaa",
 		"email": "dawid@client.com",
 		"password": "testA1!",
-		"role": "emp"
+		"role": "emp",
+		"img": "https://cms-assets.tutsplus.com/uploads/users/810/profiles/19338/profileImage/profile-square-extra-small.png"
 	},
 	{
 		"fullName": "dawid wragaaa",
@@ -62,7 +68,6 @@
 		"password": "testA1!",
 		"role": "emp"
 	},
-	{ "role": "emp" },
 	{
 		"fullName": "dawid wragaasd",
 		"email": "dpwragasfasfa@client.com",
