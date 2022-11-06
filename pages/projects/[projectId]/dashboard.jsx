@@ -1,29 +1,21 @@
 import { getProjectData } from 'controllers/getProjectData';
 
-import {
-	Stat,
-	StatLabel,
-	StatHelpText,
-	StatGroup,
-	StatNumber,
-	Flex,
-	Heading,
-} from '@chakra-ui/react';
+import { Flex, Heading } from '@chakra-ui/react';
 import { randomNum } from 'utils/randomNum';
 import { Paper } from 'styles/Paper';
 import { LineChart, getLineChartDummyData } from 'components/charts/LineChart';
 import { PieChart } from 'components/charts/PieChart';
 import { UserStats } from 'components/dashboards/UserStats';
 
-export const getServerSideProps = async (ctx) => {
-	const project = await getProjectData(ctx.query.projectId);
-	return {
-		props: { project },
-	};
-};
+// export const getServerSideProps = async (ctx) => {
+// 	const project = await getProjectData(ctx.query.projectId);
+// 	return {
+// 		props: { project },
+// 	};
+// };
 
 export default function ProjectDashboardPage(props) {
-	const { project } = props;
+	const {} = props;
 
 	const lineChartData = getLineChartDummyData();
 
