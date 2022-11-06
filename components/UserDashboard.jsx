@@ -14,7 +14,7 @@ import { FaCheck, FaTimes } from 'react-icons/fa';
 import { RiLoader4Line } from 'react-icons/ri';
 import tasks from 'db/tasks.json';
 
-export default function UsersPage(props) {
+export function UserDashboard(props) {
 	const {} = props;
 
 	return (
