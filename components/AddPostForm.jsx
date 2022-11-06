@@ -2,6 +2,7 @@
 // import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { HiPlus as Plus } from 'react-icons/hi';
+import topics from 'db/topics';
 
 import {
   Button,
@@ -29,8 +30,11 @@ import {
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { getCurrentUser } from 'controllers/auth';
+import { useRouter } from 'next/router';
+import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 
 function PostForm() {
+  const router = useRouter();
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
     try {
@@ -38,10 +42,11 @@ function PostForm() {
         ...data,
         name: getCurrentUser().name,
       };
-      console.log(newData);
       const res = await axios.post('/api/addForumPost', newData);
-      toast.success(JSON.stringify(res.data));
-      console.log(res);
+      toast.success('Post Created' + JSON.stringify(res.data));
+      await setTimeoutPromise(1000);
+      router.push('/forums/' + res.data);
+      props.onClose();
     } catch (e) {
       console.error(e);
     }
@@ -66,11 +71,14 @@ function PostForm() {
           focusBorderColor="brand.500"
           errorBorderColor="red.500"
           placeholder="Choose topic"
-          {...register('topic')}
+          {...register('topicId')}
         >
-          <option>Printing</option>
+          {/* <option>Printing</option>
           <option>Death beams</option>
-          <option>Stolen lunch</option>
+          <option>Stolen lunch</option> */}
+          {topics.map((topic) => (
+            <option value={topic.id}>{topic.title}</option>
+          ))}
         </Select>
       </FormControl>
       <FormLabel>Make as announcement</FormLabel>
@@ -88,7 +96,7 @@ function PostForm() {
   );
 }
 
-function TopicForm() {
+function TopicForm(props) {
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
     try {
@@ -96,8 +104,8 @@ function TopicForm() {
         ...data,
       };
       const res = await axios.post('/api/addTopic', newData);
-      toast.success(JSON.stringify(res.data));
-      console.log(res);
+      toast.success('Topic created');
+      props.onClose();
     } catch (e) {
       console.error(e);
     }
@@ -173,10 +181,10 @@ export function AddPostForm() {
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <PostForm />
+                  <PostForm onClose={onClose} />
                 </TabPanel>
                 <TabPanel>
-                  <TopicForm />
+                  <TopicForm onClose={onClose} />
                 </TabPanel>
               </TabPanels>
             </Tabs>

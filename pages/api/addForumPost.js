@@ -6,9 +6,10 @@ import { getCurrentUser } from 'controllers/auth';
 export default async function handler(req, res) {
   try {
     console.log(req.body);
+    const id = uuidv4();
     const post = {
       ...req.body,
-      id: uuidv4(),
+      id,
       timesince: '0 days',
       replies: '0',
       solved: false,
@@ -19,6 +20,7 @@ export default async function handler(req, res) {
     console.log(newposts);
 
     await writeToDb('posts', newposts);
+    res.status(200).send(id);
   } catch (e) {
     res.status(400).send(e);
   }
