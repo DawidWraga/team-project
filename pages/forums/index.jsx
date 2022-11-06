@@ -12,6 +12,8 @@ export default function ForumsPage(props) {
   const topicId = router.query?.topicId;
   const solved = router.query?.filter;
 
+  console.table({ topicId, solved });
+
   let relevantPosts = [...posts];
   if (topicId)
     relevantPosts = relevantPosts.filter((post) => post.topicId === +topicId);
