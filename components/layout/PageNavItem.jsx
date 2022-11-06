@@ -5,8 +5,6 @@ import { MdForum, MdPeopleAlt } from 'react-icons/md';
 import { RiDashboardFill } from 'react-icons/ri';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
-import { isMobile } from 'utils/checkScreenWidth';
-import { useGlobalContext } from 'contexts/GlobalContext';
 
 export default function PageNavItem(props) {
 	const { route, label, isActive } = props;
@@ -31,7 +29,10 @@ export default function PageNavItem(props) {
 			onClick={() => {
 				// quick solutioin to navigate to first project default on routing to projects
 
-				router.push(route === '/projects' ? '/projects/1/dashboard' : route);
+				if (route === '/projects') router.push('/projects/1/dashboard');
+				if (route === '/docs') router.push('/docs/welcome');
+				else router.push(route);
+
 				// if (!isMobile() && !sideNavIsOpen) setSideNavIsOpen(true);
 			}}
 			bgColor={isActive ? 'shade.light' : ''}

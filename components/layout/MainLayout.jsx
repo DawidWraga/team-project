@@ -23,7 +23,7 @@ export default function Layout(props) {
 				mb={{ base: '60px', lg: 0 }}
 				// h="100vh"
 				zIndex="40"
-				bgColor="blackAlpha.400"
+				bgColor="blackAlpha.300"
 			>
 				<HeaderAndSideNav />
 				<Box
