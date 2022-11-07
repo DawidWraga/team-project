@@ -13,7 +13,7 @@ export function Reply(props) {
       px="4"
       align={'center'}
       rounded="sm"
-      borderWidth='2px'
+      
     >
       <Avatar size={'md'} src={usericon}></Avatar>
       <Flex fontSize={'sm'} flexDirection={'column'} flexGrow="1" padding="2">

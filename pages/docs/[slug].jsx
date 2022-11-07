@@ -1,15 +1,8 @@
-import {
-	Avatar,
-	Box,
-	Container,
-	Flex,
-	Heading,
-	Spacer,
-	Text,
-} from '@chakra-ui/react';
+import { Avatar, Flex, Heading, Spacer, Text } from '@chakra-ui/react';
 import { getDocBySlug, markdownToHtml, getAllDocs } from 'controllers/docs';
 import { useRouter } from 'next/router';
 import { Paper } from 'styles/Paper';
+import { PageWrapper } from 'styles/PageWrapper';
 import markdownStyles from 'styles/markdownStyles.module.css';
 import moment from 'moment/moment';
 
@@ -22,7 +15,7 @@ export default function IndividualDocPage(props) {
 
 	return (
 		<>
-			<Container maxW="container.lg" my="8">
+			<PageWrapper>
 				<Paper as="article" variant="elevated" p="5" flexDir="column" gap="8">
 					<Heading mx="auto" size="lg" mt="5">
 						{doc.title}
@@ -42,7 +35,7 @@ export default function IndividualDocPage(props) {
 						dangerouslySetInnerHTML={{ __html: doc.content }}
 					></div>
 				</Paper>
-			</Container>
+			</PageWrapper>
 		</>
 	);
 }

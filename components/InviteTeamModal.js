@@ -42,68 +42,68 @@ function Form() {
 		handleSubmit,
 		setError,
 		formState: { errors, isSubmitting },
+		reset,
 	} = useForm();
 
 	const [isServerSuccess, setIsServerSuccess] = useState(false);
 
 	const onSubmit = async (data) => {
 		try {
-			if (data.password !== data.confirmPassword) {
-				console.log(data);
-				return setError('confirmPassword', { type: 'unmatchingPasswords' });
-			}
-
-			const res = await axios.post('/api/register', data);
+			const res = await axios.post('/api/inviteTeam', data);
 			setIsServerSuccess(true);
-			await setTimeoutPromise(1500);
-			router.push('/auth');
+			toast.success(`${data.email} has been invited!`);
+			reset();
 		} catch (e) {
-			const errors = e.response.data;
-			console.log(errors.type);
+			const errors = e.response?.data;
+			// console.log(errors.type);
 
 			// if (errors.type === 'email') {
-			setError(errors.type, {
-				type: 'server',
-			});
-			// }
-			// if (errors.password) {
-			//   setError('password', {
-			//     type: "server",
-			//     message: 'Something went wrong with password',
-			//   });
-			// }
+			// setError(errors?.type, {
+			// 	type: 'server',
+			// });
 
-			toast.error('Unable to create new user', { position: 'top-center' });
+			toast.error('Unable to invite new user', { position: 'top-center' });
 		}
 	};
 
 	return (
-		<Flex as="form" onSubmit={handleSubmit(onSubmit)} py="15px" pb="50px">
-			<FormControl isRequired isInvalid={errors.fullName}>
+		<Flex
+			as="form"
+			onSubmit={handleSubmit(onSubmit)}
+			py="10px"
+			pb="20px"
+			flexDir="column"
+			gap="5"
+		>
+			<FormControl isRequired isInvalid={errors.email}>
 				<Input
-					type="text"
-					placeholder="johnsmith@make-it-all.com"
+					type="email"
+					placeholder="johnsmith@make-it-all.co.uk"
 					required
 					minLength={6}
 					{...register('email', {
 						required: true,
+						validate: (email) => email.includes('@make-it-all.co.uk'),
 					})}
 				/>
-				{errors.fullName?.type === 'server' && (
+				{errors.email?.type === 'validate' && (
 					<FormErrorMessage>
-						Only one account is allowed per user
+						Only internal emails allowed ie @make-it-all.co.uk
 					</FormErrorMessage>
+				)}
+				{errors.email?.type === 'server' && (
+					<FormErrorMessage>User already has an account</FormErrorMessage>
 				)}
 			</FormControl>
 			<Button
 				type="submit"
-				colorScheme={isServerSuccess ? 'green' : 'brand'}
+				colorScheme={'brand'}
 				variant="solid"
 				isLoading={isSubmitting}
 				loadingText="Submitting"
 				leftIcon={isServerSuccess && <MdCheck fontSize="1.5rem" />}
 			>
-				{isServerSuccess ? 'User created!' : 'Register'}
+				Send Invite
 			</Button>
 		</Flex>
 	);
