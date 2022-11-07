@@ -1,39 +1,76 @@
-import { Box, Button, Input, FormLabel, FormControl, Flex, Textarea } from '@chakra-ui/react';
+import {
+	Box,
+	Button,
+	Input,
+	FormLabel,
+	FormControl,
+	Flex,
+	Textarea,
+} from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { getCurrentUser } from '/controllers/auth';
 import { comments } from 'db/postComments';
-import { axios } from 'axios';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import { motion } from 'framer-motion';
 
-export function AddReply() {
-  const { register, handleSubmit } = useForm();
-  const user = getCurrentUser();
+export function AddReply(props) {
+	const { register, handleSubmit } = useForm();
+	const router = useRouter();
+	const { id } = router.query;
+	const onSubmit = async (data) => {
+		try {
+			const newData = { name: getCurrentUser().fullName, ...data, postId: id };
+			console.log(newData);
+			const res = await axios.post('/api/addReply', newData);
+			toast.success('reply has been posted');
+			props.setReplyActive(false);
+		} catch (e) {
+			console.error(e);
+		}
+	};
 
-  const onSubmit = async (data) => {
-    try{
-      const newData={
-      ...data,
-      name:getCurrentUser().name
-      }
-      const res = await axios.post('/api/addReply', newData);
-      toast.success(user.name+JSON.stringify(data))
-      console.log(comments)
-    } catch (e) {
-      console.error(e)
-    }
-  };
-
-  return (
-    <Flex width={'100%'} overflow='hidden' padding='1' flexDirection={'column'}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl isRequired>
-          <FormLabel>Comment as: <i>{user.name}</i></FormLabel>
-        </FormControl>
-        <Textarea rounded={'md'} size='sm' placeholder='What are your thoughts?' {...register('message')} />
-        <Box padding='1'>
-          <Button type="submit">Submit</Button>
-        </Box>
-      </form>
-    </Flex>
-  );
+	return (
+		<Flex
+			as={motion.div}
+			initial={{ height: 0 }}
+			animate={{ height: '150px' }}
+			exit={{ height: 0 }}
+			width={'100%'}
+			overflow="hidden"
+			// padding="1"
+			flexDirection={'column'}
+		>
+			<form onSubmit={handleSubmit(onSubmit)}>
+				<FormControl isRequired>
+					<FormLabel>
+						Comment as: <i>{getCurrentUser().fullName ?? 'John Smith'}</i>
+					</FormLabel>
+				</FormControl>
+				<Box position={'relative'}>
+					<Textarea
+						w="100%"
+						h="100%"
+						rounded={'md'}
+						size="sm"
+						placeholder="What are your thoughts?"
+						{...register('desc')}
+					/>
+					<Flex justifyContent={'flex-end'}>
+						<Button
+							zIndex={1000}
+							position={'absolute'}
+							bottom="3"
+							right="1"
+							size="sm"
+							type="submit"
+						>
+							Submit
+						</Button>
+					</Flex>
+				</Box>
+			</form>
+		</Flex>
+	);
 }

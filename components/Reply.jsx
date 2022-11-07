@@ -1,5 +1,7 @@
-import { Box, Text, Flex, Avatar, AvatarGroup, Link } from '@chakra-ui/react';
+import { Box, Text, Flex, Avatar, AvatarGroup, Link, Spacer } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import { Paper } from 'styles/Paper';
+
 
 export function Reply(props) {
   const { comment } = props;
@@ -7,28 +9,29 @@ export function Reply(props) {
   const router = useRouter();
 
   return (
-    <Flex
-      backgroundColor={'white'}
+    <Paper
       py="2"
-      px="4"
-      align={'center'}
-      rounded="sm"
+      px="3"
       
     >
-      <Avatar size={'md'} src={usericon}></Avatar>
-      <Flex fontSize={'sm'} flexDirection={'column'} flexGrow="1" padding="2">
-        <Text fontSize={'md'} noOfLines={1}>
-          {name}
-        </Text>
-        <Flex justifyContent={'left'} alignItems={'center'} gap="4">
-          <Text fontWeight={"semibold"}>{desc}</Text>
-          <Text>Posted: {postdate}</Text>
-          <Flex backgroundColor={'green'}>
-            <Text color={'white'} >{solution ? 'Solution' : ''}</Text>
-          </Flex>
-          
+      <Avatar size={'sm'} src={usericon}></Avatar>
+      <Flex flexDirection={'column'} w="100%">
+        <Flex fontSize={'sm'} flexDirection={'row'} pl={'2'}>
+          <Text pr="1" fontSize={'xs'} noOfLines={1}>
+            {name}
+          </Text>
+          <Text textColor={'gray.500'} fontSize={'xs'}>
+            · {postdate} days ago
+          </Text>
+          <Spacer/>
+              <Text fontSize={'xs'} bg='green' color={'white'}>{ solution ? 'ㅤSolutionㅤ' : ''}</Text>
         </Flex>
+          <Flex justifyContent={'left'} alignItems={'left'} flexDirection={'column'}  gap="4" pl={'1'}>
+            <Text pl='1' fontSize={'sm'}>{desc}</Text>
+          </Flex>
       </Flex>
-    </Flex>
+
+      
+    </Paper>
   );
 }

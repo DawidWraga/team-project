@@ -1,12 +1,13 @@
 import { useRouter } from 'next/router';
 import posts from 'db/posts';
-import { comments } from 'db/postComments';
+import comments from 'db/postComments';
 import { Reply } from 'components/Reply';
 import { useState } from 'react';
 import { Avatar, Box, Flex, Heading, Text, Button } from '@chakra-ui/react';
 import { AddReply } from 'components/addReply';
 import { Paper } from 'styles/Paper';
 import { PageWrapper } from 'styles/PageWrapper';
+import { AnimatePresence } from 'framer-motion';
 
 export default function ForumPost(props) {
 	const {} = props;
@@ -16,19 +17,19 @@ export default function ForumPost(props) {
 	const { id } = router.query;
 
 	const post = posts.find((item) => id === item.id);
-	if (!post) return <div>No post</div>;
+	if (!post) return <></>;
 
 	function toggleRepBox() {
 		setReplyActive((replyActive) => !replyActive);
 	}
 
 	function filterReplies(comments, posts) {
-		return comments.filter((comment) => id == comment.postid);
+		return comments.filter((comment) => id == comment.postId);
 	}
 
 	return (
 		<PageWrapper py="4" px="4" flexDirection={'column'}>
-			<Box backgroundColor={'white'} py="3" px="4" rounded="sm">
+			<Paper variant="elevated" display="inline-block" py="3" px="4" w="100%">
 				<Flex alignItems={'center'} gap="4px">
 					<Avatar size={'md'}></Avatar>
 					<Text>{post.name}</Text>
@@ -40,16 +41,18 @@ export default function ForumPost(props) {
 					</Text>
 					<Text>{post.desc}</Text>
 				</Box>
-				<Button onClick={toggleRepBox} colorScheme="brand">
+				<Button onClick={toggleRepBox} colorScheme="brand" mt="3" mb="2">
 					Reply
 				</Button>
-				{replyActive && <AddReply />}
-			</Box>
+				<AnimatePresence>
+					{replyActive && <AddReply setReplyActive={setReplyActive} />}
+				</AnimatePresence>
+			</Paper>
 			<Flex
 				justifyContent={'center'}
 				gap={'4px'}
 				flexDirection={'column'}
-				maxW={'80%'}
+				maxW={'100%'}
 				paddingTop={'4px'}
 			>
 				{filterReplies(comments, posts).map((comment) => (

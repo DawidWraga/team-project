@@ -45,7 +45,7 @@ const colors = {
 		inv: 'hsl(0, 0%, 100%)',
 	},
 	error: 'hsl(4,80%,58%)',
-	success: 'hsl(87,50%,59%)',
+	success: 'hsl(87,50%,49%)',
 };
 
 const Paper = defineStyleConfig({
