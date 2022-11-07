@@ -71,10 +71,6 @@ const pages: IPage[] = [
 		sideNavLinks: forumSideNavLinks,
 		headerLinks: [
 			{
-				label: 'all',
-				route: '&filter=none',
-			},
-			{
 				label: 'unsolved',
 				route: '&filter=unsolved',
 			},
