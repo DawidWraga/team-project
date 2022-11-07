@@ -2,11 +2,11 @@
 // import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { HiPlus as Plus } from 'react-icons/hi';
+import topics from 'db/topics';
 
 import {
-  Box,
   Button,
-  Checkbox,
+  Flex,
   FormControl,
   FormLabel,
   IconButton,
@@ -15,17 +15,26 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Select,
+  Switch,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Textarea,
   useDisclosure,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { getCurrentUser } from 'controllers/auth';
+import { useRouter } from 'next/router';
+import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 
-function Form() {
+function PostForm() {
+  const router = useRouter();
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
     try {
@@ -33,10 +42,11 @@ function Form() {
         ...data,
         name: getCurrentUser().name,
       };
-      console.log(newData);
       const res = await axios.post('/api/addForumPost', newData);
-      toast.success(JSON.stringify(res.data));
-      console.log(res);
+      toast.success('Post Created' + JSON.stringify(res.data));
+      await setTimeoutPromise(1000);
+      router.push('/forums/' + res.data);
+      props.onClose();
     } catch (e) {
       console.error(e);
     }
@@ -45,29 +55,77 @@ function Form() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <FormControl isRequired>
         <FormLabel>Title</FormLabel>
+        <Input
+          focusBorderColor="brand.500"
+          errorBorderColor="red.500"
+          {...register('title')}
+        />
       </FormControl>
-      <Input errorBorderColor="red.500" {...register('title')} />
       <FormLabel>Description</FormLabel>
-      <Input {...register('desc')} />
+      <Textarea focusBorderColor="brand.500" {...register('desc')} />
       <FormLabel>Attach a file</FormLabel>
-      <Input {...register('file')} type={'file'} />
+      <Input focusBorderColor="brand.500" {...register('file')} type={'file'} />
       <FormControl isRequired>
         <FormLabel>Topic</FormLabel>
         <Select
+          focusBorderColor="brand.500"
           errorBorderColor="red.500"
           placeholder="Choose topic"
-          {...register('topic')}
+          {...register('topicId')}
         >
-          <option>Printing</option>
+          {/* <option>Printing</option>
           <option>Death beams</option>
-          <option>Stolen lunch</option>
+          <option>Stolen lunch</option> */}
+          {topics.map((topic) => (
+            <option value={topic.id}>{topic.title}</option>
+          ))}
         </Select>
       </FormControl>
       <FormLabel>Make as announcement</FormLabel>
-      <Checkbox value="announcement" {...register('accouncement')} />
-      <Button type="submit" colorScheme={'brand'}>
-        Post
-      </Button>
+      <Switch
+        colorScheme={'brand'}
+        value="announcement"
+        {...register('accouncement')}
+      />
+      <Flex padding={'2'}>
+        <Button width={'full'} type="submit" colorScheme={'brand'}>
+          Post
+        </Button>
+      </Flex>
+    </form>
+  );
+}
+
+function TopicForm(props) {
+  const { register, handleSubmit } = useForm();
+  const onSubmit = async (data) => {
+    try {
+      const newData = {
+        ...data,
+      };
+      const res = await axios.post('/api/addTopic', newData);
+      toast.success('Topic created');
+      props.onClose();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FormControl isRequired>
+        <FormLabel>Title</FormLabel>
+        <Input
+          focusBorderColor="brand.500"
+          errorBorderColor="red.500"
+          {...register('title')}
+        />
+      </FormControl>
+      <Flex padding={'2'}>
+        <Button width={'full'} type="submit" colorScheme={'brand'}>
+          Add
+        </Button>
+      </Flex>
     </form>
   );
 }
@@ -98,7 +156,7 @@ export function AddPostForm() {
         colorScheme={'brand'}
         icon={<Plus />}
         position={'fixed'}
-        bottom={'10'}
+        bottom={{ base: '20', lg: '10' }}
         right={'10'}
         rounded={'full'}
         size={'lg'}
@@ -111,10 +169,25 @@ export function AddPostForm() {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create Post</ModalHeader>
+          <ModalHeader roundedBottom={'4'} bg={'brand.500'} textColor={'white'}>
+            Create Post
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Form />
+            <Tabs colorScheme={'brand'} paddingBottom={'2'}>
+              <TabList>
+                <Tab>Add Post</Tab>
+                <Tab>Add Topic</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <PostForm onClose={onClose} />
+                </TabPanel>
+                <TabPanel>
+                  <TopicForm onClose={onClose} />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
           </ModalBody>
         </ModalContent>
       </Modal>
