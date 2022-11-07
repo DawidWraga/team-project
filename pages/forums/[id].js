@@ -40,7 +40,9 @@ export default function ForumPost(props) {
 					</Text>
 					<Text>{post.desc}</Text>
 				</Box>
-				<Button onClick={toggleRepBox}>Reply</Button>
+				<Button onClick={toggleRepBox} colorScheme="brand">
+					Reply
+				</Button>
 				{replyActive && <AddReply />}
 			</Box>
 			<Flex
