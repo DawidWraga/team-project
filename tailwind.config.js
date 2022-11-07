@@ -21,6 +21,15 @@ module.exports = {
 					contrast: '	hsl(210, 18%, 12%)',
 				},
 			},
+			animation: {
+				fade: 'in .3s linear',
+			},
+			keyframes: {
+				in: {
+					'0%': { opacity: 0 },
+					'100%': { opacity: 1 },
+				},
+			},
 		},
 	},
 	plugins: [
@@ -31,4 +40,3 @@ module.exports = {
 		},
 	],
 };
-

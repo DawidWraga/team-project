@@ -36,7 +36,7 @@ export function PieChart(props) {
 				cx="50%"
 				cy="50%"
 				fill="#beabea"
-				label={renderLabel}
+				label={(entry) => entry.name}
 			>
 				{range(5).map((entry, index) => (
 					<Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
