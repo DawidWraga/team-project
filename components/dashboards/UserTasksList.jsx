@@ -29,35 +29,35 @@ export function UserTasksList(props) {
 	const { tasks } = props;
 
 	return (
-		<TableContainer>
-			<Table>
-				<Thead>
-					<Tr>
-						<Th>Task name</Th>
-						<Th>Task description</Th>
-						<Th>Status</Th>
-						<Th>Due date</Th>
-					</Tr>
-				</Thead>
-				<Tbody>
-					{tasks.map((task) => (
-						<Tr key={task.id}>
-							<Td>
-								{/* {task.projectName} */}
-								{task.title}
-							</Td>
-							<Td>{task.description}</Td>
-							<Td>
-								<Tag colorScheme={statusToColorMap[task.status]}>
-									{task.status}
-									<TagRightIcon as={statusToIconMap[task.status]} />
-								</Tag>
-							</Td>
-							<Td>{task.dueDate}</Td>
-						</Tr>
-					))}
-				</Tbody>
-			</Table>
-		</TableContainer>
+				<TableContainer>
+					<Table>
+						<Thead>
+							<Tr>
+								<Th>Task name</Th>
+								<Th>Task description</Th>
+								<Th>Status</Th>
+								<Th>Due date</Th>
+							</Tr>
+						</Thead>
+						<Tbody>
+							{tasks.map((task) => (
+								<Tr key={task.id}>
+									<Td>
+										{/* {task.projectName} */}
+										{task.title}
+									</Td>
+									<Td>{task.description}</Td>
+									<Td>
+										<Tag colorScheme={statusToColorMap[task.status]}>
+											{task.status}
+											<TagRightIcon as={statusToIconMap[task.status]} />
+										</Tag>
+									</Td>
+									<Td>{task.dueDate}</Td>
+								</Tr>
+							))}
+						</Tbody>
+					</Table>
+				</TableContainer>
 	);
 }

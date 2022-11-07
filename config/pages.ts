@@ -31,6 +31,13 @@ const forumSideNavLinks: IRouteData[] = require('db/topics.json').map(
 		};
 	}
 );
+const usersNavLinks: IRouteData[] = require('db/users.json').map((user) => {
+	return {
+		label: user.fullName,
+		route: `/users/${user.id}`,
+		defaultHeaderLink: '',
+	};
+});
 
 const pages: IPage[] = [
 	{
@@ -120,6 +127,7 @@ const pages: IPage[] = [
 			label: 'Users',
 			route: '/users',
 		},
+		sideNavLinks: usersNavLinks,
 	},
 ];
 
