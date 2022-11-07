@@ -1,6 +1,5 @@
 import { getProjectData } from 'controllers/getProjectData';
 
-import { Flex, Heading } from '@chakra-ui/react';
 import { randomNum } from 'utils/randomNum';
 import { Paper } from 'styles/Paper';
 import { LineChart, getLineChartDummyData } from 'components/charts/LineChart';
@@ -16,6 +15,8 @@ import { UserStats } from 'components/dashboards/UserStats';
 
 export default function ProjectDashboardPage(props) {
   const {} = props;
+
+  // const { isOpen, onLoad } = useDisclosure();
 
   const lineChartData = getLineChartDummyData();
 
@@ -59,6 +60,7 @@ export default function ProjectDashboardPage(props) {
             alignItems="center"
             maxW={{ base: '100%', md: '55%' }}
           >
+            {' '}
             <PieChart pieChartData={pieChartData} />
           </Paper>
           <UserStats />

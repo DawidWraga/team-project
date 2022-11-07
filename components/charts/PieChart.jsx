@@ -6,7 +6,7 @@ let renderLabel = function (entry) {
   return entry.name;
 };
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const COLORS = ['#FF8042', '#FFBB28', '#00C49F', '#0088FE'];
 
 export function PieChart(props) {
   const { pieChartData } = props;
@@ -15,9 +15,12 @@ export function PieChart(props) {
   return (
     console.log({ total }),
     (
-      <BasePieChart width={400} height={400}>
-        <text x="200" y="200" fontSize="10px">
+      <BasePieChart width={500} height={400}>
+        <text x="242" y="180" fontSize="16px" alignmentBaseline="central">
           {total}
+        </text>
+        <text x="225" y="220" fontSize="10px" alignmentBaseline="baseline">
+          Total tasks
         </text>
         <Pie
           data={pieChartData}
