@@ -25,11 +25,11 @@ export default function RegisterPage(props) {
 	const {} = props;
 	const router = useRouter();
 
-	useEffect(() => {
-		// if (!isBrowser()) return;
-		const user = getCurrentUser();
-		if (user) router.replace('/');
-	}, []);
+	// useEffect(() => {
+	// 	// if (!isBrowser()) return;
+	// 	const user = getCurrentUser();
+	// 	if (user) router.replace('/');
+	// }, []);
 
 	const {
 		register,
