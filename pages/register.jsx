@@ -155,7 +155,7 @@ export default function RegisterPage(props) {
 							{...register('password', {
 								required: true,
 								pattern:
-									/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{4,}$/,
+									/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/,
 							})}
 						/>
 						{errors.password?.type === 'pattern' && (

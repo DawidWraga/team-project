@@ -62,7 +62,8 @@ function Form() {
 			// 	type: 'server',
 			// });
 
-			toast.error('Unable to invite new user', { position: 'top-center' });
+			toast.error('User already exists', { position: 'top-center' });
+			reset();
 		}
 	};
 
