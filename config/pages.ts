@@ -1,5 +1,3 @@
-import { getAllDocs } from 'controllers/docs';
-
 interface IRouteData {
 	label: string;
 	route: string;

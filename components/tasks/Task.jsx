@@ -13,6 +13,7 @@ import {
 import { FaComments, FaTasks } from 'react-icons/fa';
 import React from 'react';
 import { Paper } from 'styles/Paper';
+import { motion } from 'framer-motion';
 
 const tagToColorMap = {
 	design: 'cyan.500',
@@ -23,7 +24,20 @@ export function Task(props) {
 	const { task } = props;
 
 	return (
-		<Paper w="1/3" display="inline-block" p="4">
+		<Paper
+			as={motion.div}
+			drag
+			borderStyle="dashed"
+			borderWidth="0px"
+			borderColor="gray"
+			whileHover={{ scale: 1.01, borderWidth: '1px' }}
+			dragMomentum={false}
+			dragTransition={{ bounceStiffness: 800, bounceDamping: 10 }}
+			whileTap={{ scale: 0.99 }}
+			w="1/3"
+			display="inline-block"
+			p="4"
+		>
 			<Text fontSize={'2xl'} textAlign="left" fontWeight="bold">
 				{task.title}
 				<Text fontSize="sm" fontWeight="normal" textColor="">
