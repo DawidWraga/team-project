@@ -2,7 +2,7 @@
   {
     "id": 1,
     "fullName": "Zak",
-    "email": "zak@client.com",
+    "email": "zak@make-it-all.co.uk",
     "password": "testA1!",
     "role": "admin",
     "username": "adminUser",
@@ -12,7 +12,7 @@
     "id": 2,
 
     "fullName": "Angus Todd",
-    "email": "angus@client.com",
+    "email": "angus@make-it-all.co.uk",
     "password": "testA1!",
     "role": "emp",
     "username": "empUser",
@@ -22,7 +22,7 @@
     "id": 3,
 
     "fullName": "Anjana",
-    "email": "anjana@client.com",
+    "email": "anjana@make-it-all.co.uk",
     "password": "testA1!",
     "role": "manager",
     "username": "empUser",
@@ -32,7 +32,7 @@
     "id": 4,
 
     "fullName": "Charlie Kilner",
-    "email": "charlie@client.com",
+    "email": "charlie@make-it-all.co.uk",
     "password": "testA1!",
     "role": "emp",
     "img": "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Ftriner.de%2Fwp-content%2Fuploads%2F2016%2F08%2FFilip_profile_circle.png&f=1&nofb=1&ipt=e4f6df238b22d0b140ceac53ae25207e7e7858088f29a46917285a92d3ceff1c&ipo=images"
@@ -40,7 +40,7 @@
   {
     "id": 5,
     "fullName": "Dawid Wragaa",
-    "email": "dawid@client.com",
+    "email": "dawid@make-it-all.co.uk",
     "password": "testA1!",
     "role": "emp",
     "img": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.OzhtzQS_K7MtmgZF3I8EwwHaHa%26pid%3DApi&f=1&ipt=23268d076a5ae52e0243e1309a009580091d43af5c44dc238663ca059d96893c&ipo=images"
@@ -49,7 +49,7 @@
     "id": 6,
 
     "fullName": "Michael Jordan",
-    "email": "mj@client.com",
+    "email": "mj@make-it-all.co.uk",
     "password": "testA1!",
     "role": "emp",
     "img": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.kindpng.com%2Fpicc%2Fm%2F497-4973038_profile-picture-circle-png-transparent-png.png&f=1&nofb=1&ipt=f0b492a77cd7c350fe2aab3c33b8b617cced6e2e2b0644f7e00eeb07a006b5bc&ipo=images"
@@ -58,7 +58,7 @@
     "id": 7,
 
     "fullName": "Luke Chester",
-    "email": "lukechester@client.com",
+    "email": "lukechester@make-it-all.co.uk",
     "password": "Test@1",
     "role": "emp",
     "img": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.CmkgLci1yrwoUVbtuS7nigHaHa%26pid%3DApi&f=1&ipt=80ea79114e5e4de5b14ebfa38abd4a91994c140dda1bbdd06de697c6b7807856&ipo=images"
@@ -67,7 +67,7 @@
     "id": 8,
 
     "fullName": "Kobe Bryant",
-    "email": "kobe@client.com",
+    "email": "kobe@make-it-all.co.uk",
     "password": "testA1!",
     "role": "emp",
     "img": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpromoaffiliates.com%2Fwp-content%2Fuploads%2F2016%2F07%2Fprofile-circle.png&f=1&nofb=1&ipt=2b775eb33dd9ca2a86131ddf48a64da48d3a75b81278e91c0a12cf4fafecbf1e&ipo=images"
@@ -76,7 +76,7 @@
     "id": 9,
 
     "fullName": "Archie Shipley",
-    "email": "arch@client.com",
+    "email": "arch@make-it-all.co.uk",
     "password": "Henry!0202",
     "role": "emp",
     "img": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftl.vhv.rs%2Fdpng%2Fs%2F471-4710031_online-teacher-profile-headphones-hd-png-download.png&f=1&nofb=1&ipt=2c3a20411226830eddde080c3b92e7ea5fe37ab7a23c4c3b993cba3d9b69488e&ipo=images"
