@@ -32,7 +32,7 @@ function MyApp({ Component, pageProps }) {
 			setLoading(true);
 
 			const isSignedIn = await getCurrentUser();
-			if (!isSignedIn) {
+			if (!isSignedIn && router.asPath !== 'register') {
 				router.replace('/auth');
 				await setTimeoutPromise(200);
 			}
