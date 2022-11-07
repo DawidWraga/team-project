@@ -50,15 +50,18 @@ export default function Header(props) {
 					gap="3"
 					zIndex="999"
 				>
-					{/* <IconButton
+					<IconButton
 						variant="unstyled"
 						rounded="full"
-						border="0px solid white"
+						borderColor="white"
+						borderWidth="0px"
+						display={{ base: 'none', lg: 'inline-block' }}
 						_hover={{
 							cursor: 'pointer',
-							border: '1px solid white',
+							borderWidth: '1px',
 							minW: '200px',
 						}}
+						px="5"
 						transition="all 400ms"
 						position="relative"
 					>
@@ -70,9 +73,20 @@ export default function Header(props) {
 							left="2"
 							top="1.5"
 						/>
-					</IconButton> */}
+					</IconButton>
 					<ProfileMenu offset={[4, 11]} />
 				</Flex>
+
+				{/* POSSIBL ADDITION: FILTER BAR UNDER HEADER WITH TAG STYLINING */}
+				{/* <Flex
+					position="absolute"
+					left="0"
+					top="60px"
+					w="100%"
+					h="45px"
+					bgColor="shade.light"
+					zIndex="10000"
+				></Flex> */}
 			</Flex>
 		</>
 	);
