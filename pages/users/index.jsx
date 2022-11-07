@@ -9,6 +9,10 @@ import {
   Tag,
   TagRightIcon,
   Badge,
+  Avatar,
+  Flex,
+  Text,
+  TagLabel,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { PageWrapper } from 'styles/PageWrapper';
@@ -30,7 +34,7 @@ export default function UsersPage(props) {
 }
 
 const roleToColorMap = {
-  emp: 'yellow.300',
+  emp: 'purple.300',
   admin: 'green.400',
   manager: 'blue.400',
 };
@@ -70,7 +74,12 @@ function UserTable(props) {
                     router.push(`/users/${user.id}`);
                   }}
                 >
-                  {user.fullName}
+                  <Tag size="lg" colorScheme="gray" borderRadius="full">
+                    <Avatar src={user.img} size="md" ml={-1} mr={2} pr="8px" />
+                    <TagLabel _hover={{ colorScheme: 'brand' }}>
+                      {user.fullName}
+                    </TagLabel>
+                  </Tag>
                 </Td>
                 <Td>{user.email}</Td>
                 <Td>
@@ -80,6 +89,7 @@ function UserTable(props) {
                     py="7px"
                     minW="90px"
                     textAlign="center"
+                    textColor={'white'}
                   >
                     {roleCapitalise(user.role)}
                   </Badge>
