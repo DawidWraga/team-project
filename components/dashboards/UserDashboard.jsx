@@ -36,41 +36,31 @@ export function UserDashboard(props) {
 		<div>
 			<Grid
 				templateColumns="repeat(3, 1fr)"
-				templateRows="repeat(2, 40vh)"
+				templateRows="repeat(2, 42vh)"
+				maxH="calc(95vh - 100px)"
 				gap={5}
-				placeItems="stretch"
+				placeSelf="stretch"
+				justifyContent={'stretch'}
+				alignContent={'stretch'}
+				alignItems={'stretch'}
 			>
-				<GridItem colSpan={{ base: 3, lg: 2 }} overflowY={'auto'}>
+				<GridItem
+					colSpan={{ base: '3', md: '2' }}
+					overflowY={'auto'}
+					flex="auto"
+					h="100%"
+				>
 					<Paper variant="elevated" h="100%">
 						<UserTasksList tasks={tasks} />
 					</Paper>
 				</GridItem>
-				<GridItem
-					h="100%"
-					// w={{ base: '100vw', lg: '100%' }}
-					rowSpan={{ base: 3, lg: 1 }}
-					order={{ base: 3, lg: 'unset' }}
-				>
-					<Paper
-						// display="inline-block"
-						w="100%"
-						variant="elevated"
-						h="100%"
-						my="auto"
-						alignItems="center"
-						justifyContent="center"
-					>
+				<GridItem h="100%" colSpan={{ base: '3', md: '1' }} overflow={'hidden'}>
+					<Paper h="100%" variant="elevated" w="auto">
 						<PieChart pieChartData={pieChartData} />
 					</Paper>
 				</GridItem>
-				<GridItem colSpan={3}>
-					<Paper
-						w={{ base: 'calc(100vw - 60px)', lg: '100%' }}
-						pr="10px"
-						h="40vh"
-						variant="elevated"
-						overflowX="auto"
-					>
+				<GridItem colSpan={3} h="100%">
+					<Paper w="100%" h="100%" variant="elevated">
 						<LineChart data={lineChartData} />
 					</Paper>
 				</GridItem>
