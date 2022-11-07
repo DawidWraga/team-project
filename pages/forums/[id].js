@@ -17,6 +17,7 @@ export default function ForumPost(props) {
 	const { id } = router.query;
 
 	const post = posts.find((item) => id === item.id);
+	console.log(post);
 	if (!post) return <></>;
 
 	function toggleRepBox() {
