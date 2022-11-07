@@ -15,55 +15,55 @@ import { UserStats } from 'components/dashboards/UserStats';
 // };
 
 export default function ProjectDashboardPage(props) {
-	const {} = props;
+  const {} = props;
 
-	const lineChartData = getLineChartDummyData();
+  const lineChartData = getLineChartDummyData();
 
-	const pieChartData = [
-		{
-			name: 'not started',
-			value: randomNum(0, 10),
-		},
-		{
-			name: 'in progress',
-			value: randomNum(0, 10),
-		},
-		{
-			name: 'review',
-			value: randomNum(0, 10),
-		},
-		{
-			name: 'done',
-			value: randomNum(0, 10),
-		},
-	];
+  const pieChartData = [
+    {
+      name: 'not started',
+      value: randomNum(0, 10),
+    },
+    {
+      name: 'in progress',
+      value: randomNum(0, 10),
+    },
+    {
+      name: 'review',
+      value: randomNum(0, 10),
+    },
+    {
+      name: 'done',
+      value: randomNum(0, 10),
+    },
+  ];
 
-	return (
-		<div>
-			<Flex flexDir="column" w="100%" h="calc(100vh - 60px)" p="10" gap="3">
-				<Paper
-					h="100%"
-					p="2"
-					flexDir="column"
-					justifyContent={'center'}
-					alignItems="center"
-					variant="elevated"
-				>
-					<Heading size="lg">Tasks this month</Heading>
-					<LineChart data={lineChartData} />
-				</Paper>
-				<Flex h="100%" flexDir={{ base: 'column', md: 'row-reverse' }} gap="2">
-					<Paper
-						variant="elevated"
-						justifyContent="center"
-						alignItems="center"
-						maxW={{ base: '100%', md: '55%' }}
-					>
-						<PieChart pieChartData={pieChartData} />
-					</Paper>
-					<UserStats />
-				</Flex>
-			</Flex>
-		</div>
-	);
+  return (
+    <div>
+      <Flex flexDir="column" w="100%" h="calc(100vh - 60px)" p="10" gap="3">
+        <Paper
+          h="100%"
+          p="2"
+          flexDir="column"
+          justifyContent={'center'}
+          alignItems="center"
+          variant="elevated"
+        >
+          <Heading size="lg">Tasks this month</Heading>
+          <LineChart data={lineChartData} />
+        </Paper>
+        <Flex h="100%" flexDir={{ base: 'column', md: 'row-reverse' }} gap="2">
+          <Paper
+            variant="elevated"
+            justifyContent="center"
+            alignItems="center"
+            maxW={{ base: '100%', md: '55%' }}
+          >
+            <PieChart pieChartData={pieChartData} />
+          </Paper>
+          <UserStats />
+        </Flex>
+      </Flex>
+    </div>
+  );
 }
