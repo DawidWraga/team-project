@@ -40,20 +40,28 @@ export function UserDashboard(props) {
         templateColumns="repeat(3, 1fr)"
         templateRows="repeat(2, 40vh)"
         gap={5}
-        placeItems="stretch"
+        placeSelf="stretch"
       >
-        <GridItem colSpan="2" overflowY={'auto'}>
+        <GridItem
+          colSpan={{ base: '3', md: '2' }}
+          overflowY={'auto'}
+          flex="auto"
+        >
           <Paper variant="elevated">
             <UserTasksList tasks={tasks} />
           </Paper>
         </GridItem>
-        <GridItem bgColor="blue.100" h="100%">
-          <Paper variant="elevated">
+        <GridItem
+          bgColor="blue.100"
+          colSpan={{ base: '3', md: '1' }}
+          overflowY={'auto'}
+        >
+          <Paper variant="elevated" w="auto">
             <PieChart pieChartData={pieChartData} />
           </Paper>
         </GridItem>
         <GridItem colSpan={3} bgColor="green.100">
-          <Paper w="100%" h="max-content" variant="elevated">
+          <Paper w="100%" h="500px" variant="elevated">
             <LineChart data={lineChartData} />
           </Paper>
         </GridItem>
