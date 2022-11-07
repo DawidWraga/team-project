@@ -14,7 +14,7 @@ import Head from 'next/head';
 import Loading from 'components/loading';
 import MainLayout from 'components/layout/MainLayout';
 import { GlobalContextProvider } from 'contexts/GlobalContext';
-import pages from 'config/pages';
+import { Analytics } from '@vercel/analytics/react';
 
 function MyApp({ Component, pageProps }) {
 	const router = useRouter();
@@ -48,7 +48,6 @@ function MyApp({ Component, pageProps }) {
 	return (
 		<>
 			<NProgress />
-
 			<Head>
 				<meta name="apple-mobile-web-app-capable" content="yes" />
 				<meta name="mobile-web-app-capable" content="yes" />
@@ -79,6 +78,7 @@ function MyApp({ Component, pageProps }) {
 					)}
 				</GlobalContextProvider>
 			</ChakraProvider>
+			<Analytics />
 		</>
 	);
 }
