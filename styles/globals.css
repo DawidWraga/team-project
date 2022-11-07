@@ -8,11 +8,10 @@ body {
 	overflow: 'hidden';
 }
 
-.recharts-surface tspan {
-	@apply animate-fade;
-}
-
 @layer components {
+	.recharts-surface tspan {
+		@apply animate-fade;
+	}
 	.btn {
 		@apply transition-all duration-300 border  rounded-md font-semibold uppercase p-1.5 shadow-sm;
 	}

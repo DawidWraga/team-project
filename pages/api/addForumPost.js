@@ -17,7 +17,6 @@ export default async function handler(req, res) {
     const posts = await query('posts');
     const newposts = [post, ...posts];
 
-    console.log(newposts);
 
     await writeToDb('posts', newposts);
     res.status(200).send(id);
