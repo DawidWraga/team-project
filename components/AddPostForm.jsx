@@ -74,7 +74,9 @@ function PostForm() {
 					{...register('topicId')}
 				>
 					{topics.map((topic) => (
-						<option value={topic.id}>{topic.title}</option>
+						<option value={topic.id} key={topic.id}>
+							{topic.title}
+						</option>
 					))}
 				</Select>
 			</FormControl>
