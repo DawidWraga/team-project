@@ -6,11 +6,20 @@ import { LogoIcon } from 'components/BrandLogo';
 import ProfileMenu from 'components/ProfileMenu';
 import { useGlobalContext } from 'contexts/GlobalContext';
 import pages from 'config/pages';
+import { getCurrentUser } from '../../controllers/auth';
 
 export default function PageNavBar(props) {
 	const {} = props;
 	const router = useRouter();
 	const { activePage } = useGlobalContext();
+
+	const relevantPages = pages.filter((page) => {
+		const role = getCurrentUser().role;
+		const route = page.parentLink.route;
+
+		if (role === 'emp' && route === '/users') return false;
+		else return true;
+	});
 
 	return (
 		<Flex
@@ -27,14 +36,11 @@ export default function PageNavBar(props) {
 			zIndex="banner"
 			py={{ lg: 2 }}
 		>
-			<DesktopOnly
-				// mb="20vh"
-				mb="9px"
-			>
+			<DesktopOnly mb="9px">
 				<LogoIcon fontSize="2.7rem" />
 			</DesktopOnly>
 
-			{pages.map((page) => {
+			{relevantPages.map((page) => {
 				return (
 					<PageNavItem
 						key={page.parentLink.route}

@@ -5,7 +5,6 @@ require('dotenv').config();
 
 export default async function handler(req, res) {
 	try {
-		console.log('test');
 		// return res.status(200).send('test');
 
 		const validUsers = await query('users');
@@ -16,6 +15,8 @@ export default async function handler(req, res) {
 		if (userDetails) {
 			return res.status(400).send('user already exists');
 		}
+
+		return res.status(200).send('user submitted');
 
 		const transporter = nodemailer.createTransport({
 			service: 'Hotmail',

@@ -27,7 +27,17 @@ export function Post(props) {
 			<Avatar size={'md'} src={usericon}></Avatar>
 			<Flex fontSize={'sm'} flexDirection={'column'} flexGrow="1" padding="2">
 				<Box>
-					<Text onClick={() => router.push(`/forums?topicId=${post.topicId}`)}>
+					<Text
+						onClick={() => router.push(`/forums?topicId=${post.topicId}`)}
+						fontSize="sm"
+						textColor="grey.100"
+						_hover={{
+							textDecorationLine: 'underline',
+							cursor: 'pointer',
+							textColor: 'blue.500',
+						}}
+						my="0"
+					>
 						{post.topic}
 					</Text>
 					<Text

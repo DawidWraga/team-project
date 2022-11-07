@@ -1,10 +1,12 @@
-import { Avatar, Flex, Heading, Spacer, Text } from '@chakra-ui/react';
+import { Avatar, Button, Flex, Heading, Spacer, Text } from '@chakra-ui/react';
 import { getDocBySlug, markdownToHtml, getAllDocs } from 'controllers/docs';
 import { useRouter } from 'next/router';
 import { Paper } from 'styles/Paper';
 import { PageWrapper } from 'styles/PageWrapper';
 import markdownStyles from 'styles/markdownStyles.module.css';
 import moment from 'moment/moment';
+import { MdShare } from 'react-icons/md';
+import { toast } from 'react-toastify';
 
 export default function IndividualDocPage(props) {
 	const { doc } = props;
@@ -16,7 +18,28 @@ export default function IndividualDocPage(props) {
 	return (
 		<>
 			<PageWrapper>
-				<Paper as="article" variant="elevated" p="5" flexDir="column" gap="8">
+				<Paper
+					as="article"
+					variant="elevated"
+					p="5"
+					flexDir="column"
+					gap="8"
+					position="relative"
+				>
+					<Button
+						onClick={() => {
+							navigator.clipboard.writeText(
+								'makeitall.vercel.app' + router.asPath
+							);
+							toast.success('Link copied!');
+						}}
+						leftIcon={<MdShare />}
+						position="absolute"
+						top="2"
+						right="2"
+					>
+						Share
+					</Button>
 					<Heading mx="auto" size="lg" mt="5">
 						{doc.title}
 					</Heading>
