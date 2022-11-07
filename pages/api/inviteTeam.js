@@ -1,5 +1,4 @@
 import query from 'controllers/query';
-import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import nodemailer from 'nodemailer';
 require('dotenv').config();
 
@@ -15,6 +14,8 @@ export default async function handler(req, res) {
 		if (userDetails) {
 			return res.status(400).send('user already exists');
 		}
+
+		console.log(userDetails);
 
 		return res.status(200).send('user submitted');
 

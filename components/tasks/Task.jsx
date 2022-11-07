@@ -14,7 +14,7 @@ import {
 	MenuList,
 	MenuItem,
 } from '@chakra-ui/react';
-import { FaComments, FaTasks } from 'react-icons/fa';
+import { FaComments } from 'react-icons/fa';
 import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
 
 import { BiDotsVerticalRounded } from 'react-icons/bi';
