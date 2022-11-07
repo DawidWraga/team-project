@@ -1,31 +1,52 @@
 import { useRouter } from 'next/router';
-import posts from 'db/posts';
-import comments from 'db/postComments';
 import { Reply } from 'components/Reply';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Avatar, Box, Flex, Heading, Text, Button } from '@chakra-ui/react';
 import { AddReply } from 'components/addReply';
 import { Paper } from 'styles/Paper';
 import { PageWrapper } from 'styles/PageWrapper';
 import { AnimatePresence } from 'framer-motion';
+import query from 'controllers/query';
+import axios from 'axios';
+
+export const getServerSideProps = async (ctx) => {
+	const { id } = ctx.params;
+
+	const posts = await query('posts');
+	const post = posts.find((item) => item.id === id);
+	const comments = await query('postComments');
+	const relevantComments = comments.filter((comment) => id == comment.postId);
+
+	return {
+		props: { post, relevantComments },
+	};
+};
 
 export default function ForumPost(props) {
-	const {} = props;
+	const { post, relevantComments } = props;
 	const [replyActive, setReplyActive] = useState(false);
 
-	const router = useRouter();
-	const { id } = router.query;
+	// const [updatedComments, setUpdatedComments] = useState(relevantComments);
 
-	const post = posts.find((item) => id === item.id);
-	console.log(post);
+	// useEffect(() => {
+	// 	// dont refersh on opening
+	// 	if (replyActive === true) return;
+
+	// 	// DO refersh on closing
+
+	// 	(async () => {
+	// 		const newComments = await axios('/db/postComments');
+	// 		console.log('🔷 >> useEffect >> newComments', newComments);
+	// 	})();
+	// }, [replyActive]);
+
+	// const { id } = post;
+
 	if (!post) return <></>;
+	// redirect back to forum
 
 	function toggleRepBox() {
 		setReplyActive((replyActive) => !replyActive);
-	}
-
-	function filterReplies(comments, posts) {
-		return comments.filter((comment) => id == comment.postId);
 	}
 
 	return (
@@ -56,9 +77,10 @@ export default function ForumPost(props) {
 				maxW={'100%'}
 				paddingTop={'4px'}
 			>
-				{filterReplies(comments, posts).map((comment) => (
-					<Reply comment={comment} key={comment.id} />
-				))}
+				{relevantComments &&
+					relevantComments.map((comment) => (
+						<Reply comment={comment} key={comment.id} />
+					))}
 			</Flex>
 		</PageWrapper>
 	);

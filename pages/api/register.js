@@ -1,6 +1,7 @@
 import query from 'controllers/query';
 import fs from 'fs/promises';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
+import { writeToDb } from 'controllers/writeToDb';
 
 export default async function handler(req, res) {
 	async function validateUnique(array, key, value) {
@@ -41,7 +42,8 @@ export default async function handler(req, res) {
 				{ ...req.body, role: 'emp' },
 			]);
 
-			await fs.writeFile('db/users.json', newUsers);
+			await writeToDb('users', newUsers);
+
 			await setTimeoutPromise(500);
 
 			return res.status(200).send('User successfully created');
