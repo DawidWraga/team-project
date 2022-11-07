@@ -8,7 +8,7 @@ import {
 } from 'recharts';
 import { range } from 'utils/range';
 import { randomNum } from 'utils/randomNum';
-import { Grid } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 
 let renderLabel = function (entry) {
 	return entry.name;
@@ -21,28 +21,51 @@ export function PieChart(props) {
 
 	const total = pieChartData.map((obj) => obj.value).reduce((a, b) => a + b);
 	return (
-		<BasePieChart width={500} height={400}>
-			<text x="242" y="180" fontSize="16px" alignmentBaseline="central">
-				{total}
-			</text>
-			<text x="225" y="220" fontSize="10px" alignmentBaseline="baseline">
-				Total tasks
-			</text>
-			<Pie
-				data={pieChartData}
-				dataKey="value"
-				innerRadius={45}
-				outerRadius={100}
-				cx="50%"
-				cy="50%"
-				fill="#beabea"
-				label={(entry) => entry.name}
+		<div className="relative w-full h-full">
+			<Box
+				position="absolute"
+				left="50%"
+				top="50%"
+				transform={'auto'}
+				translateX="-50%"
+				translateY="-50%"
+				className="animate-slowfade"
 			>
-				{range(5).map((entry, index) => (
-					<Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-				))}
-			</Pie>
-			<Tooltip />
-		</BasePieChart>
+				<Text
+					x="242"
+					y="180"
+					fontSize="16px"
+					fontWeight={'bold'}
+					textAlign={'center'}
+				>
+					{total}
+				</Text>
+				<Text x="225" y="220" fontSize="12px" textAlign={'center'}>
+					Total tasks
+				</Text>
+			</Box>
+			<ResponsiveContainer>
+				<BasePieChart width={500} height={400}>
+					<Pie
+						data={pieChartData}
+						dataKey="value"
+						innerRadius={45}
+						outerRadius={100}
+						cx="50%"
+						cy="50%"
+						fill="#beabea"
+						label={(entry) => entry.name}
+					>
+						{range(5).map((entry, index) => (
+							<Cell
+								key={`cell-${index}`}
+								fill={COLORS[index % COLORS.length]}
+							/>
+						))}
+					</Pie>
+					<Tooltip />
+				</BasePieChart>
+			</ResponsiveContainer>
+		</div>
 	);
 }

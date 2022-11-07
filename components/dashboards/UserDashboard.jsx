@@ -38,6 +38,7 @@ export function UserDashboard(props) {
 				templateColumns="repeat(3, 1fr)"
 				templateRows="repeat(2, 42vh)"
 				maxH="calc(95vh - 100px)"
+				w="100%"
 				gap={5}
 				placeSelf="stretch"
 				justifyContent={'stretch'}
@@ -45,7 +46,7 @@ export function UserDashboard(props) {
 				alignItems={'stretch'}
 			>
 				<GridItem
-					colSpan={{ base: '3', md: '2' }}
+					colSpan={{ base: '3', lg: '2' }}
 					overflowY={'auto'}
 					flex="auto"
 					h="100%"
@@ -54,14 +55,20 @@ export function UserDashboard(props) {
 						<UserTasksList tasks={tasks} />
 					</Paper>
 				</GridItem>
-				<GridItem h="100%" colSpan={{ base: '3', md: '1' }} overflow={'hidden'}>
+				<GridItem h="100%" colSpan={{ base: '3', lg: '1' }} overflow={'hidden'}>
 					<Paper h="100%" variant="elevated" w="auto">
 						<PieChart pieChartData={pieChartData} />
 					</Paper>
 				</GridItem>
 				<GridItem colSpan={3} h="100%">
 					<Paper w="100%" h="100%" variant="elevated">
-						<LineChart data={lineChartData} />
+						<LineChart
+							data={lineChartData}
+							colors={{
+								primary: 'hsl(213.10000000000002, 93.9%, 67.8%)',
+								secondary: 'hsl(173.39999999999998, 80.4%, 40%)',
+							}}
+						/>
 					</Paper>
 				</GridItem>
 			</Grid>

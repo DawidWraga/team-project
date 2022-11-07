@@ -5,6 +5,7 @@ import {
 	StatHelpText,
 	Stat,
 	StatArrow,
+	Box,
 } from '@chakra-ui/react';
 
 import { Paper } from 'styles/Paper';
@@ -37,6 +38,39 @@ export function UserStats(props) {
 
 	// statData.map(stat => <>  stat.label stat.number ....</>)
 
+	const CustomStat = (props) => {
+		return (
+			<Stat
+				display="flex"
+				alignItems={'center'}
+				justifyContent="center"
+				minW="200px"
+				sx={{
+					'& .chakra-stat__label': {
+						fontSize: '1.3rem',
+						py: 1,
+					},
+
+					'& .chakra-stat__number': {
+						fontSize: '1.9rem',
+						py: 1,
+					},
+					'& .chakra-icon': {
+						fontSize: '15rem',
+						height: '28px',
+						width: '18px',
+					},
+					'& .customText': {
+						fontSize: '1.5rem',
+						textColor: 'gray.600',
+					},
+				}}
+			>
+				{props.children}
+			</Stat>
+		);
+	};
+
 	return (
 		<StatGroup
 			display="flex"
@@ -58,58 +92,42 @@ export function UserStats(props) {
 			}}
 		>
 			<Paper variant="elevated" p="2">
-				<Stat
-					display="flex"
-					
-					alignItems={'center'}
-					justifyContent="center"
-				>
-					<StatLabel >Project deadline</StatLabel>
+				<CustomStat>
+					<StatLabel>Project deadline</StatLabel>
 					<StatNumber>43 days</StatNumber>
 					<StatHelpText>27th of December 2022</StatHelpText>
-				</Stat>
+				</CustomStat>
 			</Paper>
 			<Paper variant="elevated" p="2">
-				<Stat
-					display="flex"
-					
-					alignItems={'center'}
-					justifyContent="center"
-				>
-					<StatLabel >Next project milestone</StatLabel>
+				<CustomStat>
+					<StatLabel>Next project milestone</StatLabel>
 					<StatNumber>10 days</StatNumber>
 					<StatHelpText>20th of November 2022</StatHelpText>
-				</Stat>
+				</CustomStat>
 			</Paper>
 			<Paper variant="elevated" p="2">
-				<Stat
-					display="flex"
-					
-					alignItems={'center'}
-					justifyContent="center"
-				>
-					<StatLabel >Tasks for this week</StatLabel>
-					<StatNumber>38</StatNumber>
-					<StatHelpText>
-						<StatArrow type="increase" />
-						15.7%
-					</StatHelpText>
-				</Stat>
+				<CustomStat>
+					<StatLabel>Tasks for this week</StatLabel>
+					<StatNumber>
+						38
+						<Box className="inline-block ml-5 customText">
+							<StatArrow type="increase" />
+							15.7%
+						</Box>
+					</StatNumber>
+				</CustomStat>
 			</Paper>
 			<Paper variant="elevated" p="2">
-				<Stat
-					display="flex"
-					
-					alignItems={'center'}
-					justifyContent="center"
-				>
-					<StatLabel >Overdue tasks</StatLabel>
-					<StatNumber>7</StatNumber>
-					<StatHelpText>
-						<StatArrow type="decrease" />
-						7.9%
-					</StatHelpText>
-				</Stat>
+				<CustomStat>
+					<StatLabel>Overdue tasks</StatLabel>
+					<StatNumber>
+						7
+						<Box className="inline-block ml-5 customText">
+							<StatArrow type="decrease" />
+							9.2%
+						</Box>
+					</StatNumber>
+				</CustomStat>
 			</Paper>
 		</StatGroup>
 	);

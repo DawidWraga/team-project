@@ -8,14 +8,13 @@ export default async function handler(req, res) {
 
 		const validUsers = await query('users');
 		const userDetails = validUsers.find(
-			(user) => user.email === req.body?.email
+			(user) => user.email === req.body.email
 		);
 
 		if (userDetails) {
 			return res.status(400).send('user already exists');
 		}
 
-		console.log(userDetails);
 
 		return res.status(200).send('user submitted');
 

@@ -10,7 +10,6 @@ import {
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { getCurrentUser } from '/controllers/auth';
-import { comments } from 'db/postComments';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
