@@ -14,6 +14,11 @@ import { FaComments, FaTasks } from 'react-icons/fa';
 import React from 'react';
 import { Paper } from 'styles/Paper';
 
+const tagToColorMap = {
+  design: 'cyan.500',
+  develop: 'purple.300',
+};
+
 export function Task(props) {
   const { task } = props;
 
@@ -31,15 +36,16 @@ export function Task(props) {
       <ButtonGroup variant="solid" spacing="2" pt="2" pb="4">
         {task.tags &&
           task.tags?.map((tag) => {
+            const color = tagToColorMap[tag];
             return (
               <Button
-                colorScheme="blue"
+                bgColor={color}
                 size="sm"
                 borderRadius="full"
                 key={tag}
+                textTransform="uppercase"
               >
                 {tag}
-                test
               </Button>
             );
           })}
@@ -74,7 +80,7 @@ export function Task(props) {
           <Center>
             <Flex pt="1px" gap="2">
               <FaComments size="24px" />
-              <Text>14</Text>
+              <Text>{task.comments}</Text>
             </Flex>
           </Center>
         </Box>

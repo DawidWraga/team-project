@@ -2,14 +2,16 @@ import { Badge, Box, Grid, Heading, Text } from '@chakra-ui/react';
 import React from 'react';
 import { Paper } from 'styles/Paper';
 import { KanbanCol } from 'components/tasks/KanbanCol';
+import tasks from 'db/tasks';
 
 export default function ProjectKanbanPage(props) {
   const {} = props;
   return (
     <Box display="grid" gridTemplateColumns="repeat(3,1fr)" overflowX="auto">
-      <KanbanCol />
-      <KanbanCol />
-      <KanbanCol />
+      {['todo', 'in-progress', 'complete'].map((status) => {
+        const relevantTasks = tasks.filter((task) => task.status === status);
+        return <KanbanCol key={status} status={status} tasks={relevantTasks} />;
+      })}
     </Box>
   );
 }
