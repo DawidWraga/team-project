@@ -9,8 +9,15 @@ import {
 	Divider,
 	Flex,
 	Spacer,
+	MenuButton,
+	Menu,
+	MenuList,
+	MenuItem,
 } from '@chakra-ui/react';
 import { FaComments, FaTasks } from 'react-icons/fa';
+import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
+
+import { BiDotsVerticalRounded } from 'react-icons/bi';
 import React from 'react';
 import { Paper } from 'styles/Paper';
 import { motion } from 'framer-motion';
@@ -38,14 +45,33 @@ export function Task(props) {
 			display="inline-block"
 			p="4"
 		>
-			<Text fontSize={'2xl'} textAlign="left" fontWeight="bold">
-				{task.title}
-				<Text fontSize="sm" fontWeight="normal" textColor="">
-					DUE DATE: {task.dueDate}
+			<Flex>
+				<Text fontSize={'2xl'} textAlign="left" fontWeight="bold">
+					{task.title}
 				</Text>
-				<Text fontSize="lg" fontWeight="normal" textColor="gray.600">
-					{task.description}
-				</Text>
+				<Spacer />
+				{/* hi */}
+				<Menu placement="left-start">
+					<MenuButton>
+						<BiDotsVerticalRounded />
+					</MenuButton>
+					<MenuList>
+						<MenuItem>
+							<AiFillEdit />
+							<Text pl="4px">Edit</Text>
+						</MenuItem>
+						<MenuItem>
+							<AiFillDelete />
+							<Text pl="4px">Delete</Text>
+						</MenuItem>
+					</MenuList>
+				</Menu>
+			</Flex>
+			<Text fontSize="sm" fontWeight="normal" textColor="">
+				DUE DATE: {task.dueDate}
+			</Text>
+			<Text fontSize="lg" fontWeight="normal" textColor="gray.600">
+				{task.description}
 			</Text>
 			<ButtonGroup variant="solid" spacing="2" pt="2" pb="4">
 				{task.tags &&
