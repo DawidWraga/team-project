@@ -15,7 +15,7 @@ const projectSideNavLinks: IRouteData[] = require('db/projects.json').map(
 		return {
 			label: project.title,
 			route: `/projects/${project.id}`,
-			defaultHeaderLink: '/dashboard',
+			defaultHeaderLink: '/tasks',
 		};
 	}
 );

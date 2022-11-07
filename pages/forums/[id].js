@@ -7,8 +7,6 @@ import { Paper } from 'styles/Paper';
 import { PageWrapper } from 'styles/PageWrapper';
 import { AnimatePresence } from 'framer-motion';
 import query from 'controllers/query';
-import axios from 'axios';
-
 export const getServerSideProps = async (ctx) => {
 	const { id } = ctx.params;
 

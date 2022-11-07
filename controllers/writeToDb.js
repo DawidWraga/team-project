@@ -5,8 +5,9 @@ import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 
 export async function writeToDb(table, newJSON) {
 	try {
-		const jsonDirectory = path.join(process.cwd(), `db/${table}.json`);
-		fs.writeFile(jsonDirectory, JSON.stringify(newJSON));
+		const dbDirectory = path.join(process.cwd(), 'db');
+
+		fs.writeFile(dbDirectory + `${table}.json`, JSON.stringify(newJSON));
 		await setTimeoutPromise(500);
 		return true;
 	} catch (e) {
