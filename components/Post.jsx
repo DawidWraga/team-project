@@ -58,7 +58,7 @@ export function Post(props) {
 				<Flex justifyContent={'flex-start'} alignItems={'center'} gap="4">
 					<Text>{name}</Text>
 					<Text>{timesince} ago</Text>
-					<Tag textColor={'white'} bgColor={solved ? 'green.600' : 'error'}>
+					<Tag textColor={'white'} bgColor={solved ? 'green.600' : 'red.300'}>
 						{solved ? 'Solved' : 'Unsolved'}
 					</Tag>
 				</Flex>

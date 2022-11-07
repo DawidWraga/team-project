@@ -1,7 +1,6 @@
 import query from 'controllers/query';
 import { writeToDb } from 'controllers/writeToDb';
 import { v4 as uuidv4 } from 'uuid';
-import path from 'path';
 
 export default async function handler(req, res) {
 	try {

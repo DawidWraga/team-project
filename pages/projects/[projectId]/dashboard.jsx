@@ -24,19 +24,19 @@ export default function ProjectDashboardPage(props) {
 	const pieChartData = [
 		{
 			name: 'not started',
-			value: randomNum(0, 10),
+			value: randomNum(2, 10),
 		},
 		{
 			name: 'in progress',
-			value: randomNum(0, 10),
+			value: randomNum(2, 10),
 		},
 		{
 			name: 'review',
-			value: randomNum(0, 10),
+			value: randomNum(2, 10),
 		},
 		{
 			name: 'done',
-			value: randomNum(0, 10),
+			value: randomNum(2, 10),
 		},
 	];
 
@@ -59,9 +59,10 @@ export default function ProjectDashboardPage(props) {
 						variant="elevated"
 						justifyContent="center"
 						alignItems="center"
-						maxW={{ base: '100%', md: '55%' }}
+						w={{ base: '100%', md: '50%' }}
+						// minW="300px"
+						h="100%"
 					>
-						{' '}
 						<PieChart pieChartData={pieChartData} />
 					</Paper>
 					<UserStats />

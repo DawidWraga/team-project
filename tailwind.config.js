@@ -23,6 +23,7 @@ module.exports = {
 			},
 			animation: {
 				fade: 'in .3s linear',
+				slowfade: 'in 2s linear',
 			},
 			keyframes: {
 				in: {

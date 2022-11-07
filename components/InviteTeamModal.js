@@ -16,6 +16,7 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { MdCheck } from 'react-icons/md';
+import axios from 'axios';
 
 export default function InviteTeamModal(props) {
 	const { isOpen, onClose } = props;

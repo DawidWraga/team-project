@@ -32,6 +32,7 @@ import { useForm } from 'react-hook-form';
 import { getCurrentUser } from 'controllers/auth';
 import { useRouter } from 'next/router';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
+import { useGlobalContext } from 'contexts/GlobalContext';
 
 function PostForm() {
 	const router = useRouter();
@@ -96,6 +97,8 @@ function PostForm() {
 }
 
 function TopicForm(props) {
+	const router = useRouter();
+	const { setActivePage } = useGlobalContext();
 	const { register, handleSubmit } = useForm();
 	const onSubmit = async (data) => {
 		try {
@@ -103,7 +106,24 @@ function TopicForm(props) {
 				...data,
 			};
 			const res = await axios.post('/api/addTopic', newData);
+			const redirectRoute = '/forums?topicId=' + res.data;
 			toast.success('Topic created');
+			router.push(redirectRoute);
+			await setTimeoutPromise(1000);
+
+			setActivePage((page) => {
+				if (page.parentLink.route !== '/forums') return page;
+
+				const updatedPage = {
+					...page,
+					sideNavLinks: [
+						...page.sideNavLinks,
+						{ label: data.title, route: redirectRoute },
+					],
+				};
+
+				return updatedPage;
+			});
 			props.onClose();
 		} catch (e) {
 			console.error(e);

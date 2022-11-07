@@ -12,7 +12,6 @@ export default async function handler(req, res) {
 		};
 		const comments = await query('postComments');
 		const newcomments = [comment, ...comments];
-		console.log(newcomments);
 		await writeToDb('postComments', newcomments);
 		res.status(200).send('reply posted');
 	} catch (e) {
