@@ -1,4 +1,6 @@
 import fs from 'fs/promises';
+import path from 'path';
+
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 
 export async function writeToDb(table, newJSON) {

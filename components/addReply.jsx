@@ -22,10 +22,10 @@ export function AddReply(props) {
 	const onSubmit = async (data) => {
 		try {
 			const newData = { name: getCurrentUser().fullName, ...data, postId: id };
-			console.log(newData);
 			const res = await axios.post('/api/addReply', newData);
 			toast.success('reply has been posted');
 			props.setReplyActive(false);
+			router.replace(router.asPath);
 		} catch (e) {
 			console.error(e);
 		}

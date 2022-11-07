@@ -43,7 +43,6 @@ export default function RegisterPage(props) {
 	const onSubmit = async (data) => {
 		try {
 			if (data.password !== data.confirmPassword) {
-				console.log(data);
 				return setError('confirmPassword', { type: 'unmatchingPasswords' });
 			}
 
@@ -53,7 +52,6 @@ export default function RegisterPage(props) {
 			router.push('/auth');
 		} catch (e) {
 			const errors = e.response.data;
-			console.log(errors.type);
 
 			// if (errors.type === 'email') {
 			setError(errors.type, {

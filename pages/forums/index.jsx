@@ -7,31 +7,31 @@ import { PageWrapper } from 'styles/PageWrapper';
 import { Paper } from 'styles/Paper';
 
 export default function ForumsPage(props) {
-  const {} = props;
+	// const {} = props;
 
-  const router = useRouter();
+	const router = useRouter();
 
-  const topicId = router.query?.topicId;
-  const solved = router.query?.filter;
+	const topicId = router.query?.topicId;
+	const solved = router.query?.filter;
 
-  console.table({ topicId, solved });
+	console.table({ topicId, solved });
 
-  let relevantPosts = [...posts];
-  if (topicId)
-    relevantPosts = relevantPosts.filter(
-      (post) => `${post.topicId}` === topicId
-    );
+	let relevantPosts = [...posts];
+	if (topicId)
+		relevantPosts = relevantPosts.filter(
+			(post) => `${post.topicId}` === topicId
+		);
 
-  switch (solved) {
-    case 'solved':
-      relevantPosts = relevantPosts.filter((post) => post.solved);
-      break;
-    case 'unsolved':
-      relevantPosts = relevantPosts.filter((post) => !post.solved);
-      break;
-    default:
-      break;
-  }
+	switch (solved) {
+		case 'solved':
+			relevantPosts = relevantPosts.filter((post) => post.solved);
+			break;
+		case 'unsolved':
+			relevantPosts = relevantPosts.filter((post) => !post.solved);
+			break;
+		default:
+			break;
+	}
 
 	return (
 		<>
