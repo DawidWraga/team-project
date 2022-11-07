@@ -1,5 +1,5 @@
 ---
-title: 'THIS IS A NEW ARTICLE!'
+title: 'Printer Instructions'
 date: '2020-03-16T05:35:07.322Z'
 author:
   id:
@@ -7,10 +7,28 @@ author:
   img: http://www.nicesnippets.com/demo/profile-6.png
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilities morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.
-cd
-Venenatis cras sed felis eget velit. Consectetur libero id faucibus nisl tincidunt. Gravida in fermentum et sollicitudin ac orci phasellus egestas tellus. Volutpat consequat mauris nunc congue nisi vitae. Id aliquet risus feugiat in ante metus dictum at tempor. Sed blandit libero volutpat sed cras. Sed odio morbi quis commodo odio aenean sed adipiscing. Velit euismod in pellentesque massa placerat. Mi bibendum neque egestas congue quisque egestas diam in arcu. Nisi lacus sed viverra tellus in. Nibh cras pulvinar mattis nunc sed. Luctus accumsan tortor posuere ac ut consequat semper viverra. Fringilla ut morbi tincidunt augue interdum velit euismod.
+## What is a printer and why do we have them?
 
-## Lorem Ipsum
+In computing, a printer is a peripheral machine which makes a persistent representation of graphics or text, usually on paper. While most output is human-readable, bar code printers are an example of an expanded use for printers. Different types of printers include 3D printers, inkjet printers, laser printers, and thermal printers.
 
-Tristique senectus et netus et malesuada fames ac turpis. Ridiculous mus mauris vitae ultricies leo integer malesuada nunc vel. In mollis nunc sed id semper. Egestas tellus rutrum tellus pellentesque. Phasellus vestibulum lorem sed risus ultricies tristique nulla. Quis blandit turpis cursus in hac habitasse platea dictumst quisque. Eros donec ac odio tempor orci dapibus ultrices. Aliquam sem et tortor consequat id porta nibh. Adipiscing elit duis tristique sollicitudin nibh sit amet commodo nulla. Diam vulputate ut pharetra sit amet. Ut tellus elementum sagittis vitae et leo. Arcu non odio euismod lacinia at quis risus sed vulputate.
+![A printer](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Royal_lettermaster_printing.jpg/220px-Royal_lettermaster_printing.jpg)
+
+## History of the printer
+
+The first computer printer designed was a mechanically driven apparatus by Charles Babbage for his difference engine in the 19th century; however, his mechanical printer design was not built until 2000.
+
+The first commercial printers generally used mechanisms from electric typewriters and Teletype machines. The demand for higher speed led to the development of new systems specifically for computer use. In the 1980s there were daisy wheel systems similar to typewriters, line printers that produced similar output but at much higher speed, and dot-matrix systems that could mix text and graphics but produced relatively low-quality output. The plotter was used for those requiring high-quality line art like blueprints.
+![A fax machine](https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Panasonic_KX-F90.jpg/260px-Panasonic_KX-F90.jpg)
+
+## Printer Instructions
+
+### Loading Paper
+
+You can print on photo paper, index cards, or L-size cards.
+
+- ● Before loading paper, slide out the paper-width guide to make room for the paper.
+- ● Load only one type and size of paper at a time. Do not mix paper types or sizes in
+  the In tray.
+- ● Do not load more than 10 sheets of 10 x 30 cm (4 x 12 inches) photo paper for
+  panoramic printing (possible only when printing from a computer). Loading more
+  than ten sheets can cause paper feed problems.
