@@ -1,24 +1,12 @@
-// import MainLayout from 'components/layout/MainLayout';
+import { UserDashboard } from 'components/dashboards/UserDashboard';
+import { PageWrapper } from 'styles/PageWrapper';
 
 export default function DashboardPage(props) {
 	const {} = props;
 
-	return <div> dashboard page content</div>;
+	return (
+		<PageWrapper w="2xl">
+			<UserDashboard />
+		</PageWrapper>
+	);
 }
-
-// DashboardPage.getLayout = function getLayout(page) {
-// 	function HeaderContent() {
-// 		return <></>;
-// 	}
-// 	function SideNavContent() {
-// 		return <></>;
-// 	}
-
-// 	return (
-// 		<MainLayout
-// 			page={page}
-// 			SideNavContent={SideNavContent}
-// 			HeaderContent={HeaderContent}
-// 		/>
-// 	);
-// };

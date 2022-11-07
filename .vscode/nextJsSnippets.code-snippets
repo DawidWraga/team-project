@@ -32,7 +32,7 @@
 	"Next.js Function Component ": {
 		"prefix": "nfc",
 		"body": [
-			"export default function ${TM_FILENAME_BASE/.*/${0:/capitalize}/} (props) {",
+			"export function ${TM_FILENAME_BASE/.*/${0:/capitalize}/} (props) {",
 			"\tconst {} = props;",
 			"\t",
 			"\treturn (<$1>$2</$1>);",

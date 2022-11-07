@@ -1,25 +1,22 @@
 import query from 'controllers/query';
 import { writeToDb } from 'controllers/writeToDb';
 import { v4 as uuidv4 } from 'uuid';
-import { getCurrentUser } from 'controllers/auth';
 
 export default async function handler(req, res) {
   try {
     console.log(req.body);
     const id = uuidv4();
-    const post = {
+    const topic = {
       ...req.body,
+      numPosts: '0',
       id,
-      timesince: '0 days',
-      replies: '0',
-      solved: false,
     };
-    const posts = await query('posts');
-    const newposts = [post, ...posts];
+    const topics = await query('topics');
+    const newtopics = [topic, ...topics];
 
-    console.log(newposts);
+    console.log(newtopics);
 
-    await writeToDb('posts', newposts);
+    await writeToDb('topics', newtopics);
     res.status(200).send(id);
   } catch (e) {
     res.status(400).send(e);

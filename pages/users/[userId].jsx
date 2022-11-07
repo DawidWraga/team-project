@@ -1,6 +1,13 @@
-export default function IndividualUsersPage(props) {
-  //show users current tasks, current task status and previous activity
+import { Box } from '@chakra-ui/react';
+import { UserDashboard } from 'components/dashboards/UserDashboard';
+import { PageWrapper } from 'styles/PageWrapper';
+
+export default function IndividualUserPage(props) {
   const {} = props;
 
-  return <></>;
+  return (
+    <PageWrapper w="2xl">
+      <UserDashboard />
+    </PageWrapper>
+  );
 }
