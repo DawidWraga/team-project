@@ -64,10 +64,10 @@ export function UserDashboard(props) {
 					<Paper w="100%" h="100%" variant="elevated">
 						<LineChart
 							data={lineChartData}
-							colors={{
-								primary: 'hsl(213.10000000000002, 93.9%, 67.8%)',
-								secondary: 'hsl(173.39999999999998, 80.4%, 40%)',
-							}}
+							// colors={{
+							// 	primary: 'hsl(213.10000000000002, 93.9%, 67.8%)',
+							// 	secondary: 'hsl(173.39999999999998, 80.4%, 40%)',
+							// }}
 						/>
 					</Paper>
 				</GridItem>
