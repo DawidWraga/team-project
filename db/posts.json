@@ -32,7 +32,7 @@
 		"topicId": "1",
 		"timesince": "0 days",
 		"replies": "0",
-		"solved": true
+		"solved": false
 	},
 	{
 		"title": "Funky smell under Anjanas desk",
@@ -45,7 +45,7 @@
 		"id": "b7fb81cd-fa9a-474d-8783-34337fd3aa4a",
 		"timesince": "0 days",
 		"replies": "0",
-		"solved": false
+		"solved": true
 	},
 	{
 		"title": "New paint in the office",
