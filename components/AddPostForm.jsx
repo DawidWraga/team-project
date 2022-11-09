@@ -41,7 +41,7 @@ function PostForm() {
 		try {
 			const newData = {
 				...data,
-				name: getCurrentUser().name,
+				name: getCurrentUser().fullName,
 			};
 			const res = await axios.post('/api/addForumPost', newData);
 			toast.success('Post Created');
