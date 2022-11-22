@@ -126,7 +126,7 @@ export default function RegisterPage(props) {
 							required
 							{...register('email', {
 								required: true,
-								validate: (email) => email.includes('@client.com'),
+								validate: (email) => email.includes('@make-it-all.co.uk'),
 							})}
 						/>
 						{errors.email?.type === 'validate' && (

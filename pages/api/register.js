@@ -42,7 +42,7 @@ export default async function handler(req, res) {
 				{ ...req.body, role: 'emp' },
 			]);
 
-			await writeToDb('users', newUsers);
+			// await writeToDb('users', newUsers);
 
 			await setTimeoutPromise(500);
 
