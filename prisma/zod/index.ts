@@ -1,1 +1,7 @@
 export * from "./post"
+export * from "./comment"
+export * from "./user"
+export * from "./userrole"
+export * from "./task"
+export * from "./taskstatus"
+export * from "./project"
