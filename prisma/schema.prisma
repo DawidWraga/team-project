@@ -35,14 +35,86 @@ generator zod {
 }
 
 model Post {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  title     String    @db.VarChar(255) ///@zod.min(3)
+  id           Int       @id @default(autoincrement())
+  date_created DateTime  @default(now())
+  date_updated DateTime? @updatedAt
+  title        String    @db.Text ///@zod.min(3).trim
+  content      String    @db.Text
+  solved       Boolean
+  replies      Comment[]
+
+  author_id Int
+
+  author User @relation(fields: [author_id], references: [id])
 }
 
-// author    User?    @relation(fields: [authorId], references: [id])
-// authorId  Int?
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String   @db.Text
+  createdAt DateTime @default(now())
 
-// sample OtherModel @relation(fields: [FK], references: [OtherModelPK])
-// fieldFromOtherModel
+  author_id Int
+  post_id   Int
+
+  author User @relation(fields: [author_id], references: [id])
+  post   Post @relation(fields: [post_id], references: [id])
+}
+
+model User {
+  id        Int    @id @default(autoincrement())
+  full_name String @db.Text ///@zod.min(3).trim
+  email     String @db.Text ///@zod.email().trim
+  //must be 12 char long, least one uppercase letter, one lowercase letter, one number and one special character.
+  password  String @db.Text ///@zod.max(25).regex(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{12,}$/)
+  user_icon String @db.Text
+
+  role_id Int
+
+  role              UserRole  @relation(fields: [role_id], references: [id])
+  posts             Post[]
+  comments          Comment[]
+  tasks_assigned    Task[]
+  projects_assigned Project[]
+  projects_managed  Project[] @relation(name: "ProjectManagers")
+}
+
+model UserRole {
+  id    Int    @id @default(autoincrement())
+  label String @db.Text ///@zod.trim
+
+  users User[]
+}
+
+model Task {
+  id           Int      @id @default(autoincrement())
+  title        String   @db.Text ///@zod.trim
+  created_date DateTime @default(now())
+  due_date     DateTime @default(dbgenerated("DATE_ADD(CURRENT_TIMESTAMP,INTERVAL 7 DAY)"))
+  description  String   @default("") @db.Text
+  list_name    String   @default("") @db.Text
+
+  status_id  Int
+  project_id Int
+  asignees   User[]
+
+  status  TaskStatus @relation(fields: [status_id], references: [id])
+  project Project    @relation(fields: [project_id], references: [id])
+}
+
+model TaskStatus {
+  id    Int    @id @default(autoincrement())
+  label String @db.Text ///@zod.trim
+
+  tasks Task[]
+}
+
+model Project {
+  id           Int      @id @default(autoincrement())
+  title        String
+  created_date DateTime @default(now())
+  due_date     DateTime @default(dbgenerated("DATE_ADD(CURRENT_TIMESTAMP,INTERVAL 7 DAY)"))
+
+  assignees User[]
+  managers  User[] @relation(name: "ProjectManagers")
+  tasks     Task[]
+}
