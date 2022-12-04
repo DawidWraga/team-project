@@ -10,9 +10,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
+// npx prisma generate 
+
+generator zod {
+  provider      = "zod-prisma"
+  output        = "./zod"
+  relationModel = true // (default) Create and export both plain and related models.
+  // relationModel         = "default" // Do not export model without relations.
+  // relationModel         = false // Do not generate related model
+
+  modelCase = "PascalCase" // (default) Output models using pascal case (ex. UserModel, PostModel)
+  // modelCase             = "camelCase" // Output models using camel case (ex. userModel, postModel)
+
+  modelSuffix = "Model" // (default) Suffix to apply to your prisma models when naming Zod schemas
+
+  // useDecimalJs = false // (default) represent the prisma Decimal type using as a JS number
+  useDecimalJs = true // represent the prisma Decimal type using Decimal.js (as Prisma does)
+
+  imports = "./zod/helpers" // (default) will import the referenced file in generated schemas to be used via imports.someExportedVariable
+
+  // https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-by-null-values
+  prismaJsonNullability = true // (default) uses prisma's scheme for JSON field nullability
+  // prismaJsonNullability = false // allows null assignment to optional JSON fields
 }
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  title     String    @db.VarChar(255) ///@zod.min(3)
+}
+
+// author    User?    @relation(fields: [authorId], references: [id])
+// authorId  Int?
+
+// sample OtherModel @relation(fields: [FK], references: [OtherModelPK])
+// fieldFromOtherModel
