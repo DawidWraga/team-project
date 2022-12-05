@@ -34,6 +34,12 @@ generator zod {
   // prismaJsonNullability = false // allows null assignment to optional JSON fields
 }
 
+model Example {
+  id           Int      @id @default(autoincrement())
+  date_created DateTime @default(now())
+  text         String ///@zod.min(3)
+}
+
 model Post {
   id           Int       @id @default(autoincrement())
   date_created DateTime  @default(now())
