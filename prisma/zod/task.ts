@@ -4,7 +4,7 @@ import { CompleteUser, RelatedUserModel, CompleteTaskStatus, RelatedTaskStatusMo
 
 export const TaskModel = z.object({
   id: z.number().int(),
-  title: z.string(),
+  title: z.string().trim(),
   created_date: z.date(),
   due_date: z.date(),
   description: z.string(),
