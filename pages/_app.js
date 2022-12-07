@@ -25,7 +25,7 @@ function MyApp({ Component, pageProps }) {
 	// }
 	const [loading, setLoading] = useState(false);
 
-	// AUTH CHECK TOP ONE SHOULD BE  WORKING
+	// AUTH CHECK 
 	useEffect(() => {
 		window.scrollTo(0, 1);
 		(async () => {

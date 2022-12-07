@@ -1,5 +1,5 @@
 import { Button, Flex, Input } from '@chakra-ui/react';
-import { FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/react';
+import { FormControl, FormLabel } from '@chakra-ui/react';
 import { Grid, GridItem } from '@chakra-ui/react';
 import { HiInformationCircle } from 'react-icons/hi';
 import {
@@ -7,11 +7,8 @@ import {
   PopoverTrigger,
   PopoverContent,
   PopoverHeader,
-  PopoverBody,
-  PopoverFooter,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverAnchor,
+  PopoverBody, PopoverArrow,
+  PopoverCloseButton
 } from '@chakra-ui/react';
 
 export default function EditProfile(props) {

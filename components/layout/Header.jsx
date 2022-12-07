@@ -8,7 +8,7 @@ import HeaderContent from './HeaderContent';
 
 export default function Header(props) {
 	const {} = props;
-	const { activePage, sideNavIsOpen, setSideNavIsOpen } = useGlobalContext();
+	const {  sideNavIsOpen, setSideNavIsOpen } = useGlobalContext();
 
 	return (
 		<>

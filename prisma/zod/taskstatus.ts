@@ -4,7 +4,7 @@ import { CompleteTask, RelatedTaskModel } from "./index"
 
 export const TaskStatusModel = z.object({
   id: z.number().int(),
-  label: z.string(),
+  label: z.string().trim(),
 })
 
 export interface CompleteTaskStatus extends z.infer<typeof TaskStatusModel> {

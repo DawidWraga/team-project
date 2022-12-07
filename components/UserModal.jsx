@@ -1,13 +1,8 @@
 import {
   Modal,
   ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Button,
-  Box,
+  ModalContent, ModalBody,
+  ModalCloseButton, Box,
   Flex,
   Avatar,
   Text,
@@ -16,7 +11,7 @@ import {
   Tab,
   TabPanels,
   TabPanel,
-  Progress,
+  Progress
 } from '@chakra-ui/react';
 
 import EditProfile from './EditProfile';
