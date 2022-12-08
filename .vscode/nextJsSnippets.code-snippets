@@ -34,6 +34,19 @@
     "prefix": "clg",
     "body": ["console.log($1)"]
   },
+  "Next.js API handler": {
+    "prefix": "api",
+    "body": [
+      "import { apiHandler } from 'lib-server/nc';",
+      "",
+      "const handler = apiHandler();",
+      "",
+      "handler.get(async (req, res) => {",
+      "",
+      "});",
+      "export default handler;"
+    ]
+  },
   "Next.js Function Component (js)": {
     "scope": "javascript",
     "prefix": "nfc",

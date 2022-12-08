@@ -17,6 +17,6 @@
 		"jsx": "preserve",
 		"baseUrl": "."
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/api/inviteTeam.js"],
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/api/inviteTeam.js", "styles/chakra-theme.js", "styles/chakra-theme.js"],
 	"exclude": ["node_modules"]
 }

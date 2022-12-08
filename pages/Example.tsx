@@ -1,79 +1,43 @@
-import { background } from '@chakra-ui/react';
-import axios from 'axios';
-import { useState } from 'react';
+import { Box } from '@chakra-ui/react';
+import { useChakraForm } from 'lib-client/useChakraForm';
+import { toast } from 'react-toastify';
+import { z } from 'zod';
+import { Switch } from '@chakra-ui/react';
 
-const URL = 'https://jsonplaceholder.typicode.com/posts';
+interface IProps {}
 
-// prop types
-interface IProps {
-  posts: any[];
-}
+const schema = z.object({
+  username: z.string().min(5).max(25),
+  firstName: z.string(),
+  lastName: z.string(),
+  notifications: z.any().optional(),
+});
 
-// server side function
-
-export async function getServerSideProps() {
-  const res = await axios(URL);
-  const posts = res.data;
-
-  return {
-    props: {
-      posts,
-    },
-  };
-}
-
-// client side component
 export default function ExamplePage(props: IProps) {
-  // const { posts } = props;
+  const {} = props;
 
-  const posts = [
-    { name: 'test1', status: 'complete' },
-    { name: 'test2', status: 'not' },
-  ];
+  const { Input, DebugPanel, Form } = useChakraForm({ schema });
 
-  const [view, setView] = useState<'posts' | 'button' | 'square'>('posts');
-
-  const Posts = () => {
-    const statusToColorMap = {
-      complete: 'green',
-      not: 'red',
-    };
-
-    return (
-      <>
-        {posts.map((post) => {
-          return (
-            <>
-              <span style={{ backgroundColor: statusToColorMap[post.status] }}>
-                {post.status}
-              </span>
-              <span>{post.name}</span>
-              <br />
-            </>
-          );
-        })}
-      </>
-    );
-  };
-  const Button = () => {
-    return (
-      <>
-        <button>hello</button>
-      </>
-    );
-  };
-
-  const viewToComponentMap = {
-    posts: <Posts />,
-    button: <Button />,
-  };
+  // const onSubmit = (data) => toast(JSON.stringify(data));
 
   return (
     <>
-      <button onClick={() => setView('posts')}>posts</button>
-      <button onClick={() => setView('button')}>button</button>
-      <br />
-      {viewToComponentMap[view]}
+      <Form
+        onSubmit={(data) => {
+          console.log(data);
+        }}
+      >
+        <Input name="username" />
+        <Input name="firstName" />
+        <Input name="lastName" />
+        <Input
+          name="notifications"
+          customInput={({ field }) => {
+            return <Switch {...field} />;
+          }}
+        />
+        <DebugPanel />
+      </Form>
     </>
   );
 }
