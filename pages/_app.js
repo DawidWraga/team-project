@@ -14,73 +14,80 @@ import Head from 'next/head';
 import Loading from 'components/loading';
 import MainLayout from 'components/layout/MainLayout';
 import { GlobalContextProvider } from 'contexts/GlobalContext';
-import { Analytics } from '@vercel/analytics/react';
+import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 function MyApp({ Component, pageProps }) {
-	const router = useRouter();
+  const router = useRouter();
+  // const [queryClient] = useState(() => new QueryClient());
+  const queryClient = new QueryClient();
 
-	// ======CHECK AUTH STATE; REDIRECT IF NOT AUTHENTICATED======
+  // ======CHECK AUTH STATE; REDIRECT IF NOT AUTHENTICATED======
 
-	// function AuthGuard() {
-	// }
-	const [loading, setLoading] = useState(false);
+  // function AuthGuard() {
+  // }
+  const [loading, setLoading] = useState(false);
 
-	// AUTH CHECK 
-	useEffect(() => {
-		window.scrollTo(0, 1);
-		(async () => {
-			setLoading(true);
+  // AUTH CHECK
+  useEffect(() => {
+    window.scrollTo(0, 1);
+    (async () => {
+      setLoading(true);
 
-			const isSignedIn = await getCurrentUser();
-			if (!isSignedIn && router.asPath !== '/register') {
-				router.replace('/auth');
-				await setTimeoutPromise(200);
-			}
+      const isSignedIn = await getCurrentUser();
+      if (!isSignedIn && router.asPath !== '/register') {
+        router.replace('/auth');
+        await setTimeoutPromise(200);
+      }
 
-			if (isSignedIn && router.pathname === '/') {
-				router.replace('/dashboard');
-			}
+      if (isSignedIn && router.pathname === '/') {
+        router.replace('/dashboard');
+      }
 
-			setLoading(false);
-		})();
-	}, []);
+      setLoading(false);
+    })();
+  }, []);
 
-	return (
-		<>
-			<NProgress />
-			<Head>
-				<meta name="apple-mobile-web-app-capable" content="yes" />
-				<meta name="mobile-web-app-capable" content="yes" />
-				<link rel="manifest" href="/manifest.json" />
-			</Head>
-			<ToastContainer
-				position="top-right"
-				autoClose={2000}
-				hideProgressBar={true}
-				newestOnTop={true}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-				theme="light"
-				transition={Slide}
-			/>
-			<ChakraProvider theme={theme}>
-				<GlobalContextProvider>
-					{loading ? (
-						<Loading />
-					) : (
-						// getLayout(<Component {...pageProps} />)
-						<MainLayout>
-							<Component {...pageProps} />
-						</MainLayout>
-					)}
-				</GlobalContextProvider>
-			</ChakraProvider>
-			<Analytics />
-		</>
-	);
+  return (
+    <>
+      <NProgress />
+      <Head>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <link rel="manifest" href="/manifest.json" />
+      </Head>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={true}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Slide}
+      />
+      <ChakraProvider theme={theme}>
+        <GlobalContextProvider>
+          {loading ? (
+            <Loading />
+          ) : (
+            // getLayout(<Component {...pageProps} />)
+            <QueryClientProvider client={queryClient}>
+              <Hydrate state={pageProps.dehydratedState}>
+                <MainLayout>
+                  <Component {...pageProps} />
+                </MainLayout>
+                <ReactQueryDevtools initialIsOpen={false} />
+              </Hydrate>
+            </QueryClientProvider>
+          )}
+        </GlobalContextProvider>
+      </ChakraProvider>
+    </>
+  );
 }
 
 export default MyApp;

@@ -15,18 +15,3 @@ export default function Home() {
 
 
 
-// //Set up SWR to run the fetcher function when calling "/api/staticdata"
-// //There are 3 possible states: (1) loading when data is null (2) ready when the data is returned (3) error when there was an error fetching the data
-// const { data, error } = useSWR('/api/auth', fetcher);
-// //Handle the error state
-// if (error) return <div>Failed to load</div>;
-// //Handle the loading state
-// if (!data) return <div>Loading...</div>;
-// //Handle the ready state and display the result contained in the data object mapped to the structure of the json file
-
-// useEffect(() => {
-// 	(async function () {
-// 		const { users } = (await axios('db/users.json')).data;
-// 		console.log(users);
-// 	})();
-// }, []);

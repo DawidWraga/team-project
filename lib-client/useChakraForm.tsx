@@ -18,12 +18,14 @@ import {
   BoxProps,
   Button,
   ButtonGroup,
+  ButtonProps,
   FormControl,
   FormErrorMessage,
   FormLabel,
   Input as ChakraInput,
   InputProps as CharkaInputProps,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 
 export interface IFieldAndFieldState<TFieldValues extends FieldValues = FieldValues> {
   field: ControllerRenderProps<TFieldValues, Path<TFieldValues>>;
@@ -34,6 +36,7 @@ interface IFormProps<TFieldValues> extends Omit<BoxProps, 'onSubmit'> {
   children: React.ReactNode;
   onSubmit?: (data: TFieldValues) => any;
   submitLabel?: string;
+  submitBtnProps?: ButtonProps;
 }
 
 export interface ICreateInputProps<TFieldValues extends FieldValues = FieldValues> {
@@ -42,6 +45,7 @@ export interface ICreateInputProps<TFieldValues extends FieldValues = FieldValue
   label?: string;
   placeholder?: string;
   helperText?: string;
+  type?: string;
   controllerProps?: Omit<UseControllerProps, 'name' | 'control' | 'render'>;
   inputProps?: (props: IFieldAndFieldState<TFieldValues>) => CharkaInputProps;
   customInput?: (props: IFieldAndFieldState<TFieldValues>) => JSX.Element;
@@ -77,22 +81,25 @@ export const useChakraForm = <
     resolver: zodResolver(schema),
   } as UseFormProps<TFieldValues, TContext>);
 
+  // obj.formState.
+
+  // const [isServerSuccess, setIsServerSuccess] = useState(false);
+
   const Form = (props: IFormProps<TFieldValues>) => {
-    let { children, onSubmit, submitLabel } = props;
+    let { children, onSubmit, submitLabel, submitBtnProps, ..._props } = props;
     if (!onSubmit) onSubmit = (data) => console.table(data);
     return (
       <Box
         as={'form'}
-        maxW="50vw"
-        mx="auto"
         bgColor={'#fff'}
         px="5"
         display="flex"
         flexDir="column"
-        gap="5"
+        gap="1"
         onSubmit={obj.handleSubmit(onSubmit)}
         noValidate
         py="1rem"
+        {..._props}
       >
         {children}
         <Button
@@ -100,6 +107,7 @@ export const useChakraForm = <
           textTransform={'capitalize'}
           variant="solid"
           colorScheme={'brand'}
+          {...submitBtnProps}
         >
           {submitLabel || 'submit'}
         </Button>
@@ -116,9 +124,10 @@ export const useChakraForm = <
       label,
       placeholder,
       helperText,
+      type,
     } = props;
 
-    if (!!customInput && (!!inputProps || !!placeholder))
+    if (!!customInput && (!!inputProps || !!placeholder || !!type))
       console.warn(
         'If custom input is used, input props will not be applied.\n Must Place inputProps directly on component inside custominput.'
       );
@@ -126,7 +135,7 @@ export const useChakraForm = <
     // derive required from zod schema
     // if schema not available, pressume required
     const required = (schema as any).shape
-      ? (schema as any).shape[name]._def.typeName !== 'ZodOptional'
+      ? (schema as any)?.shape[name]?._def?.typeName !== 'ZodOptional'
       : true;
 
     return (
@@ -154,6 +163,7 @@ export const useChakraForm = <
                 <ChakraInput
                   {...processedField}
                   placeholder={placeholder}
+                  type={type}
                   {...inputProps}
                 />
               )}
@@ -161,8 +171,6 @@ export const useChakraForm = <
               {error && <FormErrorMessage>{error.message}</FormErrorMessage>}
             </FormControl>
           );
-
-
         }}
       />
     );

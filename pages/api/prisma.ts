@@ -5,10 +5,8 @@ import { ExampleModel } from 'prisma/zod';
 
 const handler = apiHandler();
 
-const schema = ExampleModel.pick({ id: true });
-// apiValidate(schema)
 handler.post(async (req, res) => {
-  console.log('api/example fired');
+  console.log('api/prisma fired');
 
   const { operation } = req.body;
 

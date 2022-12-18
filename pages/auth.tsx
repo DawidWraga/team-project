@@ -1,28 +1,24 @@
 import axios from 'axios';
-import { executeSignIn } from '/controllers/auth';
+import { executeSignIn } from 'controllers/auth';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import {
-  Button,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  Box,
-  Heading,
-  Link as StyledLink,
-  Flex,
-} from '@chakra-ui/react';
-import { getCurrentUser } from '/controllers/auth';
+import { Heading, Flex } from '@chakra-ui/react';
+import { getCurrentUser } from 'controllers/auth';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import { MdCheck } from 'react-icons/md';
-import Link from 'next/link';
 import { BrandLogoWithName } from 'components/BrandLogo';
 import { DesktopOnly, MobileOnly } from 'components/deviceTypes';
+import { useChakraForm } from 'lib-client/useChakraForm';
+import { z } from 'zod';
 
-export default function AuthPage(props) {
+const schema = z.object({
+  email: z.string().min(1, { message: 'Required' }),
+  password: z.string().min(1, { message: 'Required' }),
+});
+
+interface IProps {}
+export default function AuthPage(props: IProps) {
   const {} = props;
   const router = useRouter();
 
@@ -33,10 +29,11 @@ export default function AuthPage(props) {
   }, []);
 
   const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm();
+    formState: { isSubmitting },
+    Input,
+    Form,
+    DebugPanel,
+  } = useChakraForm({ schema });
 
   const [isServerSuccess, setIsServerSuccess] = useState(false);
 
@@ -60,6 +57,7 @@ export default function AuthPage(props) {
       h="100vh"
       justifyContent={'center'}
     >
+      <DebugPanel />
       <Flex
         as="main"
         className="bg-white justify-center  rounded-lg shadow-xl "
@@ -73,59 +71,32 @@ export default function AuthPage(props) {
         flexDir="column"
       >
         <DesktopOnly w="100%">
-          <Heading size="lg" fontWeight={600} textAlign="center">
+          <Heading size="lg" fontWeight={600} textAlign="center" mb="2">
             Sign into Portal
           </Heading>
         </DesktopOnly>
         <MobileOnly w="100%">
           <BrandLogoWithName />
         </MobileOnly>
-        <Flex
-          as="form"
-          onSubmit={handleSubmit(onSubmit)}
+        <Form
+          onSubmit={onSubmit}
           className="flex flex-col justify-center items-center w-full child:my-5 child:w-full child:max-w-[450px]"
           px={{ base: 3, sm: 6, lg: 8 }}
           id="login-form"
+          submitLabel={isServerSuccess ? 'Success!' : 'Login'}
+          submitBtnProps={{
+            isLoading: isSubmitting,
+            colorScheme: isServerSuccess ? 'green' : 'brand',
+            loadingText: 'Submitting',
+            leftIcon: isServerSuccess && <MdCheck fontSize="1.5rem" />,
+          }}
         >
-          <FormControl isRequired>
-            <FormLabel>Email</FormLabel>
-
-            <Input
-              type="email"
-              placeholder="johnsmith@client.com"
-              className="input-outline mt-px "
-              required
-              {...register('email', {
-                required: true,
-              })}
-            />
-          </FormControl>
-          <FormControl isRequired>
-            <FormLabel>Password</FormLabel>
-            <Input
-              type="password"
-              placeholder="**********"
-              className="input-outline"
-              required
-              {...register('password', {
-                required: true,
-              })}
-            />
-          </FormControl>
-          <Button
-            type="submit"
-            colorScheme={isServerSuccess ? 'green' : 'brand'}
-            variant="solid"
-            isLoading={isSubmitting}
-            loadingText="Submitting"
-            leftIcon={isServerSuccess && <MdCheck fontSize="1.5rem" />}
-          >
-            {isServerSuccess ? 'Success!' : 'Login'}
-          </Button>
-        </Flex>
+          <Input name="email" type="email" />
+          <Input name="password" type="password" />
+        </Form>
       </Flex>
       <DesktopOnly w="100%" h="100vh" display="flex" justifyContent="center">
-        <Logo
+        <BrandLogoWithName
           sx={{
             '& > svg': { fontSize: '7rem' },
             '& > h2': { fontSize: '4rem' },
