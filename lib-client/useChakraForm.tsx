@@ -4,15 +4,17 @@ import {
   ControllerFieldState,
   ControllerRenderProps,
   Field,
+  FieldPathValue,
   FieldValues,
   Path,
+  PathValue,
   UseControllerProps,
   useForm,
   UseFormProps,
   UseFormReturn,
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ZodType } from 'zod';
+import { ZodType, unknown } from 'zod';
 import {
   Box,
   BoxProps,
@@ -40,7 +42,7 @@ interface IFormProps<TFieldValues> extends Omit<BoxProps, 'onSubmit'> {
 }
 
 export interface ICreateInputProps<TFieldValues extends FieldValues = FieldValues> {
-  name: string;
+  name: Path<TFieldValues>;
   required?: boolean;
   label?: string;
   placeholder?: string;
@@ -146,6 +148,7 @@ export const useChakraForm = <
         {...controllerProps}
         render={({ field, fieldState }) => {
           const { error } = fieldState;
+
           // prevent uncontrolled => controlled error messages by defaulting undefined value to empty string
           const processedField = {
             ...field,
@@ -164,6 +167,12 @@ export const useChakraForm = <
                   {...processedField}
                   placeholder={placeholder}
                   type={type}
+                  //transform input value into number if input type is number
+                  {...(type === 'number' && {
+                    onChange: (ev) => {
+                      obj.setValue(name, Number(ev.target.value) as any);
+                    },
+                  })}
                   {...inputProps}
                 />
               )}

@@ -6,35 +6,33 @@ import { ExampleModel } from 'prisma/zod';
 const handler = apiHandler();
 
 handler.post(async (req, res) => {
-  console.log('api/prisma fired');
+  // console.log('api/prisma fired', req.body);
 
-  const { operation } = req.body;
+  let { operation, model, prismaProps } = req.body;
 
-  if (operation === 'findMany') {
-    const data = await prisma.example.findMany();
+  //apply default data format for convenience
+  if (operation === 'create' && !prismaProps.data) prismaProps = { data: prismaProps };
+  if (
+    operation.includes('find') ||
+    (operation === 'delete' && prismaProps && !prismaProps.where)
+  )
+    prismaProps = { where: prismaProps };
+  if (
+    operation.includes('update') &&
+    prismaProps.id &&
+    !prismaProps.where &&
+    !prismaProps.data
+  ) {
+    const { id, ...rest } = prismaProps;
+    prismaProps = { where: { id }, data: { ...rest } };
+  }
+  console.log({ prismaProps });
+  try {
+    const data = await prisma[model][operation](prismaProps);
     res.send(data);
+  } catch (e) {
+    res.status(400).send(e);
   }
-
-  if (operation === 'create') {
-    // console.log(req.body.data.prismaProps);
-    console.log(req.body);
-    const { data } = req.body.prismaProps;
-    console.log(data);
-    const prismaRes = await prisma.example.create({
-      data,
-    });
-    res.send(prismaRes);
-  }
-
-  // const data = await prisma.example.findUnique({
-  //   where: {
-  //     id: 1,
-  //   },
-  // });
-
-  // res.json({ data });
 });
-
-handler.post(async (req, res) => {});
 
 export default handler;

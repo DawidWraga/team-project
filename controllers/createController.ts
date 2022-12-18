@@ -48,7 +48,9 @@ interface IControlUseQueryProps<
   TError = unknown,
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey
-> extends Omit<IUseCreateQueryProps<TQueryFnData, TError, TData, TQueryKey>, 'queryFn'> {}
+> extends Omit<IUseCreateQueryProps<TQueryFnData, TError, TData, TQueryKey>, 'queryFn'> {
+  prismaProps?: { [key: string]: any };
+}
 
 interface IControl {
   url: string;
@@ -127,7 +129,8 @@ export const createController = <
   /**
    * api endpoint derived from model name
    **/
-  const url = `${urlStart}/api/${model.toLowerCase()}`;
+  const url = `${urlStart}/api/prisma`;
+  // const url = `${urlStart}/api/${model.toLowerCase()}`;
 
   const controller = { url } as IController<
     TReadFnQueryData,
@@ -140,10 +143,6 @@ export const createController = <
     TContext
   >;
 
-  // ========= CLIENT SIDE OPERATIONS (react-query) ======
-
-  // const invalidateKeys = ['findMany', 'findUnique'].map((op) => `${model}_${op}`);
-
   Object.entries(operationOptions).forEach(([operation, option]) => {
     const key = `${model}_${operation}`;
 
@@ -153,7 +152,7 @@ export const createController = <
           method: 'POST',
           url,
           ...config,
-          data: { operation, ...config?.data },
+          data: { operation, model, ...config?.data },
         });
 
         return res.data;
@@ -175,9 +174,10 @@ export const createController = <
       ) => {
         return useCreateQuery({
           queryKey: [model, operation] as any,
-          // queryKey: [model, operation] as TReadQueryKey,
           queryFn: fetcher,
-          fetcherConfig: { data: { operation } },
+          ...(!!options?.prismaProps && {
+            fetcherConfig: { data: { prismaProps: options.prismaProps } },
+          }),
           passQuery: true,
           ...options,
         });
@@ -196,7 +196,8 @@ export const createController = <
       ) =>
         useCreateMutation<TData, TError, TVariables, TContext>({
           mutationKey: [model, operation],
-          mutationFn: (data) => fetcher({ data: { operation, prismaProps: { data } } }),
+          mutationFn: (data) =>
+            fetcher({ data: { operation, prismaProps: { ...data } } }),
           invalidateKeys: [model],
           ...options,
         });

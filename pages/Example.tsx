@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import { useChakraForm } from 'lib-client/useChakraForm';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
@@ -20,37 +20,59 @@ export const getServerSideProps = Example.findMany.prefetch;
 export default function ExamplePage(props: IProps) {
   const {} = props;
 
-  const { data, isLoading } = Example.findMany.use();
-  const { mutate, ...createRest } = Example.create.use();
+  const findMany = Example.findMany.use();
+  const findUnique = Example.findUnique.use({
+    prismaProps: { id: 54 },
+  });
+  const create = Example.create.use();
+  const update = Example.update.use();
+  const del = Example.delete.use();
 
-  const { Input, DebugPanel, Form } = useChakraForm({
+  const CreateForm = useChakraForm({
     schema: ExampleModel.pick({ text: true }),
   });
-
-  // const onSubmit = (data) => toast(JSON.stringify(data));
+  const UpdateForm = useChakraForm({
+    schema: ExampleModel.pick({ text: true, id: true }),
+  });
+  const DeleteForm = useChakraForm({
+    schema: ExampleModel.pick({ id: true }),
+  });
 
   return (
-    <Box display="flex" flexDir="row">
-      <Form
-        onSubmit={mutate}
-        submitBtnProps={{ isLoading: createRest.isLoading }}
-        maxW="30vw"
-      >
-        <Input name="text" />
-        {/* <Input name="firstName" />
-        <Input name="lastName" />
-        <Input
-          name="notifications"
-          customInput={({ field }) => {
-            return <Switch {...field} />;
-          }}
-        /> */}
-        <DebugPanel />
-      </Form>
+    <Flex flexDir="column">
+      <Flex flexDir="row">
+        <CreateForm.Form
+          onSubmit={create.mutate}
+          submitBtnProps={{ isLoading: create.isLoading }}
+        >
+          <Text>Create</Text>
+          <CreateForm.Input name="text" />
+        </CreateForm.Form>
+        <UpdateForm.Form
+          onSubmit={update.mutate}
+          submitBtnProps={{ isLoading: update.isLoading }}
+        >
+          <Text>Update</Text>
+          <UpdateForm.Input name="text" />
+          <UpdateForm.Input type="number" name="id" />
+        </UpdateForm.Form>
+        <DeleteForm.Form
+          onSubmit={del.mutate}
+          submitBtnProps={{ isLoading: del.isLoading }}
+        >
+          <Text>Delete</Text>
+          <DeleteForm.Input type="number" name="id" />
+        </DeleteForm.Form>
+        <Box>
+          item 52 = <br />
+          {findUnique.data && JSON.stringify(findUnique.data)}
+        </Box>
+      </Flex>
       <Box bgColor="pale.main" w="100%">
-        {isLoading && 'loading'}
-        {data && data.map((item) => <p key={item.id}>{JSON.stringify(item)}</p>)}
+        {findMany.isLoading && 'loading'}
+        {findMany.data &&
+          findMany.data.map((item) => <p key={item.id}>{JSON.stringify(item)}</p>)}
       </Box>
-    </Box>
+    </Flex>
   );
 }
