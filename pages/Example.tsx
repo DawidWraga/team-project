@@ -8,13 +8,6 @@ import { ExampleModel } from 'prisma/zod';
 
 interface IProps {}
 
-// const schema = z.object({
-//   username: z.string().min(5).max(25),
-//   firstName: z.string(),
-//   lastName: z.string(),
-//   notifications: z.any().optional(),
-// });
-
 export const getServerSideProps = Example.findMany.prefetch;
 
 export default function ExamplePage(props: IProps) {

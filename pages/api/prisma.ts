@@ -1,4 +1,5 @@
 import { apiValidate } from 'lib-server/apiValidate';
+import { getAxiosErrorMessage } from 'lib-server/axios';
 import { apiHandler } from 'lib-server/nc';
 import prisma from 'lib-server/prisma';
 import { ExampleModel } from 'prisma/zod';
@@ -26,12 +27,13 @@ handler.post(async (req, res) => {
     const { id, ...rest } = prismaProps;
     prismaProps = { where: { id }, data: { ...rest } };
   }
-  console.log({ prismaProps });
+  // console.log({ prismaProps });
   try {
     const data = await prisma[model][operation](prismaProps);
     res.send(data);
   } catch (e) {
-    res.status(400).send(e);
+    // console.log(e);
+    res.status(400).send(getAxiosErrorMessage(e));
   }
 });
 

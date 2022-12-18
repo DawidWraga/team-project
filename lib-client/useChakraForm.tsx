@@ -28,6 +28,7 @@ import {
   InputProps as CharkaInputProps,
 } from '@chakra-ui/react';
 import { useState } from 'react';
+import { SubmitHandler } from 'react-hook-form/dist/types';
 
 export interface IFieldAndFieldState<TFieldValues extends FieldValues = FieldValues> {
   field: ControllerRenderProps<TFieldValues, Path<TFieldValues>>;
@@ -83,12 +84,9 @@ export const useChakraForm = <
     resolver: zodResolver(schema),
   } as UseFormProps<TFieldValues, TContext>);
 
-  // obj.formState.
-
-  // const [isServerSuccess, setIsServerSuccess] = useState(false);
-
   const Form = (props: IFormProps<TFieldValues>) => {
     let { children, onSubmit, submitLabel, submitBtnProps, ..._props } = props;
+    // const [isServerSuccess, setIsServerSuccess] = useState(false);
     if (!onSubmit) onSubmit = (data) => console.table(data);
     return (
       <Box
@@ -99,6 +97,13 @@ export const useChakraForm = <
         flexDir="column"
         gap="1"
         onSubmit={obj.handleSubmit(onSubmit)}
+        // onSubmit={obj.handleSubmit((data) => {
+        //   try {
+        //     onSubmit(data);
+        //   } catch (e) {
+        //     console.log('HERE HERE HERE', e);
+        //   }
+        // })}
         noValidate
         py="1rem"
         {..._props}
@@ -113,6 +118,7 @@ export const useChakraForm = <
         >
           {submitLabel || 'submit'}
         </Button>
+        {/* {obj.state.errors. <FormErrorMessage></FormErrorMessage>} */}
       </Box>
     );
   };

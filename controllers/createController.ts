@@ -5,7 +5,9 @@ import {
   DehydratedState,
   QueryKey,
   UseMutationResult,
+  UseQueryOptions,
   UseQueryResult,
+  useQuery,
 } from 'react-query';
 import { IUseCreateQueryProps, useCreateQuery } from 'controllers/useCreateQuery';
 import {
@@ -13,14 +15,6 @@ import {
   useCreateMutation,
 } from 'controllers/useCreateMutation';
 import { Prisma } from '@prisma/client';
-
-const operationToMethod = {
-  findMany: 'POST',
-  findUnique: 'GET',
-  create: 'POST',
-  update: 'PUT',
-  delete: 'DELETE',
-};
 
 export type IOperations = 'findMany' | 'findUnique' | 'create' | 'update' | 'delete';
 
@@ -48,8 +42,9 @@ interface IControlUseQueryProps<
   TError = unknown,
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey
-> extends Omit<IUseCreateQueryProps<TQueryFnData, TError, TData, TQueryKey>, 'queryFn'> {
+> extends UseQueryOptions<TQueryFnData, TError, TData, TQueryKey> {
   prismaProps?: { [key: string]: any };
+  fetcherConfig?: AxiosRequestConfig<any>;
 }
 
 interface IControl {
@@ -147,38 +142,43 @@ export const createController = <
     const key = `${model}_${operation}`;
 
     const fetcher = async (config?: AxiosRequestConfig<any>) => {
-      try {
-        const res = await axios({
-          method: 'POST',
-          url,
-          ...config,
-          data: { operation, model, ...config?.data },
-        });
+      // try {
+      const res = await axios({
+        method: 'POST',
+        url,
+        ...config,
+        data: { operation, model, ...config?.data },
+      });
 
-        return res.data;
-      } catch (e) {
-        console.error(e);
-      }
+      return res.data;
+      // } catch (e) {
+      //   console.error(e);
+      // }
     };
 
     if (operation.includes('find')) {
       const prefetch = prefetchQuery(key, fetcher as () => Promise<any>);
 
       const use = (
-        options: IControlUseQueryProps<
+        { prismaProps, fetcherConfig, ...options } = {} as IControlUseQueryProps<
           TReadFnQueryData,
           TReadError,
           TReadData,
           TReadQueryKey
         >
       ) => {
-        return useCreateQuery({
+        return useQuery({
+          refetchOnMount: false,
+          refetchOnWindowFocus: false,
           queryKey: [model, operation] as any,
-          queryFn: fetcher,
-          ...(!!options?.prismaProps && {
-            fetcherConfig: { data: { prismaProps: options.prismaProps } },
-          }),
-          passQuery: true,
+          queryFn: () =>
+            fetcher({
+              ...fetcherConfig,
+              data: {
+                ...fetcherConfig?.data,
+                prismaProps,
+              },
+            }),
           ...options,
         });
       };
