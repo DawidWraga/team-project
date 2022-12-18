@@ -26,7 +26,7 @@ export const useCreateMutation = <
       if (options?.invalidateKeys) {
         await queryClient.invalidateQueries(options?.invalidateKeys!);
       }
-      // if (options?.onSuccess) options?.onSuccess(data, variables, context);
+      if (options?.onSuccess) options?.onSuccess(data, variables, context);
     },
   });
 
