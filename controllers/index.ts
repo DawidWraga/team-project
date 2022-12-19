@@ -6,6 +6,6 @@ import { z } from 'zod';
 
 type IExample = z.infer<typeof ExampleModel>;
 
-export const Example = createController<IExample, any, IExample[], any, IExample>({
-  model: 'Example',
+export const Example = createController<IExample>({
+  model: 'example',
 });

@@ -1,17 +1,15 @@
 import axios from 'axios';
-import { executeSignIn } from 'controllers/auth';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { Heading, Flex } from '@chakra-ui/react';
 import { getCurrentUser } from 'controllers/auth';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
-import { MdCheck } from 'react-icons/md';
+import { MdLogin } from 'react-icons/md';
 import { BrandLogoWithName } from 'components/BrandLogo';
 import { DesktopOnly, MobileOnly } from 'components/deviceTypes';
 import { useChakraForm } from 'lib-client/useChakraForm';
 import { z } from 'zod';
-import { useLayoutStore } from 'stores/LayoutStore';
 
 const schema = z.object({
   email: z.string().min(1, { message: 'Required' }),
@@ -23,28 +21,18 @@ export default function AuthPage(props: IProps) {
   const {} = props;
   const router = useRouter();
 
-  // const {setActivePage } = useLayoutStore()
   // If user is already signed in then change route
   useEffect(() => {
     const user = getCurrentUser();
     if (user) router.replace('/');
   }, []);
 
-  const {
-    formState: { isSubmitting },
-    Input,
-    Form,
-    DebugPanel,
-  } = useChakraForm({ schema });
-
-  const [isServerSuccess, setIsServerSuccess] = useState(false);
+  const { Input, Form, DebugPanel, SubmitBtn } = useChakraForm({ schema });
 
   const onSubmit = async (data) => {
     try {
       const res = await axios.post('/api/auth', data);
       const userData = res.data;
-      executeSignIn(userData);
-      setIsServerSuccess(true);
       await setTimeoutPromise(180);
       router.push('/dashboard');
     } catch (e) {
@@ -82,19 +70,19 @@ export default function AuthPage(props: IProps) {
         </MobileOnly>
         <Form
           onSubmit={onSubmit}
-          className="flex flex-col justify-center items-center w-full child:my-5 child:w-full child:max-w-[450px]"
-          px={{ base: 3, sm: 6, lg: 8 }}
-          id="login-form"
-          submitLabel={isServerSuccess ? 'Success!' : 'Login'}
-          submitBtnProps={{
-            isLoading: isSubmitting,
-            colorScheme: isServerSuccess ? 'green' : 'brand',
-            loadingText: 'Submitting',
-            leftIcon: isServerSuccess && <MdCheck fontSize="1.5rem" />,
+          width="100%"
+          maxW="480px"
+          gap="12"
+          sx={{
+            '& > *': { w: '100%' },
           }}
+          px={{ base: 3, sm: 6, lg: 8 }}
         >
           <Input name="email" type="email" />
           <Input name="password" type="password" />
+          <SubmitBtn leftIcon={<MdLogin />} fontSize="1.2rem">
+            Sign in
+          </SubmitBtn>
         </Form>
       </Flex>
       <DesktopOnly w="100%" h="100vh" display="flex" justifyContent="center">

@@ -24,8 +24,8 @@ import {
   InputProps as CharkaInputProps,
   Text,
 } from '@chakra-ui/react';
-import { useCallback } from 'react';
-import { MdSend } from 'react-icons/md';
+import { useCallback, useEffect, useState } from 'react';
+import { MdCheck, MdSend } from 'react-icons/md';
 import { toast } from 'react-toastify';
 
 export interface IFieldAndFieldState<TFieldValues extends FieldValues = FieldValues> {
@@ -54,30 +54,41 @@ export interface ICreateInputProps<TFieldValues extends FieldValues = FieldValue
 }
 
 // ========== RETURN TYPE
-interface UseMuiFormReturn<TFieldValues extends FieldValues, TContext = any>
+interface UseChakraFormReturn<TFieldValues extends FieldValues, TContext = any>
   extends UseFormReturn<TFieldValues, TContext> {
   Form: (props: IFormProps<TFieldValues>) => JSX.Element;
   Input: (props: ICreateInputProps<TFieldValues>) => JSX.Element;
   DebugPanel: () => JSX.Element;
   SubmitBtn: (props: ButtonProps) => JSX.Element;
+  isServerSuccess: boolean;
 }
 
-interface UseMuiFormProps<TFieldValues extends FieldValues, TContext = any>
+interface UseChakraFormProps<TFieldValues extends FieldValues, TContext = any>
   extends UseFormProps<TFieldValues, TContext> {
   schema: ZodType<TFieldValues>;
 }
 
 // !=========WARNING=======
-// destrucuring formState: {errors } from useMuiForm will result in whole form rerender every time the error state changes. Causes inputs to lose focus and performance issues. instead, use formState from renderInput props (Input prop)
+// destrucuring formState: {errors } from useChakraForm will result in whole form rerender every time the error state changes. Causes inputs to lose focus and performance issues. instead, use formState from renderInput props (Input prop)
 
 export const useChakraForm = <
   TFieldValues extends FieldValues = FieldValues,
   TContext = any
 >(
-  props: UseMuiFormProps<TFieldValues, TContext>
-): UseMuiFormReturn<TFieldValues, TContext> => {
+  props: UseChakraFormProps<TFieldValues, TContext>
+): UseChakraFormReturn<TFieldValues, TContext> => {
   // ======== DEFAULT USEFORM HOOK
   const { schema, ...otherProps } = props;
+  const [isServerSuccess, setIsServerSuccess] = useState(false);
+
+  // reset form success
+  useEffect(() => {
+    if (isServerSuccess) {
+      setTimeout(() => {
+        setIsServerSuccess(false);
+      }, 4000);
+    }
+  }, [isServerSuccess]);
 
   const obj: UseFormReturn<TFieldValues, TContext> = useForm<TFieldValues>({
     ...otherProps,
@@ -108,6 +119,7 @@ export const useChakraForm = <
         onSubmit={obj.handleSubmit(async (data) => {
           try {
             const res = await onSubmit!(data);
+            setIsServerSuccess(true);
             if (onServerSuccess) onServerSuccess(res);
             return res;
           } catch (e: any) {
@@ -115,7 +127,6 @@ export const useChakraForm = <
               e.response?.data?.cause || 'Something went wrong, please try again later';
 
             const type = serverErrorFeedbackType;
-            console.log(message, type);
 
             if (type === 'text') obj.setError('server' as any, { message });
             if (type == 'toast') toast.error(message);
@@ -130,21 +141,23 @@ export const useChakraForm = <
   }, []);
 
   const SubmitBtn = useCallback(
-    ({ children, sx, ...props }: ButtonProps) => {
+    ({ children, sx, leftIcon, ...props }: ButtonProps) => {
       const { errors } = obj.formState;
       console.log(errors?.server?.message);
       return (
         <>
           <Button
-            startIcon={<MdSend />}
+            leftIcon={
+              isServerSuccess ? <MdCheck fontSize="1.5rem" /> : leftIcon || <MdSend />
+            }
             type="submit"
             textTransform={'capitalize'}
             variant="solid"
-            colorScheme={'brand'}
+            colorScheme={obj.formState.isSubmitSuccessful ? 'green' : 'brand'}
             isLoading={obj.formState.isSubmitting}
             {...props}
           >
-            {'submit' || children}
+            {isServerSuccess ? 'Success!' : children || 'submit'}
           </Button>
           {errors?.server && (
             <Text color="red.500">{errors?.server?.message as string}</Text>
@@ -212,6 +225,8 @@ export const useChakraForm = <
                       obj.setValue(name, Number(ev.target.value) as any);
                     },
                   })}
+                  borderColor="pale.dark"
+                  shadow={'sm'}
                   {...inputProps}
                 />
               )}
@@ -243,5 +258,5 @@ export const useChakraForm = <
     );
   };
 
-  return { ...obj, Form, Input, DebugPanel, SubmitBtn };
+  return { ...obj, isServerSuccess, Form, Input, DebugPanel, SubmitBtn };
 };

@@ -1,14 +1,22 @@
 import { Flex, Icon, IconButton, Box } from '@chakra-ui/react';
 import { MdMenu, MdMenuOpen, MdSearch } from 'react-icons/md';
 import { isMobile } from 'utils/checkScreenWidth';
-import { MobileOnly } from '../deviceTypes';
 import ProfileMenu from '../ProfileMenu';
 import { useLayoutStore } from 'stores/LayoutStore';
 import HeaderContent from './HeaderContent';
+import { useEffect } from 'react';
 
 export default function Header(props) {
   const {} = props;
-  const { sideNavIsOpen, setSideNavIsOpen } = useLayoutStore();
+  const { sideNavIsOpen, toggleSideNavIsOpen, setSideNavIsOpen, activePage } =
+    useLayoutStore();
+
+  const sideNavLinks = activePage?.sideNavLinks;
+  useEffect(() => {
+    if (!sideNavLinks && setSideNavIsOpen) setSideNavIsOpen(false);
+  }, []);
+
+  console.log('🔷 >> Header >> sideNavLinks', sideNavLinks);
 
   return (
     <>
@@ -24,17 +32,16 @@ export default function Header(props) {
         alignItems="center"
         zIndex={'banner'}
       >
-        <IconButton
-          variant={'unstyled'}
-          onClick={() => setSideNavIsOpen((prev) => !prev)}
-        >
-          <Icon
-            as={sideNavIsOpen && !isMobile() ? MdMenuOpen : MdMenu}
-            color="white"
-            w={'100%'}
-            fontSize="1.7rem"
-          />
-        </IconButton>
+        {sideNavLinks && (
+          <IconButton variant={'unstyled'} onClick={toggleSideNavIsOpen}>
+            <Icon
+              as={sideNavIsOpen && !isMobile() ? MdMenuOpen : MdMenu}
+              color="white"
+              w={'100%'}
+              fontSize="1.7rem"
+            />
+          </IconButton>
+        )}
         <HeaderContent />
         <Flex position="fixed" right="2" top={{ base: 4, lg: '3' }} gap="3" zIndex="999">
           <IconButton

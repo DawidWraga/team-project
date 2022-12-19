@@ -9,6 +9,7 @@ export interface ILayoutStore {
   setActivePage: (page: IPage) => void;
   sideNavIsOpen: boolean;
   setSideNavIsOpen: (isOpen: boolean) => void;
+  toggleSideNavIsOpen: () => void;
 }
 
 export const useLayoutStore = useCreateStore<ILayoutStore>('Layout', (set) => ({
@@ -16,4 +17,8 @@ export const useLayoutStore = useCreateStore<ILayoutStore>('Layout', (set) => ({
   setActivePage: (page: IPage) => set({ activePage: page }),
   sideNavIsOpen: false,
   setSideNavIsOpen: (isOpen: boolean) => set({ sideNavIsOpen: isOpen }),
+  toggleSideNavIsOpen: () =>
+    set((s) => ({
+      sideNavIsOpen: !s.sideNavIsOpen,
+    })),
 }));

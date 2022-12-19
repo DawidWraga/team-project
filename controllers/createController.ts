@@ -14,6 +14,7 @@ import {
 } from 'react-query';
 import { DeepPartial } from 'react-hook-form/dist/types';
 import { PrismaModelNames } from 'lib-server/prisma';
+import { IReqBody } from 'pages/api/prisma';
 
 export type IOperations = 'findMany' | 'findUnique' | 'create' | 'update' | 'delete';
 
@@ -34,7 +35,11 @@ interface ICreateControllerProps {
   };
 }
 
-export type ICustomFetcher = (config?: AxiosRequestConfig<any>) => Promise<any>;
+interface IPrismaAxiosConfig extends AxiosRequestConfig<any> {
+  data?: Partial<IReqBody>;
+}
+
+export type ICustomFetcher = (config?: IPrismaAxiosConfig) => Promise<any>;
 
 interface IControlUseQueryProps<
   TQueryFnData = unknown,
@@ -163,4 +168,3 @@ export const createController = <TModel = unknown>({
 
   return controller;
 };
-

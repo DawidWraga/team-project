@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Slide } from 'react-toastify';
 import { getCurrentUser } from '/controllers/auth';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import { ChakraProvider } from '@chakra-ui/react';
 import { theme } from 'styles/chakra-theme';
@@ -69,21 +69,23 @@ function MyApp({ Component, pageProps }) {
         theme="light"
         transition={Slide}
       />
-      <ChakraProvider theme={theme}>
-        {loading ? (
-          <Loading />
-        ) : (
-          // getLayout(<Component {...pageProps} />)
-          <QueryClientProvider client={queryClient}>
-            <Hydrate state={pageProps.dehydratedState}>
-              <MainLayout>
-                <Component {...pageProps} />
-              </MainLayout>
-              <ReactQueryDevtools initialIsOpen={false} />
-            </Hydrate>
-          </QueryClientProvider>
-        )}
-      </ChakraProvider>
+      <Suspense fallback="loading...">
+        <ChakraProvider theme={theme}>
+          {loading ? (
+            <Loading />
+          ) : (
+            // getLayout(<Component {...pageProps} />)
+            <QueryClientProvider client={queryClient}>
+              <Hydrate state={pageProps.dehydratedState}>
+                <MainLayout>
+                  <Component {...pageProps} />
+                </MainLayout>
+                <ReactQueryDevtools initialIsOpen={false} />
+              </Hydrate>
+            </QueryClientProvider>
+          )}
+        </ChakraProvider>
+      </Suspense>
     </>
   );
 }

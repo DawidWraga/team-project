@@ -5,7 +5,7 @@ import { getAxiosErrorMessage } from 'lib-server/axios';
 
 const handler = apiHandler();
 
-interface IReqBody {
+export interface IReqBody {
   operation: readOperations | writeOperations;
   model: PrismaModelNames;
   prismaProps: { [key: string]: any };
