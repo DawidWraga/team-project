@@ -11,9 +11,6 @@ export default function ExamplePage(props: IProps) {
   const {} = props;
 
   const findMany = Example.findMany.use();
-  const findUnique = Example.findUnique.use({
-    prismaProps: { id: 54 },
-  });
   const create = Example.create.use();
   const update = Example.update.use();
   const del = Example.delete.use();
@@ -30,7 +27,16 @@ export default function ExamplePage(props: IProps) {
 
   return (
     <Flex flexDir="column">
-      <Flex flexDir="row">
+      <Flex
+        flexDir="row"
+        w="100%"
+        justifyContent={'stretch'}
+        sx={{
+          '& > *': {
+            w: '100%',
+          },
+        }}
+      >
         <CreateForm.Form
           onSubmit={create.mutateAsync}
           onServerSuccess={CreateForm.reset}
@@ -40,28 +46,23 @@ export default function ExamplePage(props: IProps) {
           <CreateForm.Input name="text" />
           <CreateForm.SubmitBtn />
         </CreateForm.Form>
+        <DeleteForm.Form onSubmit={del.mutateAsync}>
+          <Text>Delete</Text>
+          <DeleteForm.Input type="number" name="id" />
+          <DeleteForm.SubmitBtn />
+        </DeleteForm.Form>
         <UpdateForm.Form onSubmit={update.mutateAsync}>
           <Text>Update</Text>
           <UpdateForm.Input name="text" />
           <UpdateForm.Input type="number" name="id" />
           <UpdateForm.SubmitBtn />
         </UpdateForm.Form>
-        <DeleteForm.Form onSubmit={del.mutateAsync}>
-          <Text>Delete</Text>
-          <DeleteForm.Input type="number" name="id" />
-          <DeleteForm.SubmitBtn />
-        </DeleteForm.Form>
-        <Box>
-          item 52 = <br />
-          {findUnique.data && JSON.stringify(findUnique.data)}
-        </Box>
       </Flex>
-      <Box bgColor="pale.main" w="100%">
+      <Box bgColor="pale.main">
         {findMany.isLoading && 'loading'}
         {findMany.data &&
           findMany.data.map((item) => <p key={item.id}>{JSON.stringify(item)}</p>)}
       </Box>
-      <DeleteForm.DebugPanel />
     </Flex>
   );
 }
