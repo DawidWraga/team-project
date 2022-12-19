@@ -1,17 +1,16 @@
 import { useRouter } from 'next/router';
-import { useGlobalContext } from 'contexts/GlobalContext';
+import { useLayoutStore } from 'stores/LayoutStore';
 
 export function useActiveSideNavLink() {
-	const { activePage } = useGlobalContext();
-	const hasSideNav =
-		activePage?.sideNavLinks && activePage?.sideNavLinks?.length;
+  const { activePage } = useLayoutStore();
+  const hasSideNav = activePage?.sideNavLinks && activePage?.sideNavLinks?.length;
 
-	if (!hasSideNav) return { activeSideNavLink: false };
+  if (!hasSideNav) return { activeSideNavLink: false };
 
-	const router = useRouter();
-	const activeSideNavLink = activePage.sideNavLinks.find((link) => {
-		return router.asPath.includes(link.route);
-	});
+  const router = useRouter();
+  const activeSideNavLink = activePage.sideNavLinks.find((link) => {
+    return router.asPath.includes(link.route);
+  });
 
-	return { activeSideNavLink };
+  return { activeSideNavLink };
 }

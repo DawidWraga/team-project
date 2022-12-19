@@ -1,6 +1,6 @@
 import { SpinnerIcon } from '@chakra-ui/icons';
 import { Box, Icon, Text } from '@chakra-ui/react';
-import { useGlobalContext } from 'contexts/GlobalContext';
+import { useLayoutStore } from 'stores/LayoutStore';
 import { MdClose } from 'react-icons/md';
 import { lazy, Suspense } from 'react';
 import { isMobile } from 'utils/checkScreenWidth';
@@ -10,7 +10,7 @@ import SideNavContent from './SideNavContent';
 export default function SideNav(props) {
   const {} = props;
 
-  const { sideNavIsOpen, setSideNavIsOpen } = useGlobalContext();
+  const { sideNavIsOpen, setSideNavIsOpen } = useLayoutStore();
 
   // if (!activePage) return <>no active page</>;
 

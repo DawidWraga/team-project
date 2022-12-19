@@ -4,14 +4,14 @@ import { DesktopOnly } from '../deviceTypes';
 import PageNavItem from './PageNavItem';
 import { BrandLogoIcon } from 'components/BrandLogo';
 import ProfileMenu from 'components/ProfileMenu';
-import { useGlobalContext } from 'contexts/GlobalContext';
+import { useLayoutStore } from 'stores/LayoutStore';
 import pages from 'config/pages';
 import { getCurrentUser } from '../../controllers/auth';
 
 export default function PageNavBar(props) {
   const {} = props;
   const router = useRouter();
-  const { activePage } = useGlobalContext();
+  const { activePage } = useLayoutStore();
 
   const relevantPages = pages.filter((page) => {
     const role = getCurrentUser().role;
@@ -46,7 +46,7 @@ export default function PageNavBar(props) {
             key={page.parentLink.route}
             route={page.parentLink.route}
             label={page.parentLink.label}
-            isActive={activePage?.parentLink.route?.includes(page.parentLink.route)}
+            isActive={activePage?.parentLink?.route?.includes(page.parentLink.route)}
           />
         );
       })}

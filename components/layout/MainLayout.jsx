@@ -1,13 +1,13 @@
 import { Box } from '@chakra-ui/react';
 import PageNavBar from './PageNavBar';
 import HeaderAndSideNav from './HeaderAndSideNav';
-import { useGlobalContext } from 'contexts/GlobalContext';
+import { useLayoutStore } from 'stores/LayoutStore';
 import { useRouter } from 'next/router';
 import UserModal from 'components/UserModal';
 
 export default function MainLayout(props) {
   const { children } = props;
-  const { sideNavIsOpen } = useGlobalContext();
+  const { sideNavIsOpen } = useLayoutStore();
   const router = useRouter();
 
   // hide layout on specified pages

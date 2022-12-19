@@ -1,7 +1,7 @@
 import { Flex, Text, Icon, Box } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { BsChevronDown } from 'react-icons/bs';
-import { useGlobalContext } from 'contexts/GlobalContext';
+import { useLayoutStore } from 'stores/LayoutStore';
 import { isMobile } from 'utils/checkScreenWidth';
 import { ScreenDependent } from '../deviceTypes';
 import { BrandLogoWithName } from 'components/BrandLogo';
@@ -10,7 +10,7 @@ import { useActiveSideNavLink } from 'utils/useActiveSideNavLink';
 export default function SideNavContent(props) {
   const {} = props;
   const router = useRouter();
-  const { activePage, setSideNavIsOpen } = useGlobalContext();
+  const { activePage, setSideNavIsOpen } = useLayoutStore();
 
   const { activeSideNavLink } = useActiveSideNavLink();
 

@@ -13,14 +13,14 @@ import NProgress from '../components/nprogress';
 import Head from 'next/head';
 import Loading from 'components/loading';
 import MainLayout from 'components/layout/MainLayout';
-import { GlobalContextProvider } from 'contexts/GlobalContext';
+import { GlobalContextProvider } from 'stores/LayoutStore';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
-  // const [queryClient] = useState(() => new QueryClient());
-  const queryClient = new QueryClient();
+  const [queryClient] = useState(() => new QueryClient());
+  // const queryClient = new QueryClient();
 
   // ======CHECK AUTH STATE; REDIRECT IF NOT AUTHENTICATED======
 
@@ -70,21 +70,19 @@ function MyApp({ Component, pageProps }) {
         transition={Slide}
       />
       <ChakraProvider theme={theme}>
-        <GlobalContextProvider>
-          {loading ? (
-            <Loading />
-          ) : (
-            // getLayout(<Component {...pageProps} />)
-            <QueryClientProvider client={queryClient}>
-              <Hydrate state={pageProps.dehydratedState}>
-                <MainLayout>
-                  <Component {...pageProps} />
-                </MainLayout>
-                <ReactQueryDevtools initialIsOpen={false} />
-              </Hydrate>
-            </QueryClientProvider>
-          )}
-        </GlobalContextProvider>
+        {loading ? (
+          <Loading />
+        ) : (
+          // getLayout(<Component {...pageProps} />)
+          <QueryClientProvider client={queryClient}>
+            <Hydrate state={pageProps.dehydratedState}>
+              <MainLayout>
+                <Component {...pageProps} />
+              </MainLayout>
+              <ReactQueryDevtools initialIsOpen={false} />
+            </Hydrate>
+          </QueryClientProvider>
+        )}
       </ChakraProvider>
     </>
   );

@@ -11,6 +11,7 @@ import { BrandLogoWithName } from 'components/BrandLogo';
 import { DesktopOnly, MobileOnly } from 'components/deviceTypes';
 import { useChakraForm } from 'lib-client/useChakraForm';
 import { z } from 'zod';
+import { useLayoutStore } from 'stores/LayoutStore';
 
 const schema = z.object({
   email: z.string().min(1, { message: 'Required' }),
@@ -22,6 +23,7 @@ export default function AuthPage(props: IProps) {
   const {} = props;
   const router = useRouter();
 
+  // const {setActivePage } = useLayoutStore()
   // If user is already signed in then change route
   useEffect(() => {
     const user = getCurrentUser();
