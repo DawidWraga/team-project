@@ -1,8 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { useChakraForm } from 'lib-client/useChakraForm';
-import { toast } from 'react-toastify';
-import { z } from 'zod';
-import { Switch } from '@chakra-ui/react';
 import { Example } from 'controllers';
 import { ExampleModel } from 'prisma/zod';
 
@@ -35,26 +32,24 @@ export default function ExamplePage(props: IProps) {
     <Flex flexDir="column">
       <Flex flexDir="row">
         <CreateForm.Form
-          onSubmit={create.mutate}
-          submitBtnProps={{ isLoading: create.isLoading }}
+          onSubmit={create.mutateAsync}
+          onServerSuccess={CreateForm.reset}
+          serverErrorFeedbackType="toast"
         >
           <Text>Create</Text>
           <CreateForm.Input name="text" />
+          <CreateForm.SubmitBtn />
         </CreateForm.Form>
-        <UpdateForm.Form
-          onSubmit={update.mutate}
-          submitBtnProps={{ isLoading: update.isLoading }}
-        >
+        <UpdateForm.Form onSubmit={update.mutateAsync}>
           <Text>Update</Text>
           <UpdateForm.Input name="text" />
           <UpdateForm.Input type="number" name="id" />
+          <UpdateForm.SubmitBtn />
         </UpdateForm.Form>
-        <DeleteForm.Form
-          onSubmit={del.mutate}
-          submitBtnProps={{ isLoading: del.isLoading }}
-        >
+        <DeleteForm.Form onSubmit={del.mutateAsync}>
           <Text>Delete</Text>
           <DeleteForm.Input type="number" name="id" />
+          <DeleteForm.SubmitBtn />
         </DeleteForm.Form>
         <Box>
           item 52 = <br />
@@ -66,6 +61,7 @@ export default function ExamplePage(props: IProps) {
         {findMany.data &&
           findMany.data.map((item) => <p key={item.id}>{JSON.stringify(item)}</p>)}
       </Box>
+      <DeleteForm.DebugPanel />
     </Flex>
   );
 }

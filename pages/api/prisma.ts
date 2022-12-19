@@ -1,17 +1,22 @@
-import { apiValidate } from 'lib-server/apiValidate';
-import { getAxiosErrorMessage } from 'lib-server/axios';
 import { apiHandler } from 'lib-server/nc';
-import prisma from 'lib-server/prisma';
-import { ExampleModel } from 'prisma/zod';
+import prisma, { PrismaModelNames } from 'lib-server/prisma';
+import { readOperations, writeOperations } from 'controllers/createController';
+import { getAxiosErrorMessage } from 'lib-server/axios';
 
 const handler = apiHandler();
+
+interface IReqBody {
+  operation: readOperations | writeOperations;
+  model: PrismaModelNames;
+  prismaProps: { [key: string]: any };
+}
 
 handler.post(async (req, res) => {
   // console.log('api/prisma fired', req.body);
 
-  let { operation, model, prismaProps } = req.body;
+  let { operation, model, prismaProps }: IReqBody = req.body;
 
-  //apply default data format for convenience
+  //=============== apply defaults for convenience
   if (operation === 'create' && !prismaProps.data) prismaProps = { data: prismaProps };
   if (
     operation.includes('find') ||
@@ -27,12 +32,11 @@ handler.post(async (req, res) => {
     const { id, ...rest } = prismaProps;
     prismaProps = { where: { id }, data: { ...rest } };
   }
-  // console.log({ prismaProps });
+
   try {
-    const data = await prisma[model][operation](prismaProps);
+    const data = await (prisma[model] as any)[operation](prismaProps);
     res.send(data);
-  } catch (e) {
-    // console.log(e);
+  } catch (e: any) {
     res.status(400).send(getAxiosErrorMessage(e));
   }
 });

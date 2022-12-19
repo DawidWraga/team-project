@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosRequestConfig } from 'axios';
 import { axios } from 'lib-server/axios';
 import { prefetchQuery } from 'controllers/prefetchQuery';
 import {
@@ -12,7 +12,8 @@ import {
   useQuery,
   useQueryClient,
 } from 'react-query';
-import { Prisma } from '@prisma/client';
+import { DeepPartial } from 'react-hook-form/dist/types';
+import { PrismaModelNames } from 'lib-server/prisma';
 
 export type IOperations = 'findMany' | 'findUnique' | 'create' | 'update' | 'delete';
 
@@ -25,7 +26,7 @@ const defaultOperations = {
 };
 
 interface ICreateControllerProps {
-  model: Prisma.ModelName;
+  model: PrismaModelNames;
   operationOptions?: {
     [key in IOperations]?: {
       test?: string;
@@ -65,78 +66,39 @@ interface IControlRead<
   }>;
 }
 
-interface IControlWrite<TData, TError, TVariables, TContext> extends IControl {
+interface IControlWrite<
+  TData = unknown,
+  TError = unknown,
+  TVariables = { data?: DeepPartial<TData>; where?: any } | DeepPartial<TData>,
+  TContext = unknown
+> extends IControl {
   use: (
     options?: UseMutationOptions<TData, TError, TVariables, TContext>
   ) => UseMutationResult<TData, TError, TVariables, TContext>;
 }
 
-type readOperations = 'findMany' | 'findUnique';
-type writeOperations = 'update' | 'delete' | 'create';
+export type readOperations = 'findMany' | 'findUnique';
+export type writeOperations = 'update' | 'delete' | 'create';
 
-interface IController<
-  TReadFnQueryData = unknown,
-  TReadError = unknown,
-  TReadData = TReadFnQueryData,
-  TReadQueryKey extends QueryKey = QueryKey,
-  TData = unknown,
-  TError = unknown,
-  TVariables = unknown,
-  TContext = unknown
-> {
-  url: string;
-  findMany?: IControlRead<TReadFnQueryData, TReadError, TReadData, TReadQueryKey>;
-  findUnique?: IControlRead<TReadFnQueryData, TReadError, TReadData, TReadQueryKey>;
-  create?: IControlWrite<TData, TError, TVariables, TContext>;
-  update?: IControlWrite<TData, TError, TVariables, TContext>;
-  delete?: IControlWrite<TData, TError, TVariables, TContext>;
+interface IController<TModel = unknown> {
+  findMany: IControlRead<TModel[], AxiosError, TModel[]>;
+  findUnique: IControlRead<TModel, AxiosError, TModel>;
+  create: IControlWrite<TModel, AxiosError>;
+  update: IControlWrite<TModel, AxiosError>;
+  delete: IControlWrite<TModel, AxiosError>;
 }
 
-const urlStart = 'http://localhost:3000';
-
-export const createController = <
-  TReadFnQueryData = unknown,
-  TReadError = unknown,
-  TReadData = TReadFnQueryData,
-  TReadQueryKey extends QueryKey = QueryKey,
-  TData = unknown,
-  TError = unknown,
-  TVariables = unknown,
-  TContext = unknown
->({
+export const createController = <TModel = unknown>({
   model,
   operationOptions = defaultOperations,
-}: ICreateControllerProps): IController<
-  TReadFnQueryData,
-  TReadError,
-  TReadData,
-  TReadQueryKey,
-  TData,
-  TError,
-  TVariables,
-  TContext
-> => {
-  /**
-   * api endpoint derived from model name
-   **/
-  const url = `${urlStart}/api/prisma`;
-
-  const controller = { url } as IController<
-    TReadFnQueryData,
-    TReadError,
-    TReadData,
-    TReadQueryKey,
-    TData,
-    TError,
-    TVariables,
-    TContext
-  >;
+}: ICreateControllerProps): IController<TModel> => {
+  const url = `/api/prisma`;
+  const controller = {} as IController<TModel>;
 
   Object.entries(operationOptions).forEach(([operation, option]) => {
     const key = [model, operation];
 
     const fetcher = async (config?: AxiosRequestConfig<any>) => {
-      // try {
       const res = await axios({
         method: 'POST',
         url,
@@ -145,23 +107,14 @@ export const createController = <
       });
 
       return res.data;
-      // } catch (e) {
-      //   console.error(e);
-      // }
     };
 
-    //==================QUERIES===============
-
     if (operation.includes('find')) {
+      //==================QUERIES===============
       const prefetch = prefetchQuery(key, fetcher as () => Promise<any>);
 
       const use = (
-        { prismaProps, fetcherConfig, ...options } = {} as IControlUseQueryProps<
-          TReadFnQueryData,
-          TReadError,
-          TReadData,
-          TReadQueryKey
-        >
+        { prismaProps, fetcherConfig, ...options } = {} as IControlUseQueryProps<TModel>
       ) => {
         return useQuery({
           refetchOnMount: false,
@@ -183,15 +136,15 @@ export const createController = <
         use,
         fetcher,
         prefetch,
-      } as IControlRead<TReadFnQueryData, TReadError, TReadData, TReadQueryKey>;
+      } as any;
     } else {
       //==================MUTATIONS===============
-      const use = (options?: UseMutationOptions<TData, TError, TVariables, TContext>) => {
+      const use = (options?: UseMutationOptions<TModel>) => {
         const queryClient = useQueryClient();
 
-        return useMutation<TData, TError, TVariables, TContext>({
+        return useMutation<TModel>({
           mutationKey: [model, operation],
-          mutationFn: (data) =>
+          mutationFn: (data: any) =>
             fetcher({ data: { operation, prismaProps: { ...data } } }),
           onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries([model]);
@@ -204,20 +157,10 @@ export const createController = <
       controller[operation as writeOperations] = {
         use,
         fetcher,
-      } as IControlWrite<TData, TError, TVariables, TContext>;
+      } as any;
     }
   });
 
   return controller;
 };
 
-// return controller as IController<
-// TReadFnQueryData,
-// TReadError,
-// TReadData,
-// TReadQueryKey,
-// TData,
-// TError,
-// TVariables,
-// TContext
-// >;

@@ -1,20 +1,16 @@
-import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import {
   Controller,
   ControllerFieldState,
   ControllerRenderProps,
-  Field,
-  FieldPathValue,
   FieldValues,
   Path,
-  PathValue,
   UseControllerProps,
   useForm,
   UseFormProps,
   UseFormReturn,
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ZodType, unknown } from 'zod';
+import { ZodType } from 'zod';
 import {
   Box,
   BoxProps,
@@ -26,9 +22,11 @@ import {
   FormLabel,
   Input as ChakraInput,
   InputProps as CharkaInputProps,
+  Text,
 } from '@chakra-ui/react';
-import { useState } from 'react';
-import { SubmitHandler } from 'react-hook-form/dist/types';
+import { useCallback } from 'react';
+import { MdSend } from 'react-icons/md';
+import { toast } from 'react-toastify';
 
 export interface IFieldAndFieldState<TFieldValues extends FieldValues = FieldValues> {
   field: ControllerRenderProps<TFieldValues, Path<TFieldValues>>;
@@ -38,8 +36,9 @@ export interface IFieldAndFieldState<TFieldValues extends FieldValues = FieldVal
 interface IFormProps<TFieldValues> extends Omit<BoxProps, 'onSubmit'> {
   children: React.ReactNode;
   onSubmit?: (data: TFieldValues) => any;
-  submitLabel?: string;
-  submitBtnProps?: ButtonProps;
+  onServerSuccess?: (data: any) => void;
+  onServerError?: (message: string) => void;
+  serverErrorFeedbackType?: 'toast' | 'text' | null;
 }
 
 export interface ICreateInputProps<TFieldValues extends FieldValues = FieldValues> {
@@ -60,6 +59,7 @@ interface UseMuiFormReturn<TFieldValues extends FieldValues, TContext = any>
   Form: (props: IFormProps<TFieldValues>) => JSX.Element;
   Input: (props: ICreateInputProps<TFieldValues>) => JSX.Element;
   DebugPanel: () => JSX.Element;
+  SubmitBtn: (props: ButtonProps) => JSX.Element;
 }
 
 interface UseMuiFormProps<TFieldValues extends FieldValues, TContext = any>
@@ -84,9 +84,15 @@ export const useChakraForm = <
     resolver: zodResolver(schema),
   } as UseFormProps<TFieldValues, TContext>);
 
-  const Form = (props: IFormProps<TFieldValues>) => {
-    let { children, onSubmit, submitLabel, submitBtnProps, ..._props } = props;
-    // const [isServerSuccess, setIsServerSuccess] = useState(false);
+  const Form = useCallback((props: IFormProps<TFieldValues>) => {
+    let {
+      children,
+      onSubmit,
+      onServerSuccess,
+      onServerError,
+      serverErrorFeedbackType = 'text',
+      ..._props
+    } = props;
     if (!onSubmit) onSubmit = (data) => console.table(data);
     return (
       <Box
@@ -95,35 +101,61 @@ export const useChakraForm = <
         px="5"
         display="flex"
         flexDir="column"
-        gap="1"
-        onSubmit={obj.handleSubmit(onSubmit)}
-        // onSubmit={obj.handleSubmit((data) => {
-        //   try {
-        //     onSubmit(data);
-        //   } catch (e) {
-        //     console.log('HERE HERE HERE', e);
-        //   }
-        // })}
+        gap="4"
+        autoComplete="off"
         noValidate
         py="1rem"
+        onSubmit={obj.handleSubmit(async (data) => {
+          try {
+            const res = await onSubmit!(data);
+            if (onServerSuccess) onServerSuccess(res);
+            return res;
+          } catch (e: any) {
+            const message =
+              e.response?.data?.cause || 'Something went wrong, please try again later';
+
+            const type = serverErrorFeedbackType;
+            console.log(message, type);
+
+            if (type === 'text') obj.setError('server' as any, { message });
+            if (type == 'toast') toast.error(message);
+            if (onServerError) onServerError(message);
+          }
+        })}
         {..._props}
       >
         {children}
-        <Button
-          type="submit"
-          textTransform={'capitalize'}
-          variant="solid"
-          colorScheme={'brand'}
-          {...submitBtnProps}
-        >
-          {submitLabel || 'submit'}
-        </Button>
-        {/* {obj.state.errors. <FormErrorMessage></FormErrorMessage>} */}
       </Box>
     );
-  };
+  }, []);
 
-  const Input = (props: ICreateInputProps<TFieldValues>) => {
+  const SubmitBtn = useCallback(
+    ({ children, sx, ...props }: ButtonProps) => {
+      const { errors } = obj.formState;
+      console.log(errors?.server?.message);
+      return (
+        <>
+          <Button
+            startIcon={<MdSend />}
+            type="submit"
+            textTransform={'capitalize'}
+            variant="solid"
+            colorScheme={'brand'}
+            isLoading={obj.formState.isSubmitting}
+            {...props}
+          >
+            {'submit' || children}
+          </Button>
+          {errors?.server && (
+            <Text color="red.500">{errors?.server?.message as string}</Text>
+          )}
+        </>
+      );
+    },
+    [obj.formState]
+  );
+
+  const Input = useCallback((props: ICreateInputProps<TFieldValues>) => {
     const {
       name,
       controllerProps,
@@ -142,6 +174,7 @@ export const useChakraForm = <
 
     // derive required from zod schema
     // if schema not available, pressume required
+    // can be overwritten with "required" prop
     const required = (schema as any).shape
       ? (schema as any)?.shape[name]?._def?.typeName !== 'ZodOptional'
       : true;
@@ -189,7 +222,7 @@ export const useChakraForm = <
         }}
       />
     );
-  };
+  }, []);
 
   const DebugPanel = () => {
     return (
@@ -210,5 +243,5 @@ export const useChakraForm = <
     );
   };
 
-  return { ...obj, Form, Input, DebugPanel };
+  return { ...obj, Form, Input, DebugPanel, SubmitBtn };
 };

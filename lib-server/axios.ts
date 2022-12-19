@@ -9,8 +9,10 @@ export const axios = baseAxios.create({
 // axiosInstance.interceptors.request.use(onSuccess, onError);
 // axiosInstance.interceptors.response.use(onSuccess, onError);
 
-export const getAxiosErrorMessage = (error: AxiosError): string => {
+export const getAxiosErrorMessage = (error: AxiosError): any => {
+  if ((error as any).meta?.cause) return { cause: (error as any).meta.cause };
+
   return (
-    (error as any).response?.data?.message || (error as any).meta?.cause || error.message
+    (error as any).meta?.cause || (error as any).response?.data?.message || error.message
   );
 };
