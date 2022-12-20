@@ -30,21 +30,22 @@ export const BrandLogoIcon = createIcon({
 });
 
 export const BrandLogoWithName = (props) => {
+  const { headingSize, headingColor, logoSize, ...restProps } = props;
   return (
     <Flex
-      {...props}
+      {...restProps}
       gap="1"
       justifyContent={'center'}
       alignContent="center"
       alignItems={'center'}
     >
-      <BrandLogoIcon fontSize={props.logoSize || '60px'} />
+      <BrandLogoIcon fontSize={logoSize || '60px'} />
       <Heading
-        textColor={props.headingColor || 'gray.700'}
+        textColor={headingColor || 'gray.700'}
         textDecoration={'underline'}
         textDecorationLine="underline"
         textDecorationColor={'brand.main'}
-        size={props.headingSize || 'lg'}
+        size={headingSize || 'lg'}
       >
         Make-It-All
       </Heading>

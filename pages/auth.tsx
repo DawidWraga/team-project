@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { Heading, Flex } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import { getCurrentUser } from 'controllers/auth';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import { MdLogin } from 'react-icons/md';
@@ -10,6 +10,8 @@ import { BrandLogoWithName } from 'components/BrandLogo';
 import { DesktopOnly, MobileOnly } from 'components/deviceTypes';
 import { useChakraForm } from 'lib-client/useChakraForm';
 import { z } from 'zod';
+import { executeSignIn } from 'controllers/auth';
+import ExternalFormWrapper from 'components/ExternalFormWrapper';
 
 const schema = z.object({
   email: z.string().min(1, { message: 'Required' }),
@@ -27,72 +29,44 @@ export default function AuthPage(props: IProps) {
     if (user) router.replace('/');
   }, []);
 
-  const { Input, Form, DebugPanel, SubmitBtn } = useChakraForm({ schema });
+  const { Input, Form, DebugPanel, SubmitBtn, Heading } = useChakraForm({ schema });
 
   const onSubmit = async (data) => {
-    try {
-      const res = await axios.post('/api/auth', data);
-      const userData = res.data;
-      await setTimeoutPromise(180);
-      router.push('/dashboard');
-    } catch (e) {
-      toast.error('Invalid credentials', { position: 'top-center' });
-    }
+    const res = await axios.post('/api/auth', data);
+    return res.data;
   };
 
   return (
-    <Flex
-      className="bg-pale-main w-screen h-screen grid"
-      w="100vw"
-      h="100vh"
-      justifyContent={'center'}
-    >
-      <DebugPanel />
-      <Flex
-        as="main"
-        className="bg-white justify-center  rounded-lg shadow-xl "
-        h={{ base: '100vh' }}
-        w="100vw"
-        maxW={{ base: '100vw', md: '650px', lg: '750px' }}
-        alignContent="center"
-        alignItems="center"
-        justifyItems={'center'}
-        roundedRight={{ lg: '3xl' }}
-        flexDir="column"
-      >
-        <DesktopOnly w="100%">
-          <Heading size="lg" fontWeight={600} textAlign="center" mb="2">
-            Sign into Portal
-          </Heading>
-        </DesktopOnly>
-        <MobileOnly w="100%">
-          <BrandLogoWithName />
-        </MobileOnly>
-        <Form
-          onSubmit={onSubmit}
-          width="100%"
-          maxW="480px"
-          gap="12"
-          sx={{
-            '& > *': { w: '100%' },
-          }}
-          px={{ base: 3, sm: 6, lg: 8 }}
-        >
-          <Input name="email" type="email" />
-          <Input name="password" type="password" />
-          <SubmitBtn leftIcon={<MdLogin />} fontSize="1.2rem">
-            Sign in
-          </SubmitBtn>
-        </Form>
-      </Flex>
-      <DesktopOnly w="100%" h="100vh" display="flex" justifyContent="center">
+    <ExternalFormWrapper>
+      <MobileOnly w="100%">
         <BrandLogoWithName
-          sx={{
-            '& > svg': { fontSize: '7rem' },
-            '& > h2': { fontSize: '4rem' },
-          }}
+          headingSize={'2xl'}
+          position="relative"
+          right={3}
+          bottom={'100px'}
         />
-      </DesktopOnly>
-    </Flex>
+      </MobileOnly>
+      <Heading fontWeight={600}>Sign into Portal</Heading>
+      <Form
+        onSubmit={onSubmit}
+        onServerSuccess={async (userData) => {
+          executeSignIn(userData);
+          await setTimeoutPromise(150);
+          router.push('/dashboard');
+        }}
+        onServerError={() => {
+          toast.error('Invalid credentials', { position: 'top-center' });
+        }}
+        serverErrorFeedbackType={null}
+        gap="12"
+        pb={{ base: '100px', lg: '50px' }}
+      >
+        <Input name="email" type="email" />
+        <Input name="password" type="password" />
+        <SubmitBtn leftIcon={<MdLogin />} fontSize="1.2rem">
+          Sign in
+        </SubmitBtn>
+      </Form>
+    </ExternalFormWrapper>
   );
 }

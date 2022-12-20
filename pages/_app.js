@@ -13,7 +13,6 @@ import NProgress from '../components/nprogress';
 import Head from 'next/head';
 import Loading from 'components/loading';
 import MainLayout from 'components/layout/MainLayout';
-import { GlobalContextProvider } from 'stores/LayoutStore';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
@@ -74,7 +73,6 @@ function MyApp({ Component, pageProps }) {
           {loading ? (
             <Loading />
           ) : (
-            // getLayout(<Component {...pageProps} />)
             <QueryClientProvider client={queryClient}>
               <Hydrate state={pageProps.dehydratedState}>
                 <MainLayout>
@@ -91,3 +89,7 @@ function MyApp({ Component, pageProps }) {
 }
 
 export default MyApp;
+
+{
+  /* // getLayout(<Component {...pageProps} />) */
+}

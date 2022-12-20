@@ -22,7 +22,10 @@ import {
   FormLabel,
   Input as ChakraInput,
   InputProps as CharkaInputProps,
+  Heading as ChakraHeading,
   Text,
+  HeadingProps,
+  Flex,
 } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { MdCheck, MdSend } from 'react-icons/md';
@@ -60,6 +63,7 @@ interface UseChakraFormReturn<TFieldValues extends FieldValues, TContext = any>
   Input: (props: ICreateInputProps<TFieldValues>) => JSX.Element;
   DebugPanel: () => JSX.Element;
   SubmitBtn: (props: ButtonProps) => JSX.Element;
+  Heading: (props: HeadingProps) => JSX.Element;
   isServerSuccess: boolean;
 }
 
@@ -68,32 +72,27 @@ interface UseChakraFormProps<TFieldValues extends FieldValues, TContext = any>
   schema: ZodType<TFieldValues>;
 }
 
-// !=========WARNING=======
-// destrucuring formState: {errors } from useChakraForm will result in whole form rerender every time the error state changes. Causes inputs to lose focus and performance issues. instead, use formState from renderInput props (Input prop)
-
 export const useChakraForm = <
   TFieldValues extends FieldValues = FieldValues,
   TContext = any
 >(
   props: UseChakraFormProps<TFieldValues, TContext>
 ): UseChakraFormReturn<TFieldValues, TContext> => {
-  // ======== DEFAULT USEFORM HOOK
   const { schema, ...otherProps } = props;
   const [isServerSuccess, setIsServerSuccess] = useState(false);
 
-  // reset form success
-  useEffect(() => {
-    if (isServerSuccess) {
-      setTimeout(() => {
-        setIsServerSuccess(false);
-      }, 4000);
-    }
-  }, [isServerSuccess]);
-
+  // ======== Call default useForm hook
   const obj: UseFormReturn<TFieldValues, TContext> = useForm<TFieldValues>({
     ...otherProps,
     resolver: zodResolver(schema),
   } as UseFormProps<TFieldValues, TContext>);
+
+  // reset server success state if user changes any inputs
+  useEffect(() => {
+    if (isServerSuccess) {
+      setIsServerSuccess(false);
+    }
+  }, [obj.formState.isValidating]);
 
   const Form = useCallback((props: IFormProps<TFieldValues>) => {
     let {
@@ -109,13 +108,15 @@ export const useChakraForm = <
       <Box
         as={'form'}
         bgColor={'#fff'}
-        px="5"
         display="flex"
         flexDir="column"
         gap="4"
         autoComplete="off"
         noValidate
         py="1rem"
+        width="100%"
+        maxW="480px"
+        px={{ base: 3, sm: 6, lg: 8 }}
         onSubmit={obj.handleSubmit(async (data) => {
           try {
             const res = await onSubmit!(data);
@@ -143,9 +144,8 @@ export const useChakraForm = <
   const SubmitBtn = useCallback(
     ({ children, sx, leftIcon, ...props }: ButtonProps) => {
       const { errors } = obj.formState;
-      console.log(errors?.server?.message);
       return (
-        <>
+        <Flex flexDir={'column'} gap={2.5} mt="2">
           <Button
             leftIcon={
               isServerSuccess ? <MdCheck fontSize="1.5rem" /> : leftIcon || <MdSend />
@@ -153,7 +153,7 @@ export const useChakraForm = <
             type="submit"
             textTransform={'capitalize'}
             variant="solid"
-            colorScheme={obj.formState.isSubmitSuccessful ? 'green' : 'brand'}
+            colorScheme={isServerSuccess ? 'green' : 'brand'}
             isLoading={obj.formState.isSubmitting}
             {...props}
           >
@@ -162,10 +162,10 @@ export const useChakraForm = <
           {errors?.server && (
             <Text color="red.500">{errors?.server?.message as string}</Text>
           )}
-        </>
+        </Flex>
       );
     },
-    [obj.formState]
+    [obj.formState, isServerSuccess]
   );
 
   const Input = useCallback((props: ICreateInputProps<TFieldValues>) => {
@@ -222,12 +222,16 @@ export const useChakraForm = <
                   //transform input value into number if input type is number
                   {...(type === 'number' && {
                     onChange: (ev) => {
-                      obj.setValue(name, Number(ev.target.value) as any);
+                      obj.setValue(name, Number(ev.target.value) as any, {
+                        shouldValidate: true,
+                      });
                     },
                   })}
-                  borderColor="pale.dark"
+                  borderColor={'blackAlpha.300'}
+                  bgColor="pale.main"
                   shadow={'sm'}
-                  {...inputProps}
+                  w="100%"
+                  {...(inputProps && inputProps({ field, fieldState }))}
                 />
               )}
               {helperText}
@@ -258,5 +262,21 @@ export const useChakraForm = <
     );
   };
 
-  return { ...obj, isServerSuccess, Form, Input, DebugPanel, SubmitBtn };
+  const Heading = useCallback(({ children, ...props }: HeadingProps) => {
+    return (
+      <ChakraHeading
+        fontSize={[26, 28, 30]}
+        wordBreak="revert"
+        mx="auto"
+        textAlign={'center'}
+        fontWeight="semibold"
+        mb="2"
+        {...props}
+      >
+        {children}
+      </ChakraHeading>
+    );
+  }, []);
+
+  return { ...obj, isServerSuccess, Form, Input, DebugPanel, SubmitBtn, Heading };
 };
