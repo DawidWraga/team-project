@@ -1,6 +1,5 @@
 import query from 'controllers/query';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
-import { Example } from 'controllers';
 
 export default async function handler(req, res) {
   try {
