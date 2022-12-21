@@ -107,16 +107,22 @@ export const useChakraForm = <
     return (
       <Box
         as={'form'}
-        bgColor={'#fff'}
-        display="flex"
-        flexDir="column"
-        gap="4"
         autoComplete="off"
         noValidate
-        py="1rem"
-        width="100%"
-        maxW="480px"
-        px={{ base: 3, sm: 6, lg: 8 }}
+        w="100%"
+        sx={{
+          '&.inputStack, & .inputStack': {
+            bgColor: '#fff',
+            flexDir: 'column',
+            gap: '4',
+            display: 'flex',
+            py: '1rem',
+            width: '100%',
+            maxW: '480px',
+            px: { base: 3, sm: 6, lg: 8 },
+            mx: 'auto',
+          },
+        }}
         onSubmit={obj.handleSubmit(async (data) => {
           try {
             const res = await onSubmit!(data);
@@ -219,7 +225,7 @@ export const useChakraForm = <
                   {...processedField}
                   placeholder={placeholder}
                   type={type}
-                  //transform input value into number if input type is number
+                  //transform input value into expected value
                   {...(type === 'number' && {
                     onChange: (ev) => {
                       obj.setValue(name, Number(ev.target.value) as any, {
@@ -227,10 +233,18 @@ export const useChakraForm = <
                       });
                     },
                   })}
+                  // {...(type === 'date' && {
+                  //   onChange: (ev) => {
+                  //     obj.setValue(name, new Date(ev.target.value) as any, {
+                  //       shouldValidate: true,
+                  //     });
+                  //   },
+                  // })}
                   borderColor={'blackAlpha.300'}
                   bgColor="pale.main"
                   shadow={'sm'}
                   w="100%"
+                  // mb={2}
                   {...(inputProps && inputProps({ field, fieldState }))}
                 />
               )}

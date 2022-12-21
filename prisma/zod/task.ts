@@ -1,6 +1,13 @@
-import * as z from "zod"
-import * as imports from "./helpers"
-import { CompleteUser, RelatedUserModel, CompleteTaskStatus, RelatedTaskStatusModel, CompleteProject, RelatedProjectModel } from "./index"
+import * as z from 'zod';
+import * as imports from './helpers';
+import {
+  CompleteUser,
+  RelatedUserModel,
+  CompleteTaskStatus,
+  RelatedTaskStatusModel,
+  CompleteProject,
+  RelatedProjectModel,
+} from './index';
 
 export const TaskModel = z.object({
   id: z.number().int(),
@@ -11,12 +18,12 @@ export const TaskModel = z.object({
   list_name: z.string(),
   status_id: z.number().int(),
   project_id: z.number().int(),
-})
+});
 
 export interface CompleteTask extends z.infer<typeof TaskModel> {
-  asignees: CompleteUser[]
-  status: CompleteTaskStatus
-  project: CompleteProject
+  asignees: CompleteUser[];
+  status: CompleteTaskStatus;
+  project: CompleteProject;
 }
 
 /**
@@ -24,8 +31,10 @@ export interface CompleteTask extends z.infer<typeof TaskModel> {
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const RelatedTaskModel: z.ZodSchema<CompleteTask> = z.lazy(() => TaskModel.extend({
-  asignees: RelatedUserModel.array(),
-  status: RelatedTaskStatusModel,
-  project: RelatedProjectModel,
-}))
+export const RelatedTaskModel: z.ZodSchema<CompleteTask> = z.lazy(() =>
+  TaskModel.extend({
+    asignees: RelatedUserModel.array(),
+    status: RelatedTaskStatusModel,
+    project: RelatedProjectModel,
+  })
+);
