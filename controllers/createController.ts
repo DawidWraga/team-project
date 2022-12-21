@@ -14,7 +14,7 @@ import {
 } from 'react-query';
 import { DeepPartial } from 'react-hook-form/dist/types';
 import { PrismaModelNames } from 'lib-server/prisma';
-import { IReqBody } from 'pages/api/prisma';
+import { IReqBody } from 'lib-server/apiControllers/BaseApiController';
 
 export type IOperations = 'findMany' | 'findUnique' | 'create' | 'update' | 'delete';
 
@@ -97,18 +97,19 @@ export const createController = <TModel = unknown>({
   model,
   operationOptions = defaultOperations,
 }: ICreateControllerProps): IController<TModel> => {
-  const url = `/api/prisma`;
+  const url = `/api/${model}`;
   const controller = {} as IController<TModel>;
 
   Object.entries(operationOptions).forEach(([operation, option]) => {
     const key = [model, operation];
 
+    // consider moving defaults to props
     const fetcher = async (config?: AxiosRequestConfig<any>) => {
       const res = await axios({
         method: 'POST',
         url,
         ...config,
-        data: { operation, model, ...config?.data },
+        data: { operation, ...config?.data },
       });
 
       return res.data;

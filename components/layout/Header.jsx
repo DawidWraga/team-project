@@ -16,8 +16,6 @@ export default function Header(props) {
     if (!sideNavLinks && setSideNavIsOpen) setSideNavIsOpen(false);
   }, []);
 
-  console.log('🔷 >> Header >> sideNavLinks', sideNavLinks);
-
   return (
     <>
       <Box h="60px" w="500px" position="fixed" top={0} left={0} bgColor="shade.main" />

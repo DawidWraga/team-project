@@ -69,12 +69,12 @@ model Comment {
 model User {
   id        Int    @id @default(autoincrement())
   full_name String @db.Text ///@zod.min(3).trim
-  email     String @db.Text ///@zod.email().trim
+  email     String @unique @db.VarChar(30) ///@zod.email().trim
   //must be 12 char long, least one uppercase letter, one lowercase letter, one number and one special character.
   password  String @db.Text ///@zod.max(25).regex(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{12,}$/)
   user_icon String @db.Text
 
-  role_id Int
+  role_id Int @default(1)
 
   role              UserRole  @relation(fields: [role_id], references: [id])
   posts             Post[]

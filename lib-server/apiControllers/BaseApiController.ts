@@ -61,7 +61,8 @@ export class BaseApiController {
       }
 
       // if any additionalGuards are true then return unproccessed
-      if (additionalGuards.some((guard) => !!guard)) return prismaProps;
+      if (additionalGuards && additionalGuards.some((guard) => !!guard))
+        return prismaProps;
 
       return processed;
     }

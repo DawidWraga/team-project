@@ -46,6 +46,7 @@ const pages: IPage[] = [
       route: '/example',
     },
   },
+
   {
     parentLink: {
       label: 'Projects',

@@ -1,7 +1,8 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Button, Flex, useModalContext } from '@chakra-ui/react';
 import { useChakraForm } from 'lib-client/useChakraForm';
 import { Example } from 'controllers';
 import { ExampleModel } from 'prisma/zod';
+import { useModalStore } from 'stores/ModalStore';
 
 interface IProps {}
 
@@ -9,6 +10,8 @@ export const getServerSideProps = Example.findMany.prefetch;
 
 export default function ExamplePage(props: IProps) {
   const {} = props;
+
+  const { setContent } = useModalStore();
 
   const findMany = Example.findMany.use();
   const create = Example.create.use();
@@ -33,10 +36,15 @@ export default function ExamplePage(props: IProps) {
         justifyContent={'stretch'}
         sx={{
           '& > *': {
-            w: '100%',
+            maxW: 'unset',
           },
         }}
       >
+        <Button
+          onClick={() => {
+            setContent({ title: 'test', main: 'hello' });
+          }}
+        />
         <CreateForm.Form
           onSubmit={create.mutateAsync}
           onServerSuccess={CreateForm.reset}

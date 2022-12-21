@@ -15,6 +15,7 @@ import Loading from 'components/loading';
 import MainLayout from 'components/layout/MainLayout';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { CustomDialogue } from 'stores/ModalStore';
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
@@ -78,6 +79,7 @@ function MyApp({ Component, pageProps }) {
                 <MainLayout>
                   <Component {...pageProps} />
                 </MainLayout>
+                <CustomDialogue />
                 <ReactQueryDevtools initialIsOpen={false} />
               </Hydrate>
             </QueryClientProvider>

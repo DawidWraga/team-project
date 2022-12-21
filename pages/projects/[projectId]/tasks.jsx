@@ -1,6 +1,5 @@
-import { Badge, Box, Grid, Heading, Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import React from 'react';
-import { Paper } from 'styles/Paper';
 import { KanbanCol } from 'components/tasks/KanbanCol';
 import tasks from 'db/tasks';
 
