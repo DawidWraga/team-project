@@ -29,7 +29,7 @@ export default function AuthPage(props: IProps) {
     if (user) router.replace('/');
   }, []);
 
-  const { Input, Form, DebugPanel, SubmitBtn, Heading } = useChakraForm({ schema });
+  const { Input, Form, SubmitBtn, Heading } = useChakraForm({ schema });
 
   const onSubmit = async (data) => {
     const res = await axios.post('/api/auth', data);

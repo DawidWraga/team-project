@@ -105,7 +105,6 @@ export default function RegisterPage(props) {
         <Input name="confirmPassword" type="password" />
         <SubmitBtn>Register</SubmitBtn>
       </Form>
-      <DebugPanel />
     </ExternalFormWrapper>
   );
 }

@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { useChakraForm } from 'lib-client/useChakraForm';
 import { Example } from 'controllers';
 import { ExampleModel } from 'prisma/zod';
@@ -42,17 +42,17 @@ export default function ExamplePage(props: IProps) {
           onServerSuccess={CreateForm.reset}
           serverErrorFeedbackType="toast"
         >
-          <Text>Create</Text>
+          <CreateForm.Heading>Create</CreateForm.Heading>
           <CreateForm.Input name="text" />
           <CreateForm.SubmitBtn />
         </CreateForm.Form>
         <DeleteForm.Form onSubmit={del.mutateAsync}>
-          <Text>Delete</Text>
+          <DeleteForm.Heading>Delete</DeleteForm.Heading>
           <DeleteForm.Input type="number" name="id" />
           <DeleteForm.SubmitBtn />
         </DeleteForm.Form>
         <UpdateForm.Form onSubmit={update.mutateAsync}>
-          <Text>Update</Text>
+          <UpdateForm.Heading>Update</UpdateForm.Heading>
           <UpdateForm.Input name="text" />
           <UpdateForm.Input type="number" name="id" />
           <UpdateForm.SubmitBtn />
