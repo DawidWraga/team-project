@@ -126,7 +126,6 @@ export const useChakraForm = <
         }}
         onSubmit={obj.handleSubmit(async (data) => {
           try {
-            console.log(data);
             const res = await onSubmit!(data);
             setIsServerSuccess(true);
             if (onServerSuccess) onServerSuccess(res);

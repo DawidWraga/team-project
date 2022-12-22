@@ -31,8 +31,7 @@ export default function AuthPage(props: IProps) {
   const { Input, Form, SubmitBtn, Heading } = useChakraForm({ schema });
 
   const onSubmit = async (data) => {
-    const res = await axios.post('/api/auth', data);
-    return res.data;
+    return axios.post('/api/auth', data);
   };
 
   return (

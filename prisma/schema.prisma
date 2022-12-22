@@ -67,21 +67,21 @@ model Comment {
 }
 
 model User {
-  id        Int    @id @default(autoincrement())
-  full_name String @db.Text ///@zod.min(3).trim
-  email     String @unique @db.VarChar(30) ///@zod.email().trim
+  id       Int    @id @default(autoincrement())
+  fullName String @db.Text ///@zod.min(3).trim
+  email    String @unique @db.VarChar(30) ///@zod.email().trim
   //must be 12 char long, least one uppercase letter, one lowercase letter, one number and one special character.
-  password  String @db.Text ///@zod.max(25).regex(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{12,}$/)
-  user_icon String @db.Text
+  password String @db.Text ///@zod.max(25).regex(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{12,}$/)
+  userIcon String @db.VarChar(255)
 
-  role_id Int @default(1)
+  roleId Int @default(1)
 
-  role              UserRole  @relation(fields: [role_id], references: [id])
-  posts             Post[]
-  comments          Comment[]
-  tasks_assigned    Task[]
-  projects_assigned Project[]
-  projects_managed  Project[] @relation(name: "ProjectManagers")
+  role             UserRole  @relation(fields: [roleId], references: [id])
+  posts            Post[]
+  comments         Comment[]
+  tasksAssigned    Task[]
+  projectsAssigned Project[]
+  projectsManaged  Project[] @relation(name: "ProjectManagers")
 }
 
 model UserRole {

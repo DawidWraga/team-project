@@ -17,9 +17,10 @@ export default async function handler(req, res) {
       delete userDetails.password;
       return res.status(200).json(userDetails);
     } else {
-      return res.status(403).json({ msg: 'user not found' });
+      return res.status(403).json({ cause: 'Invalid credentials' });
     }
   } catch (e) {
     console.error(e);
+    res.status(403).send();
   }
 }
