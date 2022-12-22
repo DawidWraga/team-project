@@ -17,6 +17,7 @@ export const useTaskModal = () => {
   });
 
   return () =>
+    setContent &&
     setContent({
       header: <Heading>Create new task</Heading>,
       body: (

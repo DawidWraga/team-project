@@ -7,21 +7,10 @@ import {
   ModalBody,
   ModalCloseButton,
 } from '@chakra-ui/react';
+import { DragDownIndicator } from 'components/DragDownIndicator';
 import { MotionProps } from 'framer-motion';
 import { useModalStore } from 'stores/ModalStore';
 import { breakpoints } from 'utils/breakpoints';
-
-const slideFromScreenBottom: MotionProps = {
-  initial: { y: '90vh' },
-  animate: {
-    y: '20vh',
-    transition: {
-      duration: 0.3,
-      ease: 'easeInOut',
-    },
-  },
-  exit: { y: '100vh', transition: { duration: 0.2, ease: 'easeInOut' } },
-};
 
 export const MainModal = () => {
   const { isOpen, onClose, content } = useModalStore();
@@ -51,18 +40,24 @@ export const MainModal = () => {
 
       {/* wrapper */}
       <ModalContent
+        draggable={true}
         minHeight={{ base: '75vh', lg: '500px' }}
         borderBottomRadius={{ base: '0', md: 'md' }}
+        borderTopRadius={{ base: 'xl', md: 'md' }}
+        overflowY={{ base: 'hidden', md: 'auto' }}
         // animate slide up from bottom for mobile devices
         {...(breakpoints.md('below') && {
-          motionProps: slideFromScreenBottom,
+          motionProps: slideFromScreenBottom(onClose),
         })}
         {...modalContentProps}
       >
-        <ModalCloseButton />
+        <DragDownIndicator />
+        <ModalCloseButton opacity={{ base: 0, md: 1 }} />
 
         {/* ===== main content ==== */}
-        <ModalHeader {...modalHeaderProps}>{header}</ModalHeader>
+        <ModalHeader mt={{ base: 3, md: 0 }} {...modalHeaderProps}>
+          {header}
+        </ModalHeader>
         <ModalBody w="100%" display="flex" justifyContent={'center'} {...modalBodyProps}>
           {body}
         </ModalBody>
@@ -75,3 +70,28 @@ export const MainModal = () => {
     </Modal>
   );
 };
+
+const swipePower = (offset: number, velocity: number) => {
+  return Math.abs(offset) * velocity;
+};
+
+const slideFromScreenBottom = (onSwipeDown: () => any): MotionProps => ({
+  initial: { translateY: '90vh' },
+  animate: {
+    translateY: '20vh',
+    transition: {
+      duration: 0.3,
+      ease: 'easeInOut',
+    },
+  },
+  exit: { translateY: '100vh', transition: { duration: 0.2, ease: 'easeInOut' } },
+  drag: 'y',
+  dragConstraints: { top: 0, bottom: 0 },
+  onDragEnd: (e, { offset, velocity }) => {
+    const swipe = swipePower(offset.y, velocity.y);
+    if (swipe > 130 * 1000) {
+      onSwipeDown();
+    }
+  },
+  dragElastic: { top: 0, bottom: 1 },
+});
