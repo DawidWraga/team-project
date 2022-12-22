@@ -1,4 +1,4 @@
-import { Flex, Icon, IconButton, Box } from '@chakra-ui/react';
+import { Flex, Icon, IconButton, Box, useBreakpoint } from '@chakra-ui/react';
 import { MdMenu, MdMenuOpen, MdSearch } from 'react-icons/md';
 import { isMobile } from 'utils/checkScreenWidth';
 import ProfileMenu from '../ProfileMenu';

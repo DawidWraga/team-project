@@ -3,6 +3,8 @@ import { useChakraForm } from 'lib-client/useChakraForm';
 import { Example } from 'controllers';
 import { ExampleModel } from 'prisma/zod';
 import { useModalStore } from 'stores/ModalStore';
+import { useEffect } from 'react';
+import { breakpoints } from 'utils/breakpoints';
 
 interface IProps {}
 
@@ -10,8 +12,6 @@ export const getServerSideProps = Example.findMany.prefetch;
 
 export default function ExamplePage(props: IProps) {
   const {} = props;
-
-  const { setContent } = useModalStore();
 
   const findMany = Example.findMany.use();
   const create = Example.create.use();
@@ -28,8 +28,26 @@ export default function ExamplePage(props: IProps) {
     schema: ExampleModel.pick({ id: true }),
   });
 
+  // const labelToBreakpoint = {
+  //   base: `(max-width: 0px)`,
+  //   sm: `(max-width: 480px)`,
+  //   md: `(max-width: 768px)`,
+  //   lg: `(max-width: 992px)`,
+  //   xl: `(max-width: 1280px)`,
+  //   '2xl': `(max-width: 1536px)`,
+  // };
+
   return (
-    <Flex flexDir="column">
+    <Flex
+      flexDir="column"
+      // onClick={() => {
+      //   console.log(window.innerWidth);
+      //   ['base', 'sm', 'md', 'xl', '2xl'].forEach((w) => {
+      //     const bool = breakpoints[w]();
+      //     console.log(`${w} = ${bool}`);
+      //   });
+      // }}
+    >
       <Flex
         flexDir="row"
         w="100%"
@@ -40,11 +58,6 @@ export default function ExamplePage(props: IProps) {
           },
         }}
       >
-        <Button
-          onClick={() => {
-            setContent({ title: 'test', main: 'hello' });
-          }}
-        />
         <CreateForm.Form
           onSubmit={create.mutateAsync}
           onServerSuccess={CreateForm.reset}

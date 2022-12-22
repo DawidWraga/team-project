@@ -21,7 +21,7 @@ import {
   FormErrorMessage,
   FormLabel,
   Input as ChakraInput,
-  InputProps as CharkaInputProps,
+  InputProps as ChakraInputProps,
   Heading as ChakraHeading,
   Text,
   HeadingProps,
@@ -52,8 +52,10 @@ export interface ICreateInputProps<TFieldValues extends FieldValues = FieldValue
   helperText?: string;
   type?: string;
   controllerProps?: Omit<UseControllerProps, 'name' | 'control' | 'render'>;
-  inputProps?: (props: IFieldAndFieldState<TFieldValues>) => CharkaInputProps;
-  customInput?: (props: IFieldAndFieldState<TFieldValues>) => JSX.Element;
+  inputProps?: (props: IFieldAndFieldState<TFieldValues>) => ChakraInputProps;
+  customInput?: (
+    props: { defaults: ChakraInputProps } & IFieldAndFieldState<TFieldValues>
+  ) => JSX.Element;
 }
 
 // ========== RETURN TYPE
@@ -109,22 +111,21 @@ export const useChakraForm = <
         as={'form'}
         autoComplete="off"
         noValidate
-        w="100%"
         sx={{
-          '&.inputStack, & .inputStack': {
-            bgColor: '#fff',
-            flexDir: 'column',
-            gap: '4',
-            display: 'flex',
-            py: '1rem',
-            width: '100%',
-            maxW: '480px',
-            px: { base: 3, sm: 6, lg: 8 },
-            mx: 'auto',
-          },
+          w: '100%',
+          bgColor: '#fff',
+          flexDir: 'column',
+          gap: '4',
+          display: 'flex',
+          py: '1rem',
+          width: '100%',
+          maxW: '480px',
+          px: { base: 3, sm: 6, lg: 8 },
+          mx: 'auto',
         }}
         onSubmit={obj.handleSubmit(async (data) => {
           try {
+            console.log(data);
             const res = await onSubmit!(data);
             setIsServerSuccess(true);
             if (onServerSuccess) onServerSuccess(res);
@@ -213,38 +214,43 @@ export const useChakraForm = <
             value: field.value || '',
           } as typeof field;
 
+          const defaults: ChakraInputProps = {
+            placeholder,
+            type,
+            borderColor: 'blackAlpha.300',
+            bgColor: 'pale.main',
+            shadow: 'sm',
+            w: '100%',
+          };
+
+          //transform input value into expected value
+          if (type === 'number')
+            defaults.onChange = (ev: any) => {
+              obj.setValue(name, Number(ev.target.value) as any, {
+                shouldValidate: true,
+              });
+            };
+          // {...(type === 'date' && {
+          //   onChange: (ev) => {
+          //     obj.setValue(name, new Date(ev.target.value) as any, {
+          //       shouldValidate: true,
+          //     });
+          //   },
+          // })}
+
           return (
             <FormControl isRequired={required} isInvalid={Boolean(error)}>
               <FormLabel textTransform={'capitalize'}>
-                {label || field.name.replace(/([A-Z])/g, ' $1')}
+                {label || field.name.replace(/([A-Z])/g, ' $1').replace('_', ' ')}
               </FormLabel>
+              {/* render custom inputs eg switch, slider etc */}
               {!!customInput ? (
-                customInput({ field: processedField, fieldState })
+                customInput({ field: processedField, fieldState, defaults })
               ) : (
+                // default = render Input from chakra (eg text, number, date, etc)
                 <ChakraInput
                   {...processedField}
-                  placeholder={placeholder}
-                  type={type}
-                  //transform input value into expected value
-                  {...(type === 'number' && {
-                    onChange: (ev) => {
-                      obj.setValue(name, Number(ev.target.value) as any, {
-                        shouldValidate: true,
-                      });
-                    },
-                  })}
-                  // {...(type === 'date' && {
-                  //   onChange: (ev) => {
-                  //     obj.setValue(name, new Date(ev.target.value) as any, {
-                  //       shouldValidate: true,
-                  //     });
-                  //   },
-                  // })}
-                  borderColor={'blackAlpha.300'}
-                  bgColor="pale.main"
-                  shadow={'sm'}
-                  w="100%"
-                  // mb={2}
+                  {...defaults}
                   {...(inputProps && inputProps({ field, fieldState }))}
                 />
               )}

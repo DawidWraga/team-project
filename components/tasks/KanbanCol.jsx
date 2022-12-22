@@ -40,7 +40,7 @@ export function KanbanCol(props) {
           _hover={{ cursor: 'pointer' }}
         >
           <MdAddCircle size="18px" pl="0" pr="0" as="AddIcon" />
-          <TagLabel class="uppercase">Add Task</TagLabel>
+          <TagLabel className="uppercase">Add Task</TagLabel>
         </Tag>
       </Paper>
       {tasks.map((task) => {
