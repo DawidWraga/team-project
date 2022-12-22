@@ -2,10 +2,7 @@ import { ToastContainer } from 'react-toastify';
 import 'styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { Slide } from 'react-toastify';
-import { getCurrentUser } from '/controllers/auth';
-import { useRouter } from 'next/router';
-import { Suspense, useEffect, useState } from 'react';
-import { setTimeoutPromise } from 'utils/setTimeoutPromise';
+import { Suspense, useState } from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { theme } from 'styles/chakra-theme';
 import 'styles/nprogress.css';
@@ -15,38 +12,12 @@ import Loading from 'components/loading';
 import MainLayout from 'components/layout/MainLayout';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { CustomDialogue } from 'stores/ModalStore';
+import { MainModal } from 'components/MainModal';
+import { useAuthGuard } from 'lib-client/useAuthguard';
 
 function MyApp({ Component, pageProps }) {
-  const router = useRouter();
   const [queryClient] = useState(() => new QueryClient());
-  // const queryClient = new QueryClient();
-
-  // ======CHECK AUTH STATE; REDIRECT IF NOT AUTHENTICATED======
-
-  // function AuthGuard() {
-  // }
-  const [loading, setLoading] = useState(false);
-
-  // AUTH CHECK
-  useEffect(() => {
-    window.scrollTo(0, 1);
-    (async () => {
-      setLoading(true);
-
-      const isSignedIn = await getCurrentUser();
-      if (!isSignedIn && router.asPath !== '/register') {
-        router.replace('/auth');
-        await setTimeoutPromise(200);
-      }
-
-      if (isSignedIn && router.pathname === '/') {
-        router.replace('/dashboard');
-      }
-
-      setLoading(false);
-    })();
-  }, []);
+  const { loading } = useAuthGuard();
 
   return (
     <>
@@ -79,7 +50,7 @@ function MyApp({ Component, pageProps }) {
                 <MainLayout>
                   <Component {...pageProps} />
                 </MainLayout>
-                <CustomDialogue />
+                <MainModal />
                 <ReactQueryDevtools initialIsOpen={false} />
               </Hydrate>
             </QueryClientProvider>
@@ -91,7 +62,3 @@ function MyApp({ Component, pageProps }) {
 }
 
 export default MyApp;
-
-{
-  /* // getLayout(<Component {...pageProps} />) */
-}
