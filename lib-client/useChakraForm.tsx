@@ -30,6 +30,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { MdCheck, MdSend } from 'react-icons/md';
 import { toast } from 'react-toastify';
+import moment from 'moment';
 
 export interface IFieldAndFieldState<TFieldValues extends FieldValues = FieldValues> {
   field: ControllerRenderProps<TFieldValues, Path<TFieldValues>>;
@@ -175,93 +176,100 @@ export const useChakraForm = <
     [obj.formState, isServerSuccess]
   );
 
-  const Input = useCallback((props: ICreateInputProps<TFieldValues>) => {
-    const {
-      name,
-      controllerProps,
-      customInput,
-      inputProps,
-      label,
-      placeholder,
-      helperText,
-      type,
-    } = props;
+  const Input = useCallback(
+    (props: ICreateInputProps<TFieldValues>) => {
+      const {
+        name,
+        controllerProps,
+        customInput,
+        inputProps,
+        label,
+        placeholder,
+        helperText,
+        type,
+      } = props;
 
-    if (!!customInput && (!!inputProps || !!placeholder || !!type))
-      console.warn(
-        'If custom input is used, input props will not be applied.\n Must Place inputProps directly on component inside custominput.'
-      );
+      if (!!customInput && (!!inputProps || !!placeholder || !!type))
+        console.warn(
+          'If custom input is used, input props will not be applied.\n Must Place inputProps directly on component inside custominput.'
+        );
 
-    // derive required from zod schema
-    // if schema not available, pressume required
-    // can be overwritten with "required" prop
-    const required = (schema as any).shape
-      ? (schema as any)?.shape[name]?._def?.typeName !== 'ZodOptional'
-      : true;
+      // derive required from zod schema
+      // if schema not available, pressume required
+      // can be overwritten with "required" prop
+      const required = (schema as any).shape
+        ? (schema as any)?.shape[name]?._def?.typeName !== 'ZodOptional'
+        : true;
 
-    return (
-      <Controller
-        name={name as Path<TFieldValues>}
-        key={name}
-        control={obj.control}
-        {...controllerProps}
-        render={({ field, fieldState }) => {
-          const { error } = fieldState;
+      return (
+        <Controller
+          name={name as Path<TFieldValues>}
+          key={name}
+          control={obj.control}
+          {...controllerProps}
+          render={({ field, fieldState }) => {
+            const { error } = fieldState;
 
-          // prevent uncontrolled => controlled error messages by defaulting undefined value to empty string
-          const processedField = {
-            ...field,
-            value: field.value || '',
-          } as typeof field;
+            // prevent uncontrolled => controlled error messages by defaulting undefined value to empty string
+            const processedField = {
+              ...field,
+              value: field.value || '',
+            } as typeof field;
 
-          const defaults: ChakraInputProps = {
-            placeholder,
-            type,
-            borderColor: 'blackAlpha.300',
-            bgColor: 'pale.main',
-            shadow: 'sm',
-            w: '100%',
-          };
-
-          //transform input value into expected value
-          if (type === 'number')
-            defaults.onChange = (ev: any) => {
-              obj.setValue(name, Number(ev.target.value) as any, {
-                shouldValidate: true,
-              });
+            const defaults: ChakraInputProps = {
+              placeholder,
+              type,
+              borderColor: 'blackAlpha.300',
+              bgColor: 'pale.main',
+              shadow: 'sm',
+              w: '100%',
             };
-          // {...(type === 'date' && {
-          //   onChange: (ev) => {
-          //     obj.setValue(name, new Date(ev.target.value) as any, {
-          //       shouldValidate: true,
-          //     });
-          //   },
-          // })}
 
-          return (
-            <FormControl isRequired={required} isInvalid={Boolean(error)}>
-              <FormLabel textTransform={'capitalize'}>
-                {label || field.name.replace(/([A-Z])/g, ' $1').replace('_', ' ')}
-              </FormLabel>
-              {/* render custom inputs eg switch, slider etc */}
-              {!!customInput ? (
-                customInput({ field: processedField, fieldState, defaults })
-              ) : (
-                // default = render Input from chakra (eg text, number, date, etc)
-                <ChakraInput
-                  {...processedField}
-                  {...defaults}
-                  {...(inputProps && inputProps({ field, fieldState }))}
-                />
-              )}
-              {helperText}
-              {error && <FormErrorMessage>{error.message}</FormErrorMessage>}
-            </FormControl>
-          );
-        }}
-      />
-    );
-  }, []);
+            //transform input value into expected value
+            if (type === 'number')
+              defaults.onChange = (ev: any) => {
+                obj.setValue(name, Number(ev.target.value) as any, {
+                  shouldValidate: true,
+                });
+              };
+
+            if (type === 'date') {
+              defaults.onChange = (ev) => {
+                obj.setValue(name, new Date(ev.target.value) as any, {
+                  shouldValidate: true,
+                });
+              };
+              if (field.value) {
+                defaults.value = moment(field.value).format('yyyy-MM-DD');
+              }
+            }
+
+            return (
+              <FormControl isRequired={required} isInvalid={Boolean(error)}>
+                <FormLabel textTransform={'capitalize'}>
+                  {label || field.name.replace(/([A-Z])/g, ' $1').replace('_', ' ')}
+                </FormLabel>
+                {/* render custom inputs eg switch, slider etc */}
+                {!!customInput ? (
+                  customInput({ field: processedField, fieldState, defaults })
+                ) : (
+                  // default = render Input from chakra (eg text, number, date, etc)
+                  <ChakraInput
+                    {...processedField}
+                    {...defaults}
+                    {...(inputProps && inputProps({ field, fieldState }))}
+                  />
+                )}
+                {helperText}
+                {error && <FormErrorMessage>{error.message}</FormErrorMessage>}
+              </FormControl>
+            );
+          }}
+        />
+      );
+    },
+    [obj.reset]
+  );
 
   const DebugPanel = () => {
     return (

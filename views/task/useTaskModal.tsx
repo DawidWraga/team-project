@@ -11,9 +11,7 @@ export const useTaskModal = () => {
   const { mutateAsync: createTask } = taskController.create.use();
 
   const { Form, Input, Heading, SubmitBtn, DebugPanel } = useChakraForm({
-    schema: TaskModel.pick({ title: true, description: true, due_date: true }).extend({
-      due_date: z.string(),
-    }),
+    schema: TaskModel.pick({ title: true, description: true, due_date: true }),
   });
 
   return () =>
