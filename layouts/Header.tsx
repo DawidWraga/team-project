@@ -3,11 +3,14 @@ import { MdMenu, MdMenuOpen, MdSearch } from 'react-icons/md';
 import { isMobile } from 'utils/checkScreenWidth';
 import ProfileMenu from 'views/profile/ProfileMenu';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
-import HeaderContent from './HeaderContent';
 import { useEffect } from 'react';
 import OptionBar from 'layouts/OptionBar';
-import { closedSideNavWidth, headerHeight } from 'lib-client/constants';
-import { objectMap } from 'utils/objectMap';
+import { headerHeight } from 'lib-client/constants';
+import dynamic from 'next/dynamic';
+import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
+const HeaderContent = dynamic(() => import('layouts/HeaderContent'), {
+  ssr: false,
+});
 
 export default function Header(props) {
   const {} = props;
@@ -17,7 +20,9 @@ export default function Header(props) {
   const sideNavLinks = activePage?.sideNavLinks;
   useEffect(() => {
     if (!sideNavLinks) setSideNavIsOpen(false);
-  }, []);
+  }, [sideNavLinks]);
+
+  const isHydrated = useIsHydrated();
 
   return (
     <>
@@ -33,7 +38,7 @@ export default function Header(props) {
         alignItems="center"
         zIndex={'banner'}
       >
-        {sideNavLinks && (
+        {isHydrated && sideNavLinks && (
           <IconButton
             variant={'unstyled'}
             aria-label="toggle side nav"
