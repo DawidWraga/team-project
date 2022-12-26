@@ -2,11 +2,22 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import { useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { Example } from 'lib-client/controllers';
 import { ExampleModel } from 'prisma/zod';
+import { useLayoutStore } from 'lib-client/stores/LayoutStore';
+import { breakpoints } from 'utils/breakpoints';
+import { DateChangeBtns } from 'components/DateChangeBtns';
 
 interface IProps {}
 
 export default function ExamplePage(props: IProps) {
   const {} = props;
+
+  const { useSetOptionBar } = useLayoutStore();
+
+  useSetOptionBar(
+    <>
+      <DateChangeBtns />
+    </>
+  );
 
   const findMany = Example.findMany.use();
   const create = Example.create.use();
@@ -25,7 +36,7 @@ export default function ExamplePage(props: IProps) {
 
   return (
     <Flex flexDir="column">
-      <Flex
+      {/* <Flex
         flexDir="row"
         w="100%"
         justifyContent={'stretch'}
@@ -55,7 +66,7 @@ export default function ExamplePage(props: IProps) {
           <UpdateForm.Input type="number" name="id" />
           <UpdateForm.SubmitBtn />
         </UpdateForm.Form>
-      </Flex>
+      </Flex> */}
       <Box bgColor="pale.main">
         {findMany.isLoading && 'loading'}
         {findMany.data &&

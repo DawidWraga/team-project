@@ -5,15 +5,18 @@ import ProfileMenu from 'views/profile/ProfileMenu';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import HeaderContent from './HeaderContent';
 import { useEffect } from 'react';
+import OptionBar from 'layouts/OptionBar';
+import { closedSideNavWidth, headerHeight } from 'lib-client/constants';
+import { objectMap } from 'utils/objectMap';
 
 export default function Header(props) {
   const {} = props;
-  const { sideNavIsOpen, toggleSideNavIsOpen, setSideNavIsOpen, activePage } =
+  const { sideNavIsOpen, toggleSideNavIsOpen, setSideNavIsOpen, activePage, leftOffset } =
     useLayoutStore();
 
   const sideNavLinks = activePage?.sideNavLinks;
   useEffect(() => {
-    if (!sideNavLinks && setSideNavIsOpen) setSideNavIsOpen(false);
+    if (!sideNavLinks) setSideNavIsOpen(false);
   }, []);
 
   return (
@@ -21,17 +24,21 @@ export default function Header(props) {
       <Box h="60px" w="500px" position="fixed" top={0} left={0} bgColor="shade.main" />
       <Flex
         w="100%"
-        h="60px"
+        h={headerHeight + 'px'}
         bgColor="shade.main"
         position="fixed"
         top="0"
-        ml={{ lg: sideNavIsOpen ? '200px' : '0' }}
+        ml={leftOffset}
         transition="all 150ms"
         alignItems="center"
         zIndex={'banner'}
       >
         {sideNavLinks && (
-          <IconButton variant={'unstyled'} onClick={toggleSideNavIsOpen}>
+          <IconButton
+            variant={'unstyled'}
+            aria-label="toggle side nav"
+            onClick={toggleSideNavIsOpen}
+          >
             <Icon
               as={sideNavIsOpen && !isMobile() ? MdMenuOpen : MdMenu}
               color="white"
@@ -43,6 +50,7 @@ export default function Header(props) {
         <HeaderContent />
         <Flex position="fixed" right="2" top={{ base: 4, lg: '3' }} gap="3" zIndex="999">
           <IconButton
+            aria-label="search"
             variant="unstyled"
             rounded="full"
             borderColor="white"
@@ -68,36 +76,8 @@ export default function Header(props) {
           </IconButton>
           <ProfileMenu offset={[4, 11]} />
         </Flex>
-
-        {/* POSSIBL ADDITION: FILTER BAR UNDER HEADER WITH TAG STYLINING */}
-        {/* <Flex
-					position="absolute"
-					left="0"
-					top="60px"
-					w="100%"
-					h="45px"
-					bgColor="shade.light"
-					zIndex="10000"
-				></Flex> */}
       </Flex>
+      <OptionBar />
     </>
   );
 }
-
-// function HeaderContent() {
-// 	if (!activePage?.parentLink.route) return <>no route</>;
-
-// 	const DynamicComponent = lazy(() =>
-// 		import(`layouts/headerContent${activePage.route}`).catch(
-// 			() => ({
-// 				default: () => <></>,
-// 			})
-// 		)
-// 	);
-
-// 	return (
-// 		<Suspense fallback={<></>}>
-// 			<DynamicComponent {...props} />
-// 		</Suspense>
-// 	);
-// }

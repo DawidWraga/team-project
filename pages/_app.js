@@ -14,10 +14,12 @@ import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { MainModal } from 'components/MainModal';
 import { useAuthGuard } from 'lib-client/hooks/useAuthguard';
+import { useSyncPageToRoute } from 'lib-client/hooks/useSyncPageToRoute';
 
 function MyApp({ Component, pageProps }) {
   const [queryClient] = useState(() => new QueryClient());
   const { loading } = useAuthGuard();
+  useSyncPageToRoute();
 
   return (
     <>

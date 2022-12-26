@@ -40,7 +40,8 @@ const colors = {
   },
   pale: {
     light: 'hsl(204, 10%,99%)',
-    main: 'hsl(204, 15%,93%)',
+    // main: 'hsl(204, 15%,93%)',
+    main: 'hsl(198, 16%, 90%)',
     dark: 'hsl(198, 15%, 83%)',
     inv: 'hsl(0, 0%, 100%)',
   },

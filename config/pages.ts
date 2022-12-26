@@ -1,10 +1,11 @@
-interface IRouteData {
+export interface IRouteData {
   label: string;
   route: string;
   defaultHeaderLink?: string;
+  hasOptionBar?: boolean;
 }
 
-interface IPage {
+export interface IPage {
   parentLink: IRouteData;
   sideNavLinks?: IRouteData[];
   headerLinks?: IRouteData[];
@@ -44,6 +45,7 @@ const pages: IPage[] = [
     parentLink: {
       label: 'Example',
       route: '/example',
+      hasOptionBar: true,
     },
   },
 
@@ -60,6 +62,7 @@ const pages: IPage[] = [
       {
         label: 'tasks',
         route: '/tasks',
+        hasOptionBar: true,
       },
     ],
     sideNavLinks: projectSideNavLinks,

@@ -3,6 +3,8 @@ import { isDevEnv } from 'utils/isDevEnv';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 import { createTrackedSelector } from 'react-tracked';
 import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
+import { objectMap } from 'utils/objectMap';
+import { useMemo } from 'react';
 
 export const useCreateStore = <StoreType>(
   identifier: string,
@@ -18,9 +20,31 @@ export const useCreateStore = <StoreType>(
     mountStoreDevtool(identifier, useStore);
   // devtools showing data in store avaiable at root of html body tag
 
+  // return () => useStore();
+  return () => createTrackedSelector(useStore)();
+
+  // ! decided stop spending time on fixing hydration errors as we have moved away from SSR and are fetching data on the client using react-query instead.
+  // condtional store aim
+  // all func are STILL func (not filtered)
+  // check if hydrated before exec func
+
   return () => {
+    const isHydrated = useIsHydrated();
     const store = createTrackedSelector(useStore)();
-    return useIsHydrated() ? store : (getDehydratedStore(initializer) as StoreType);
+    const dehydratedStore = initialiseDehydratedStore(initializer) as StoreType;
+
+    return store;
+    const processedStore = useMemo(() => {
+      return objectMap(store as any, (v) => {
+        // only process functions
+        if (typeof v !== 'function') return v;
+
+        // return isHydrated ? v : () => null;
+        return (args) => isHydrated && v(args);
+      }) as StoreType;
+    }, [isHydrated]);
+
+    return isHydrated ? processedStore : dehydratedStore;
   };
 };
 

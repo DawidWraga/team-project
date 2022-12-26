@@ -6,7 +6,6 @@ import { getCurrentUser } from 'lib-client/controllers/auth';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import { MdLogin } from 'react-icons/md';
 import { BrandLogoWithName } from 'components/BrandLogo';
-import { MobileOnly } from 'components/deviceTypes';
 import { useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { z } from 'zod';
 import { executeSignIn } from 'lib-client/controllers/auth';

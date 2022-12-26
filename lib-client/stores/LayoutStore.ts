@@ -1,8 +1,18 @@
+import { IPage } from 'config/pages';
+import {
+  closedSideNavWidth,
+  headerHeight,
+  mobileBottomBarHeight,
+  openSideNavWidth,
+  optionBarHeight,
+} from 'lib-client/constants';
 import { useCreateStore } from 'lib-client/hooks/useCreateStore';
+import { useEffect } from 'react';
 
-interface IPage {
-  [key: string]: any;
-}
+type offsetProp = {
+  base: string;
+  lg?: string;
+};
 
 export interface ILayoutStore {
   activePage: IPage;
@@ -10,15 +20,63 @@ export interface ILayoutStore {
   sideNavIsOpen: boolean;
   setSideNavIsOpen: (isOpen: boolean) => void;
   toggleSideNavIsOpen: () => void;
+  optionBar: React.ReactNode | undefined;
+  setOptionBar: (content: React.ReactNode) => void;
+  useSetOptionBar: (content: React.ReactNode, dependencies?: any[]) => void;
+  optionBarIsOpen: boolean;
+  closeOptionBar: () => void;
+  leftOffset: offsetProp;
+  topOffset: offsetProp;
+  bottomOffset: offsetProp;
 }
 
-export const useLayoutStore = useCreateStore<ILayoutStore>('Layout', (set) => ({
-  activePage: {},
+const getLeftOffset = (isOpen: boolean) => {
+  if (isOpen) return { base: '0px', lg: openSideNavWidth + closedSideNavWidth + 'px' };
+  else
+    return {
+      base: 0 + 'px',
+      lg: closedSideNavWidth + 'px',
+    };
+};
+
+export const useLayoutStore = useCreateStore<ILayoutStore>('Layout', (set, get) => ({
+  // ======== active page ========
+  activePage: {} as any,
   setActivePage: (page: IPage) => set({ activePage: page }),
+  // ======== sidenav ========
   sideNavIsOpen: false,
-  setSideNavIsOpen: (isOpen: boolean) => set({ sideNavIsOpen: isOpen }),
+  setSideNavIsOpen: (isOpen: boolean) =>
+    set({
+      sideNavIsOpen: isOpen,
+      leftOffset: getLeftOffset(isOpen),
+    }),
   toggleSideNavIsOpen: () =>
     set((s) => ({
+      leftOffset: getLeftOffset(!s.sideNavIsOpen),
       sideNavIsOpen: !s.sideNavIsOpen,
     })),
+
+  // ======== option bar ========
+  optionBar: undefined,
+  setOptionBar: (content: React.ReactNode) =>
+    set({
+      optionBar: content,
+      optionBarIsOpen: true,
+      topOffset: { base: headerHeight + optionBarHeight + 'px' },
+    }),
+  useSetOptionBar(content: React.ReactNode, dependencies: any[] = []) {
+    useEffect(() => {
+      get().setOptionBar(content);
+    }, dependencies);
+  },
+  optionBarIsOpen: false,
+  closeOptionBar: () =>
+    set({
+      optionBarIsOpen: false,
+      topOffset: { base: headerHeight + 'px' },
+    }),
+  // ======== offset ========
+  leftOffset: { base: 0 + 'px', lg: closedSideNavWidth + 'px' },
+  topOffset: { base: headerHeight + 'px' },
+  bottomOffset: { base: mobileBottomBarHeight + 'px', lg: 0 + 'px' },
 }));

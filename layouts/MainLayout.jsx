@@ -1,40 +1,41 @@
 import { Box } from '@chakra-ui/react';
 import PageNavBar from './PageNavBar';
-import HeaderAndSideNav from './HeaderAndSideNav';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { useRouter } from 'next/router';
-import UserModal from 'views/profile/UserModal';
+import SideNav from 'layouts/SideNav';
+import Header from 'layouts/Header';
+import { LAYOUT_DISABLED_ROUTES } from 'lib-client/constants';
 
 export default function MainLayout(props) {
   const { children } = props;
-  const { sideNavIsOpen } = useLayoutStore();
+
+  const { topOffset, bottomOffset, leftOffset } = useLayoutStore();
+
   const router = useRouter();
 
   // hide layout on specified pages
-  if (['/auth', '/register'].includes(router.pathname)) return <>{children}</>;
+  if (LAYOUT_DISABLED_ROUTES.includes(router.pathname)) return <>{children}</>;
 
   return (
     <>
       <PageNavBar />
       {/* <UserModal /> */}
 
-      <Box
-        ml={{ lg: '60px' }}
-        mb={{ base: '60px', lg: 0 }}
-        // h="100vh"
-        zIndex="40"
-        bgColor="blackAlpha.300"
-      >
-        <HeaderAndSideNav />
+      <Box mb={bottomOffset} zIndex="40" bgColor="blackAlpha.300">
+        <SideNav />
+        <Header />
         <Box
-          ml={{
-            base: 0,
-            lg: sideNavIsOpen ? '200px' : '0px',
-          }}
-          transition="margin-left 150ms"
-          mt="60px"
+          ml={leftOffset}
+          transition="all 250ms"
+          mt={topOffset}
           overflowX="hidden"
-          h={{ base: 'calc(100vh - 120px)', lg: 'calc(100vh - 60px)' }}
+          h={{
+            base: `calc(100vh - ${
+              // slice to remove "px" from end
+              +topOffset.base.slice(0, -2) + +bottomOffset.base.slice(0, -2)
+            }px)`,
+            lg: `calc(100vh - ${topOffset.base})`,
+          }}
         >
           {children}
         </Box>

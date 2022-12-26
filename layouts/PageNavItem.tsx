@@ -10,7 +10,7 @@ import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 
 // quick solutioin to navigate to first project default on routing to projects
 const getProcessedRoute = (route) => {
-  if (route === '/projects') return '/projects/1/dashboard';
+  if (route === '/projects') return '/projects/1/tasks';
   if (route === '/docs') return '/docs/welcome';
 
   return route;

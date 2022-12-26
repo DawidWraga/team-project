@@ -15,13 +15,12 @@ export const useAuthGuard = () => {
       const isSignedIn = await getCurrentUser();
       if (!isSignedIn && router.asPath !== '/register') {
         router.replace('/auth');
-        await setTimeoutPromise(200);
+        await setTimeoutPromise(100);
       }
 
       if (isSignedIn && router.pathname === '/') {
         router.replace('/dashboard');
       }
-
       setLoading(false);
     })();
   }, []);

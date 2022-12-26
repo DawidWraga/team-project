@@ -10,22 +10,16 @@ export default function ExternalFormWrapper(props: IProps) {
   const { children } = props;
 
   return (
-    <Flex
-      className="bg-pale-main w-screen h-screen grid"
-      w="100vw"
-      h="100vh"
-      justifyContent={'center'}
-    >
+    <Flex w="100vw" h="100vh" justifyContent={'center'} bgColor={'pale.main'}>
       <Flex
         as="main"
-        className="bg-white justify-center  rounded-lg shadow-xl "
         bgColor="white"
         h={{ base: '100vh' }}
         w="100vw"
         maxW={{ base: '100vw', lg: '750px' }}
         alignContent="center"
         alignItems="center"
-        justifyItems={'center'}
+        justifyContent={'center'}
         roundedRight={{ lg: '3xl' }}
         flexDir="column"
       >
