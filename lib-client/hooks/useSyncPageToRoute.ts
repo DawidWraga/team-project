@@ -22,6 +22,7 @@ export const useSyncPageToRoute = () => {
       const currentPage = pages.find((page) => page.parentLink.route === parentRoute);
 
       const conditionallyCloseOptionBar = () => {
+        if (!optionBarIsOpen) return;
         if (currentPage?.parentLink.hasOptionBar) return;
 
         const currentSubPage = [
@@ -37,6 +38,8 @@ export const useSyncPageToRoute = () => {
       setActivePage(currentPage);
       conditionallyCloseOptionBar();
     };
+
+    handleRouteChange(router.asPath);
 
     router.events.on('routeChangeStart', handleRouteChange);
 

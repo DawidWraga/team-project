@@ -35,7 +35,7 @@ const formatDate = (date, unit = 'month') => {
   return dateString.toString();
 };
 
-export function DateChangeBtns(props: IProps) {
+export function DateSelector(props: IProps) {
   const { saveChangesBeforeRouting } = props;
   const router = useRouter();
   let date = router.query.date ?? moment();

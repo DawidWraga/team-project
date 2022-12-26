@@ -4,7 +4,7 @@ import { Example } from 'lib-client/controllers';
 import { ExampleModel } from 'prisma/zod';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { breakpoints } from 'utils/breakpoints';
-import { DateChangeBtns } from 'components/DateChangeBtns';
+import { DateSelector } from 'components/DateSelector';
 
 interface IProps {}
 
@@ -15,7 +15,7 @@ export default function ExamplePage(props: IProps) {
 
   useSetOptionBar(
     <>
-      <DateChangeBtns />
+      <DateSelector />
     </>
   );
 

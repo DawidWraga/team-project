@@ -6,7 +6,7 @@ export function useActiveSideNavLink() {
   const { activePage } = useLayoutStore();
   const hasSideNav = activePage?.sideNavLinks && activePage?.sideNavLinks?.length;
 
-  if (!hasSideNav) return { activeSideNavLink: false };
+  if (!hasSideNav) return { activeSideNavLink: undefined };
 
   const activeSideNavLink = activePage.sideNavLinks.find((link) => {
     return router.asPath.includes(link.route);
