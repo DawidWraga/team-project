@@ -1,14 +1,9 @@
-import { Box, Button, Flex, useModalContext } from '@chakra-ui/react';
-import { useChakraForm } from 'lib-client/useChakraForm';
-import { Example } from 'controllers';
+import { Box, Flex, Text } from '@chakra-ui/react';
+import { useChakraForm } from 'lib-client/hooks/useChakraForm';
+import { Example } from 'lib-client/controllers';
 import { ExampleModel } from 'prisma/zod';
-import { useModalStore } from 'stores/ModalStore';
-import { useEffect } from 'react';
-import { breakpoints } from 'utils/breakpoints';
 
 interface IProps {}
-
-export const getServerSideProps = Example.findMany.prefetch;
 
 export default function ExamplePage(props: IProps) {
   const {} = props;
@@ -28,26 +23,8 @@ export default function ExamplePage(props: IProps) {
     schema: ExampleModel.pick({ id: true }),
   });
 
-  // const labelToBreakpoint = {
-  //   base: `(max-width: 0px)`,
-  //   sm: `(max-width: 480px)`,
-  //   md: `(max-width: 768px)`,
-  //   lg: `(max-width: 992px)`,
-  //   xl: `(max-width: 1280px)`,
-  //   '2xl': `(max-width: 1536px)`,
-  // };
-
   return (
-    <Flex
-      flexDir="column"
-      // onClick={() => {
-      //   console.log(window.innerWidth);
-      //   ['base', 'sm', 'md', 'xl', '2xl'].forEach((w) => {
-      //     const bool = breakpoints[w]();
-      //     console.log(`${w} = ${bool}`);
-      //   });
-      // }}
-    >
+    <Flex flexDir="column">
       <Flex
         flexDir="row"
         w="100%"
@@ -82,7 +59,11 @@ export default function ExamplePage(props: IProps) {
       <Box bgColor="pale.main">
         {findMany.isLoading && 'loading'}
         {findMany.data &&
-          findMany.data.map((item) => <p key={item.id}>{JSON.stringify(item)}</p>)}
+          findMany.data.map((item) => (
+            <Text textAlign="center" fontSize="2rem" key={item.id}>
+              id = {item.id}, text = {item.text}
+            </Text>
+          ))}
       </Box>
     </Flex>
   );

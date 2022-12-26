@@ -1,7 +1,8 @@
-import { readOperations, writeOperations } from 'controllers/createController';
+import { readOperations, writeOperations } from 'lib-client/controllers/createController';
 import { getAxiosErrorMessage } from 'lib-server/axios';
 import { apiHandler } from 'lib-server/nc';
 import prisma, { PrismaModelNames } from 'lib-server/prisma';
+import { setTimeout } from 'timers/promises';
 
 export interface IReqBody {
   operation: readOperations | writeOperations;
@@ -19,6 +20,7 @@ export class BaseApiController {
       const { operation, prismaProps }: IReqBody = req.body;
 
       try {
+        await setTimeout(1000);
         const data = await (prisma[this.model] as any)[operation](
           this.processPrismaProps(prismaProps, operation)
         );

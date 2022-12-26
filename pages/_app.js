@@ -9,11 +9,11 @@ import 'styles/nprogress.css';
 import NProgress from '../components/nprogress';
 import Head from 'next/head';
 import Loading from 'components/loading';
-import MainLayout from 'components/layout/MainLayout';
+import MainLayout from 'layouts/MainLayout';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { MainModal } from 'components/MainModal';
-import { useAuthGuard } from 'lib-client/useAuthguard';
+import { useAuthGuard } from 'lib-client/hooks/useAuthguard';
 
 function MyApp({ Component, pageProps }) {
   const [queryClient] = useState(() => new QueryClient());

@@ -3,10 +3,9 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import { MdLogin } from 'react-icons/md';
-import { useChakraForm } from 'lib-client/useChakraForm';
-import { executeSignIn } from 'controllers/auth';
+import { useChakraForm } from 'lib-client/hooks/useChakraForm';
+import { executeSignIn } from 'lib-client/controllers/auth';
 import { z } from 'zod';
-
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 // created page for testing next-auth
@@ -21,8 +20,6 @@ const schema = z.object({
 
 export default function AuthTestPage(props: IProps) {
   const {} = props;
-
-
 
   const { Input, Form, SubmitBtn, Heading } = useChakraForm({ schema });
 

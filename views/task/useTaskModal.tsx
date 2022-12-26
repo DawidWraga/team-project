@@ -1,9 +1,8 @@
 import { Textarea } from '@chakra-ui/react';
-import { taskController } from 'controllers';
-import { useChakraForm } from 'lib-client/useChakraForm';
+import { taskController } from 'lib-client/controllers';
+import { useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { TaskModel } from 'prisma/zod';
-import { useModalStore } from 'stores/ModalStore';
-import { z } from 'zod';
+import { useModalStore } from 'lib-client/stores/ModalStore';
 
 export const useTaskModal = () => {
   const { setContent, onClose } = useModalStore();

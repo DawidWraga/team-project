@@ -1,10 +1,10 @@
 import { Text } from '@chakra-ui/react';
 import posts from 'db/posts';
-import { Post } from 'components/Post';
-import { AddPostForm } from 'components/AddPostForm';
+import { Post } from 'views/forum/Post';
+import { AddPostForm } from 'views/forum/AddPostForm';
 import { useRouter } from 'next/router';
-import { PageWrapper } from 'styles/PageWrapper';
-import { Paper } from 'styles/Paper';
+import { PageWrapper } from 'layouts/PageWrapper';
+import { Paper } from 'components/Paper';
 import { PrismaClient } from '@prisma/client';
 
 // You should use getServerSideProps when:

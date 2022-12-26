@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
-import { useChakraForm } from 'lib-client/useChakraForm';
+import { useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { z } from 'zod';
-import ExternalFormWrapper from 'components/ExternalFormWrapper';
-import { userController } from 'controllers';
+import ExternalFormWrapper from 'layouts/ExternalFormWrapper';
+import { userController } from 'lib-client/controllers';
 
 const defaultUserIcon =
   'https://png.pngtree.com/png-clipart/20210915/ourmid/pngtree-user-avatar-login-interface-abstract-blue-icon-png-image_3917504.jpg';

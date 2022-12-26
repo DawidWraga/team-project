@@ -1,8 +1,5 @@
 import { objectMap } from 'utils/objectMap';
 
-export const screenIsSm = () =>
-  global?.window && window.matchMedia('(max-width: 480px)').matches;
-
 const labelToPixelScreenWidth = {
   base: 0,
   sm: 480,
@@ -20,7 +17,7 @@ export const breakpoints: Record<
     global?.window && // prevent SSR errors
     window.matchMedia(
       `(${
-        //map dir arg to media query
+        //map "dir" argument to media query
         { above: 'min', below: 'max' }[dir]
       }-width: ${breakpoint}px)`
     ).matches;

@@ -1,4 +1,4 @@
-import query from 'controllers/query';
+import query from 'lib-client/controllers/query';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 
 export default async function handler(req, res) {

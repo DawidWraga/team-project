@@ -1,6 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import React from 'react';
-import { KanbanCol } from 'components/tasks/KanbanCol';
+import { KanbanCol } from 'views/task/KanbanCol';
 import tasks from 'db/tasks';
 
 export default function ProjectKanbanPage(props) {

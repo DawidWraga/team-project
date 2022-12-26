@@ -15,8 +15,8 @@ import {
   TagLabel,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { PageWrapper } from 'styles/PageWrapper';
-import { Paper } from 'styles/Paper';
+import { PageWrapper } from 'layouts/PageWrapper';
+import { Paper } from 'components/Paper';
 
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import { RiLoader4Line } from 'react-icons/ri';
@@ -76,9 +76,7 @@ function UserTable(props) {
                 >
                   <Tag size="lg" colorScheme="gray" borderRadius="full">
                     <Avatar src={user.img} size="md" ml={-1} mr={2} pr="8px" />
-                    <TagLabel _hover={{ colorScheme: 'brand' }}>
-                      {user.fullName}
-                    </TagLabel>
+                    <TagLabel _hover={{ colorScheme: 'brand' }}>{user.fullName}</TagLabel>
                   </Tag>
                 </Td>
                 <Td>{user.email}</Td>

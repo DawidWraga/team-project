@@ -1,15 +1,17 @@
 import { Flex } from '@chakra-ui/react';
-import query from 'controllers/query';
 import { useRouter } from 'next/router';
 
-// export const getServerSideProps = async (ctx) => {
-// 	const projects = await query('projects');
-// 	return {
-// 		props: { projects },
-// 	};
-// };
+// interface IRouteData {
+//   label: string;
+//   route: string;
+//   defaultHeaderLink?: string;
+// }
 
-
+// interface IPage {
+//   parentLink: IRouteData;
+//   sideNavLinks?: IRouteData[];
+//   headerLinks?: IRouteData[];
+// }
 
 export default function ProjectsPage(props) {
   const { projects } = props;

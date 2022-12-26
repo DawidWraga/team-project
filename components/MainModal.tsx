@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { DragDownIndicator } from 'components/DragDownIndicator';
 import { MotionProps } from 'framer-motion';
-import { useModalStore } from 'stores/ModalStore';
+import { useModalStore } from 'lib-client/stores/ModalStore';
 import { breakpoints } from 'utils/breakpoints';
 
 export const MainModal = () => {

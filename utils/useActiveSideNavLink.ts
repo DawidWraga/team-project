@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useLayoutStore } from 'stores/LayoutStore';
+import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 
 export function useActiveSideNavLink() {
   const router = useRouter();

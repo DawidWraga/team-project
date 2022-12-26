@@ -2,15 +2,16 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { getCurrentUser } from 'controllers/auth';
+import { getCurrentUser } from 'lib-client/controllers/auth';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import { MdLogin } from 'react-icons/md';
 import { BrandLogoWithName } from 'components/BrandLogo';
 import { MobileOnly } from 'components/deviceTypes';
-import { useChakraForm } from 'lib-client/useChakraForm';
+import { useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { z } from 'zod';
-import { executeSignIn } from 'controllers/auth';
-import ExternalFormWrapper from 'components/ExternalFormWrapper';
+import { executeSignIn } from 'lib-client/controllers/auth';
+import ExternalFormWrapper from 'layouts/ExternalFormWrapper';
+import { Box } from '@chakra-ui/react';
 
 const schema = z.object({
   email: z.string().min(1, { message: 'Required' }),
@@ -36,15 +37,18 @@ export default function AuthPage(props: IProps) {
 
   return (
     <ExternalFormWrapper>
-      <MobileOnly w="100%">
+      <Box w="100%" display={{ lg: 'none', base: 'inline-block' }}>
         <BrandLogoWithName
           headingSize={'2xl'}
           position="relative"
           right={3}
-          bottom={'100px'}
+          bottom={'60px'}
         />
-      </MobileOnly>
-      <Heading fontWeight={600}>Sign into Portal</Heading>
+      </Box>
+
+      <Heading fontWeight={600} display={{ base: 'none', lg: 'inline-block' }}>
+        Sign into Portal
+      </Heading>
       <Form
         onSubmit={onSubmit}
         onServerSuccess={async (userData) => {
@@ -57,7 +61,7 @@ export default function AuthPage(props: IProps) {
         }}
         serverErrorFeedbackType={null}
         gap="12"
-        pb={{ base: '100px', lg: '50px' }}
+        pb={{ base: '150px', lg: '50px' }}
       >
         <Input name="email" type="email" />
         <Input name="password" type="password" />

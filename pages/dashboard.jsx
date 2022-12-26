@@ -1,12 +1,12 @@
-import { UserDashboard } from 'components/dashboards/UserDashboard';
-import { PageWrapper } from 'styles/PageWrapper';
+import { UserDashboard } from 'views/dashboard/UserDashboard';
+import { PageWrapper } from 'layouts/PageWrapper';
 
 export default function DashboardPage(props) {
-	const {} = props;
+  const {} = props;
 
-	return (
-		<PageWrapper w="2xl">
-			<UserDashboard />
-		</PageWrapper>
-	);
+  return (
+    <PageWrapper w="2xl">
+      <UserDashboard />
+    </PageWrapper>
+  );
 }
