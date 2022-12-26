@@ -9,6 +9,8 @@ export default function OptionBar(props: IProps) {
   const {} = props;
   const { optionBarIsOpen, optionBar, leftOffset, topOffset } = useLayoutStore();
 
+  console.log(optionBarIsOpen);
+
   return (
     <AnimatePresence>
       {optionBarIsOpen && (

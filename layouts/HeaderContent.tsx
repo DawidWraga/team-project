@@ -26,73 +26,123 @@ export default function HeaderContent(props) {
 
   let headerLinkStart = getHeaderLinkStart();
 
+  const activeHeaderPage = activePage?.headerLinks?.find((link) =>
+    router.asPath.includes(link.route)
+  );
+
   return (
-    <Flex h="100%" alignItems="center" flexDir="row" gap="5">
+    <Flex
+      h="100%"
+      alignItems="center"
+      flexDir={'row'}
+      flexWrap="wrap"
+      gap={{ base: 0, md: 2 }}
+      textColor={'shade.inv'}
+      ml={{ base: 0, lg: 2 }}
+      pr="50px"
+    >
       <Heading
-        mx={{ base: 'auto', lg: 5 }}
-        fontSize="1.5rem"
+        // mx={{ base: 'auto', lg: 5 }}
+        fontSize={{ base: '1rem', sm: '1.2rem', lg: '1.35rem' }}
         fontWeight="semibold"
-        textColor={'shade.inv'}
-        minW={{ base: 'unset', lg: '100px' }}
+        wordBreak={'keep-all'}
+        ml={{ base: 'auto', md: 'unset' }}
+        mr={{ base: '4px', md: 'unset' }}
+        // minW={{ base: 'unset', lg: '100px' }}
       >
-        {activeSideNavLink?.label || activePage?.parentLink?.label}
+        {activePage?.parentLink?.label}
       </Heading>
-
+      {activeSideNavLink && (
+        <Heading
+          fontSize={{ base: '1rem', sm: '1.2rem', lg: '1.35rem' }}
+          fontWeight="semibold"
+          wordBreak={'keep-all'}
+          mr={{ base: 'auto', md: 'unset' }}
+        >
+          / {activeSideNavLink?.label}
+        </Heading>
+      )}
       {activePage.headerLinks && (
-        <Flex gap={[2, 3, 4, 5, 6]} pt="1">
-          {activePage.headerLinks.map((link) => {
-            const isActive = router.asPath.includes(link.route);
+        <>
+          {/* <Flex
+            display={{ base: 'inline-block', md: 'none' }}
+            mx="auto"
+            // w="calc(100vw-100px)" mx="auto"
+          >
+            <Heading
+              fontSize={{ base: '1rem', sm: '1.2rem', lg: '1.35rem' }}
+              fontWeight="semibold"
+              wordBreak={'keep-all'}
+              textAlign="center"
+            >
+              / {activeHeaderPage?.label}
+            </Heading>
+          </Flex> */}
+          <Flex
+            // display={{ base: 'none', md: 'inline-block' }}
+            gap={2}
+            pt={{ base: 0, md: '1' }}
+            mx={{ base: 'auto', md: 'unset' }}
+            pl="8px"
+          >
+            {activePage.headerLinks.map((link) => {
+              const isActive = router.asPath.includes(link.route);
 
-            if (link.route.includes('&') && !headerLinkStart.includes('?'))
-              headerLinkStart = headerLinkStart + '?';
+              if (link.route.includes('&') && !headerLinkStart.includes('?'))
+                headerLinkStart = headerLinkStart + '?';
 
-            return (
-              <Button
-                key={link.route}
-                // color="white"
-                // colorScheme="white"
-                // verticalAlign={'center'}
-                // h="100%"
-                textColor={isActive ? 'white' : 'gray.400'}
-                fontSize={{ base: '1rem', lg: '1.4rem' }}
-                variant={'unstyled'}
-                verticalAlign="center"
-                // variant={isActive ? 'solid' : 'outline'}
-                // opacity="0.9"
-                // fontSize="1.2rem"
-                transition="all 300ms"
-                pl={{ base: 1, md: 4, lg: 8 }}
-                onClick={() => {
-                  if (!isActive) {
-                    router.push(headerLinkStart + link.route);
+              return (
+                <Button
+                  key={link.route}
+                  // color="white"
+                  // colorScheme="white"
+                  // verticalAlign={'center'}
+                  // h="100%"
+                  h="18px"
+                  position="relative"
+                  pt={{ base: '0px', md: 'unset' }}
+                  bottom={{ base: '4px', md: '10px' }}
+                  textColor={isActive ? 'white' : 'gray.400'}
+                  fontSize={{ base: '1rem', md: '1.35rem' }}
+                  variant={'unstyled'}
+                  verticalAlign="center"
+                  // variant={isActive ? 'solid' : 'outline'}
+                  // opacity="0.9"
+                  // fontSize="1.2rem"
+                  transition="all 300ms"
+                  pl={{ base: 1, md: 4, lg: 8 }}
+                  onClick={() => {
+                    if (!isActive) {
+                      router.push(headerLinkStart + link.route);
+                    }
+
+                    if (isActive && link.route.includes('=')) {
+                      router.push(router.asPath.replace(link.route, ''));
+                    }
+                  }}
+                  _hover={{
+                    cursor: 'pointer',
+                    textColor: 'white',
+                  }}
+                  textDecorationLine={isActive ? 'underline' : 'none'}
+                  rightIcon={
+                    <Icon
+                      as={MdClose}
+                      fontSize={isActive && link.route.includes('=') ? '1.2rem' : '0rem'}
+                      transition="font-size 300ms"
+                      position="relative"
+                      top="2.2px"
+                    />
                   }
-
-                  if (isActive && link.route.includes('=')) {
-                    router.push(router.asPath.replace(link.route, ''));
-                  }
-                }}
-                _hover={{
-                  cursor: 'pointer',
-                  textColor: 'white',
-                }}
-                textDecorationLine={isActive ? 'underline' : 'none'}
-                rightIcon={
-                  <Icon
-                    as={MdClose}
-                    fontSize={isActive && link.route.includes('=') ? '1.2rem' : '0rem'}
-                    transition="font-size 300ms"
-                    position="relative"
-                    top="2.2px"
-                  />
-                }
-              >
-                {link.label}
-                {/* <div className="inline-block relative bottom-1">
+                >
+                  {link.label}
+                  {/* <div className="inline-block relative bottom-1">
 								</div> */}
-              </Button>
-            );
-          })}
-        </Flex>
+                </Button>
+              );
+            })}
+          </Flex>
+        </>
       )}
     </Flex>
   );

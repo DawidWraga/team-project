@@ -20,7 +20,6 @@ export class BaseApiController {
       const { operation, prismaProps }: IReqBody = req.body;
 
       try {
-        await setTimeout(1000);
         const data = await (prisma[this.model] as any)[operation](
           this.processPrismaProps(prismaProps, operation)
         );
