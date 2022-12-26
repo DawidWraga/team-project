@@ -1,12 +1,40 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import { useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { Example } from 'lib-client/controllers';
 import { ExampleModel } from 'prisma/zod';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { breakpoints } from 'utils/breakpoints';
 import { DateSelector } from 'components/DateSelector';
+import { useModalStore } from 'lib-client/stores/ModalStore';
+import { toast } from 'react-toastify';
 
 interface IProps {}
+
+const useCreateExampleForm = () => {
+  const { setContent, onClose } = useModalStore();
+
+  const { mutateAsync: createExample } = Example.create.use();
+  const { Form, Heading, Input, SubmitBtn } = useChakraForm({
+    schema: ExampleModel.pick({ text: true }),
+  });
+
+  return () =>
+    setContent({
+      header: <Heading>Create example form</Heading>,
+      body: (
+        <Form
+          onSubmit={createExample}
+          onServerSuccess={() => {
+            onClose();
+            toast.success('example created');
+          }}
+        >
+          <Input name="text" />
+          <SubmitBtn />
+        </Form>
+      ),
+    });
+};
 
 export default function ExamplePage(props: IProps) {
   const {} = props;
@@ -19,14 +47,12 @@ export default function ExamplePage(props: IProps) {
     </>
   );
 
+  const openCreateExampleForm = useCreateExampleForm();
+
   const findMany = Example.findMany.use();
-  const create = Example.create.use();
   const update = Example.update.use();
   const del = Example.delete.use();
 
-  const CreateForm = useChakraForm({
-    schema: ExampleModel.pick({ text: true }),
-  });
   const UpdateForm = useChakraForm({
     schema: ExampleModel.pick({ text: true, id: true }),
   });
@@ -39,22 +65,18 @@ export default function ExamplePage(props: IProps) {
       <Flex
         flexDir="row"
         w="100%"
-        justifyContent={'stretch'}
+        justifyContent={'center'}
         sx={{
           '& > *': {
             maxW: 'unset',
           },
         }}
       >
-        <CreateForm.Form
-          onSubmit={create.mutateAsync}
-          onServerSuccess={CreateForm.reset}
-          serverErrorFeedbackType="toast"
-        >
-          <CreateForm.Heading>Create</CreateForm.Heading>
-          <CreateForm.Input name="text" />
-          <CreateForm.SubmitBtn />
-        </CreateForm.Form>
+        <Box w="300px">
+          <Button mx="auto" onClick={openCreateExampleForm}>
+            open create form
+          </Button>
+        </Box>
         <DeleteForm.Form onSubmit={del.mutateAsync}>
           <DeleteForm.Heading>Delete</DeleteForm.Heading>
           <DeleteForm.Input type="number" name="id" />
