@@ -36,7 +36,7 @@ export default function ExamplePage(props: IProps) {
 
   return (
     <Flex flexDir="column">
-      {/* <Flex
+      <Flex
         flexDir="row"
         w="100%"
         justifyContent={'stretch'}
@@ -66,7 +66,7 @@ export default function ExamplePage(props: IProps) {
           <UpdateForm.Input type="number" name="id" />
           <UpdateForm.SubmitBtn />
         </UpdateForm.Form>
-      </Flex> */}
+      </Flex>
       <Box bgColor="pale.main">
         {findMany.isLoading && 'loading'}
         {findMany.data &&

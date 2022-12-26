@@ -22,9 +22,7 @@ interface IProps {
 export default function PageNavItem(props: IProps) {
   const { route, label } = props;
 
-  // const {activePage} = useStore
   const { activePage } = useLayoutStore();
-
   const isActive = activePage?.parentLink?.route?.includes(route);
 
   // const { sideNavIsOpen, setSideNavIsOpen } = useLayoutStore();
@@ -88,8 +86,8 @@ export default function PageNavItem(props: IProps) {
                   damping: 30,
                 },
               }}
-              h={{ base: '1', lg: '100%' }}
-              w={{ base: '100%', lg: '1' }}
+              h={{ base: '3px', lg: '100%' }}
+              w={{ base: '100%', lg: '3px' }}
               roundedRight={{ base: 'unset', lg: 'md' }}
               roundedTop={{ base: 'lg', lg: 'unset' }}
               position="absolute"

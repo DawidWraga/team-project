@@ -7,11 +7,8 @@ import {
   Td,
   TableContainer,
   Tag,
-  TagRightIcon,
   Badge,
   Avatar,
-  Flex,
-  Text,
   TagLabel,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
@@ -21,9 +18,6 @@ import { Paper } from 'components/Paper';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import { RiLoader4Line } from 'react-icons/ri';
 import users from 'db/users.json';
-import tasks from 'db/tasks.json';
-import { useLayoutStore } from 'lib-client/stores/LayoutStore';
-import { useEffect } from 'react';
 
 export default function UsersPage(props) {
   const {} = props;
@@ -130,34 +124,34 @@ const statusToIconMap = {
 //     const { post } = props;
 //     const { title, name, replies, timesince, usericon, solved, id } = post;
 
-function TaskTable(props) {
-  // const { task } = props;
+// function TaskTable(props) {
+//   // const { task } = props;
 
-  return (
-    <TableContainer>
-      <Table>
-        <Thead>
-          <Tr>
-            <Th>Task name</Th>
-            <Th>Status</Th>
-            <Th>Due date</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {tasks.map((task) => (
-            <Tr key={task.id}>
-              <Td>{task.title}</Td>
-              <Td>
-                <Tag colorScheme={statusToColorMap[task.status]}>
-                  {task.status}
-                  <TagRightIcon as={statusToIconMap[task.status]} />
-                </Tag>
-              </Td>
-              <Td>{task.due}</Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
-    </TableContainer>
-  );
-}
+//   return (
+//     <TableContainer>
+//       <Table>
+//         <Thead>
+//           <Tr>
+//             <Th>Task name</Th>
+//             <Th>Status</Th>
+//             <Th>Due date</Th>
+//           </Tr>
+//         </Thead>
+//         <Tbody>
+//           {tasks.map((task) => (
+//             <Tr key={task.id}>
+//               <Td>{task.title}</Td>
+//               <Td>
+//                 <Tag colorScheme={statusToColorMap[task.status]}>
+//                   {task.status}
+//                   <TagRightIcon as={statusToIconMap[task.status]} />
+//                 </Tag>
+//               </Td>
+//               <Td>{task.due}</Td>
+//             </Tr>
+//           ))}
+//         </Tbody>
+//       </Table>
+//     </TableContainer>
+//   );
+// }

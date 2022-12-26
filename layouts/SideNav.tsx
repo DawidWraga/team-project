@@ -1,22 +1,17 @@
-import { SpinnerIcon } from '@chakra-ui/icons';
-import { Box, Icon, Text } from '@chakra-ui/react';
+import { Box, Icon } from '@chakra-ui/react';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { MdClose } from 'react-icons/md';
-import { lazy, Suspense } from 'react';
 import { isMobile } from 'utils/checkScreenWidth';
 import { AnimatePresence, motion } from 'framer-motion';
-import SideNavContent from './SideNavContent';
+import dynamic from 'next/dynamic';
+const SideNavContent = dynamic(() => import('layouts/sideNavContent'), {
+  ssr: false,
+});
 
 export default function SideNav(props) {
   const {} = props;
 
   const { sideNavIsOpen, setSideNavIsOpen } = useLayoutStore();
-
-  // if (!activePage) return <>no active page</>;
-
-  // function SideNavContent() {
-  // 	if (!activePage?.parentLink.route) return <>no route</>;
-  // }
 
   return (
     <>
@@ -62,7 +57,7 @@ export default function SideNav(props) {
             initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
             animate={{ opacity: 0.5, backdropFilter: 'blur(5px)' }}
             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            transition={{ duration: 100 }}
+            transition="opacity 100ms"
             onClick={() => setSideNavIsOpen(false)}
           />
         )}

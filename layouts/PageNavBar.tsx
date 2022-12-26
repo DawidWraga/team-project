@@ -1,9 +1,14 @@
 import { Flex, Spacer } from '@chakra-ui/react';
 import { DesktopOnly } from 'components/deviceTypes';
-import PageNavItem from './PageNavItem';
+// import PageNavItem from './PageNavItem';
 import { BrandLogoIcon } from 'components/BrandLogo';
 import pages from 'config/pages';
 import { getCurrentUser } from 'lib-client/controllers/auth';
+import dynamic from 'next/dynamic';
+import type { NextPage } from 'next';
+const PageNavItem = dynamic(() => import('layouts/PageNavItem'), {
+  ssr: false,
+});
 
 export default function PageNavBar(props) {
   const {} = props;
