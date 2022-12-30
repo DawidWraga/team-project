@@ -16,11 +16,11 @@ refactor: (refactoring production code, eg. renaming a variable)
 test: (adding missing tests, refactoring tests; no production code change)
 chore: (updating grunt tasks etc; no production code change)
 
-=========================================
+============= File structue ============
 
 - styles (theme & styles)
 - layouts (layout components)
-- compontents (non-layout components used across pages)
+- compontents (components - not layout or page specific)
 - views (page specific components & hooks)
 - pages
   - api (node.js service handlers backend)
@@ -33,4 +33,9 @@ chore: (updating grunt tasks etc; no production code change)
   - api-controllers
   - constants
 - prisma
+  - schema.prisma = model definitions
+  - zod = zod schemas generated from prisma models
+  - migrations = SQL syntax
 - utils (small helper functions)
+- config 
+  - pages.ts = page layout data
