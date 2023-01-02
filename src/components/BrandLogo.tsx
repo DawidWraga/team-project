@@ -46,6 +46,7 @@ export const BrandLogoWithName = (props) => {
         textDecorationLine="underline"
         textDecorationColor={'brand.main'}
         size={headingSize || 'lg'}
+        fontWeight={500}
       >
         Make-It-All
       </Heading>

@@ -43,14 +43,6 @@ const pages: IPage[] = [
   },
   {
     parentLink: {
-      label: 'Example',
-      route: '/example',
-      hasOptionBar: true,
-    },
-  },
-
-  {
-    parentLink: {
       label: 'Projects',
       route: '/projects',
     },
@@ -73,16 +65,16 @@ const pages: IPage[] = [
       route: '/forums',
     },
     sideNavLinks: forumSideNavLinks,
-    headerLinks: [
-      {
-        label: 'unsolved',
-        route: '&filter=unsolved',
-      },
-      {
-        label: 'solved',
-        route: '&filter=solved',
-      },
-    ],
+    // headerLinks: [
+    //   {
+    //     label: 'unsolved',
+    //     route: '&filter=unsolved',
+    //   },
+    //   {
+    //     label: 'solved',
+    //     route: '&filter=solved',
+    //   },
+    // ],
   },
   {
     parentLink: {
@@ -128,6 +120,13 @@ const pages: IPage[] = [
       route: '/users',
     },
     sideNavLinks: usersNavLinks,
+  },
+  {
+    parentLink: {
+      label: 'Example',
+      route: '/example',
+      hasOptionBar: true,
+    },
   },
 ];
 

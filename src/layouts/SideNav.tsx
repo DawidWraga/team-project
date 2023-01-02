@@ -4,7 +4,7 @@ import { MdClose } from 'react-icons/md';
 import { isMobile } from 'utils/checkScreenWidth';
 import { AnimatePresence, motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
-const SideNavContent = dynamic(() => import('layouts/sideNavContent'), {
+const SideNavContent = dynamic(() => import('layouts/SideNavContent'), {
   ssr: false,
 });
 
@@ -17,12 +17,12 @@ export default function SideNav(props) {
     <>
       <Box
         h="100vh"
-        w={{ base: 'clamp(250px,70vw,350px)', lg: '200px' }}
+        w={{ base: 'clamp(250px,75vw,350px)', lg: '200px' }}
         position="fixed"
-        bgColor="shade.light"
+        bgColor="shade.main"
         left={{
           base: sideNavIsOpen ? '0' : '-350px',
-          lg: sideNavIsOpen ? '60px' : '-180px',
+          lg: sideNavIsOpen ? '0' : '-200px',
         }}
         top="0"
         zIndex={{ base: 'popover', lg: 'sticky' }}

@@ -10,5 +10,5 @@ export const LAYOUT_DISABLED_ROUTES = ['/auth', '/register'];
 export const headerHeight = 60;
 export const optionBarHeight = 46;
 export const openSideNavWidth = 200;
-export const closedSideNavWidth = 60;
-export const mobileBottomBarHeight = 60;
+export const closedSideNavWidth = 0;
+export const mobileBottomBarHeight = 0;

@@ -18,7 +18,7 @@ export default function MainLayout(props) {
 
   return (
     <>
-      <PageNavBar />
+      {/* <PageNavBar /> */}
       {/* <UserModal /> */}
 
       <Box mb={bottomOffset} zIndex="40" bgColor="blackAlpha.300">

@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Button, Icon } from '@chakra-ui/react';
+import { Box, Flex, Heading, Button, Icon, Text } from '@chakra-ui/react';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { useRouter } from 'next/router';
 import { MdClose } from 'react-icons/md';
@@ -44,7 +44,7 @@ export default function HeaderContent(props) {
       <Heading
         // mx={{ base: 'auto', lg: 5 }}
         fontSize={{ base: '1rem', sm: '1.2rem', lg: '1.35rem' }}
-        fontWeight="semibold"
+        fontWeight={500}
         wordBreak={'keep-all'}
         ml={{ base: 'auto', md: 'unset' }}
         mr={{ base: '4px', md: 'unset' }}
@@ -55,7 +55,7 @@ export default function HeaderContent(props) {
       {activeSideNavLink && (
         <Heading
           fontSize={{ base: '1rem', sm: '1.2rem', lg: '1.35rem' }}
-          fontWeight="semibold"
+          fontWeight={500}
           wordBreak={'keep-all'}
           mr={{ base: 'auto', md: 'unset' }}
         >
@@ -88,27 +88,18 @@ export default function HeaderContent(props) {
             {activePage.headerLinks.map((link) => {
               const isActive = router.asPath.includes(link.route);
 
-              if (link.route.includes('&') && !headerLinkStart.includes('?'))
-                headerLinkStart = headerLinkStart + '?';
-
               return (
-                <Button
+                <Text
+                  // variant={'unstyled'}
                   key={link.route}
-                  // color="white"
-                  // colorScheme="white"
-                  // verticalAlign={'center'}
-                  // h="100%"
                   h="18px"
+                  textTransform={'capitalize'}
                   position="relative"
                   pt={{ base: '0px', md: 'unset' }}
                   bottom={{ base: '4px', md: '10px' }}
                   textColor={isActive ? 'white' : 'gray.400'}
                   fontSize={{ base: '1rem', md: '1.35rem' }}
-                  variant={'unstyled'}
                   verticalAlign="center"
-                  // variant={isActive ? 'solid' : 'outline'}
-                  // opacity="0.9"
-                  // fontSize="1.2rem"
                   transition="all 300ms"
                   pl={{ base: 1, md: 4, lg: 8 }}
                   onClick={() => {
@@ -124,21 +115,12 @@ export default function HeaderContent(props) {
                     cursor: 'pointer',
                     textColor: 'white',
                   }}
-                  textDecorationLine={isActive ? 'underline' : 'none'}
-                  rightIcon={
-                    <Icon
-                      as={MdClose}
-                      fontSize={isActive && link.route.includes('=') ? '1.2rem' : '0rem'}
-                      transition="font-size 300ms"
-                      position="relative"
-                      top="2.2px"
-                    />
-                  }
+                  // textDecorationLine={isActive ? 'underline' : 'none'}
                 >
                   {link.label}
                   {/* <div className="inline-block relative bottom-1">
 								</div> */}
-                </Button>
+                </Text>
               );
             })}
           </Flex>
@@ -147,6 +129,20 @@ export default function HeaderContent(props) {
     </Flex>
   );
 }
+
+// !logic for appear/dissapear X icon (useful for select/deselect filter)
+// rightIcon={
+//   <Icon
+//     as={MdClose}
+//     fontSize={isActive && link.route.includes('=') ? '1.2rem' : '0rem'}
+//     transition="font-size 300ms"
+//     position="relative"
+//     top="2.2px"
+//   />
+// }
+
+//               if (link.route.includes('&') && !headerLinkStart.includes('?'))
+// headerLinkStart = headerLinkStart + '?';
 
 // 		{activePage.headerLinks && (
 // <Flex gap={[2, 3, 4, 5, 6]} pt="1">

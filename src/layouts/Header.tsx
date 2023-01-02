@@ -17,10 +17,10 @@ export default function Header(props) {
   const { sideNavIsOpen, toggleSideNavIsOpen, setSideNavIsOpen, activePage, leftOffset } =
     useLayoutStore();
 
-  const sideNavLinks = activePage?.sideNavLinks;
-  useEffect(() => {
-    if (!sideNavLinks) setSideNavIsOpen(false);
-  }, [sideNavLinks]);
+  // const sideNavLinks = activePage?.sideNavLinks;
+  // useEffect(() => {
+  //   if (!sideNavLinks) setSideNavIsOpen(false);
+  // }, [sideNavLinks]);
 
   const isHydrated = useIsHydrated();
 
@@ -38,7 +38,7 @@ export default function Header(props) {
         alignItems="center"
         zIndex={'banner'}
       >
-        {isHydrated && sideNavLinks && (
+        {isHydrated && (
           <IconButton
             variant={'unstyled'}
             aria-label="toggle side nav"
