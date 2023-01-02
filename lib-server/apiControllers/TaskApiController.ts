@@ -1,5 +1,13 @@
 import { BaseApiController } from 'lib-server/apiControllers/BaseApiController';
 
-export class TaskApiController extends BaseApiController {}
+function checkIsAuth() {
+  console.log('yes');
+}
 
-export const taskApiController = new TaskApiController('task');
+export class TaskApiController extends BaseApiController {
+  constructor() {
+    super('task');
+  }
+}
+
+export const taskApiController = new TaskApiController();

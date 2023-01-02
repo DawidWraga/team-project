@@ -2,7 +2,7 @@ import { readOperations, writeOperations } from 'lib-client/controllers/createCo
 import { getAxiosErrorMessage } from 'lib-server/axios';
 import { apiHandler } from 'lib-server/nc';
 import prisma, { PrismaModelNames } from 'lib-server/prisma';
-import { setTimeout } from 'timers/promises';
+import { NextApiRequest } from 'next';
 
 export interface IReqBody {
   operation: readOperations | writeOperations;
@@ -15,11 +15,20 @@ interface ICheck {
 }
 
 export class BaseApiController {
-  constructor(public model: PrismaModelNames, public handler = apiHandler()) {
-    this.handler.post(async (req, res) => {
+  constructor(public model: PrismaModelNames) {}
+
+  handler() // specificHandler?: (req: NextApiRequest) => any
+  {
+    const handler = apiHandler();
+
+    handler.post(async (req, res) => {
       const { operation, prismaProps }: IReqBody = req.body;
 
       try {
+        // specific handler
+        // if (specificHandler) specificHandler(req);
+
+        // default handler
         const data = await (prisma[this.model] as any)[operation](
           this.processPrismaProps(prismaProps, operation)
         );
@@ -28,7 +37,10 @@ export class BaseApiController {
         res.status(400).send(getAxiosErrorMessage(e));
       }
     });
+
+    return handler;
   }
+
   processPrismaProps(prismaProps: any | undefined, operation: string) {
     if (!prismaProps) return {};
     const checks: ICheck[] = [
