@@ -15,7 +15,7 @@ export function KanbanCol(props) {
   const openAddTaskModal = useTaskModal();
 
   return (
-    <Flex m={4} flexDir="column" gap="4" minW="400px">
+    <Flex m={4} flexDir="column" gap="4" minW="300px">
       <Paper
         w="1/3"
         variant="elevated"

@@ -28,6 +28,8 @@ export interface ILayoutStore {
   leftOffset: offsetProp;
   topOffset: offsetProp;
   bottomOffset: offsetProp;
+  openAccordianRoute: string;
+  setOpenAccordianRoute: (route: string) => void;
 }
 
 const getLeftOffset = (isOpen: boolean) => {
@@ -79,4 +81,10 @@ export const useLayoutStore = useCreateStore<ILayoutStore>('Layout', (set, get) 
   leftOffset: { base: 0 + 'px', lg: closedSideNavWidth + 'px' },
   topOffset: { base: headerHeight + 'px' },
   bottomOffset: { base: mobileBottomBarHeight + 'px', lg: 0 + 'px' },
+  openAccordianRoute: '',
+  setOpenAccordianRoute: (route: string) =>
+    set((state) => {
+      if (state.openAccordianRoute === route) return { openAccordianRoute: '' };
+      return { openAccordianRoute: route };
+    }),
 }));

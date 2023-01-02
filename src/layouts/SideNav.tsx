@@ -17,16 +17,15 @@ export default function SideNav(props) {
     <>
       <Box
         h="100vh"
-        w={{ base: 'clamp(250px,75vw,350px)', lg: '200px' }}
+        w={{ base: 'clamp(250px,75vw,350px)', lg: '250px' }}
         position="fixed"
         bgColor="shade.main"
         left={{
           base: sideNavIsOpen ? '0' : '-350px',
-          lg: sideNavIsOpen ? '0' : '-200px',
+          lg: sideNavIsOpen ? '0' : '-250px',
         }}
         top="0"
         zIndex={{ base: 'popover', lg: 'sticky' }}
-        className="dingbop"
         transition="all 150ms"
         sx={{ '& > .chakra-text, & > p': { textColor: 'shade.inv' } }}
       >

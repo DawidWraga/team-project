@@ -1,6 +1,7 @@
 // 1. Import the extendTheme function
 import { defineStyleConfig, extendTheme } from '@chakra-ui/react';
-import '@fontsource/Roboto';
+import '@fontsource/roboto';
+// import '@fontsource/open-sans';
 
 const config = {
   initialColorMode: 'light',
@@ -8,8 +9,8 @@ const config = {
 };
 
 const fonts = {
-  heading: `'Roboto', sans-serif`,
-  body: `'Roboto', sans-serif`,
+  heading: `'roboto', sans-serif`,
+  body: `'roboto', sans-serif`,
 };
 
 // const breakpoints = {
@@ -78,4 +79,9 @@ const Paper = defineStyleConfig({
   },
 });
 
-export const theme = extendTheme({ colors, config, fonts, components: { Paper } });
+export const theme = extendTheme({
+  colors,
+  config,
+  fonts,
+  components: { Paper },
+});

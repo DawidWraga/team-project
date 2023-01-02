@@ -23,8 +23,6 @@ const routeToIconMap = {
 
 export default function SideNavContent(props) {
   const {} = props;
-  const router = useRouter();
-  const { activePage, setSideNavIsOpen } = useLayoutStore();
 
   const isHydrated = useIsHydrated();
 
@@ -54,6 +52,8 @@ export default function SideNavContent(props) {
               fontSize: '1.7rem',
             },
             '& > h2': { fontSize: '1.5rem', color: 'white' },
+            position: 'relative',
+            right: '6px',
           }}
         />
       </Flex>

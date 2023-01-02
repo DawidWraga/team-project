@@ -10,7 +10,12 @@ export default function ProjectKanbanPage(props) {
   // setOptionBar(<>testing!</>);
 
   return (
-    <Box display="grid" gridTemplateColumns="repeat(3,1fr)" overflowX="auto">
+    <Box
+      display="grid"
+      gridTemplateColumns="repeat(3, minmax(200px , 1fr))"
+      overflowX="auto"
+      justifyContent={'center'}
+    >
       {['todo', 'in-progress', 'complete'].map((status) => {
         const relevantTasks = tasks.filter((task) => task.status === status);
         return <KanbanCol key={status} status={status} tasks={relevantTasks} />;
