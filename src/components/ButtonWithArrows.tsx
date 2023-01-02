@@ -15,7 +15,7 @@ interface IButtonWithArrows {
 }
 export function ButtonWithArrows(props: IButtonWithArrows) {
   const { leftProps, rightProps, centerProps, centerContent } = props;
-  const round = 1;
+  const round = 6;
 
   return (
     <Stack
@@ -23,25 +23,26 @@ export function ButtonWithArrows(props: IButtonWithArrows) {
       spacing={0}
       alignItems="center"
       sx={{
-        backgroundColor: 'secondary.main',
-        borderRadius: round,
         '& > ': {
-          ':not(:last-child)': {
-            borderRightRadius: round,
-          },
-          ':not(:first-of-type)': {
+          ':first-of-type': {
             borderLeftRadius: round,
+            borderRightRadius: 'none',
+          },
+          ':last-child': {
+            borderRightRadius: round,
+            borderLeftRadius: 'none',
           },
         },
         '& button': {
           color: 'hsl(0, 0%, 100%)',
-          bgColor: 'shade.main',
+          bgColor: 'blue.800',
           fontSize: '1rem',
           px: '6px',
           py: '4px',
         },
         '& button:hover': {
-          backgroundColor: 'hsla(0, 0%, 100%, 0.1)',
+          backgroundColor: 'blue.900',
+          // backgroundColor: 'hsla(0, 0%, 100%, 0.1)',
         },
         backdropFilter: 'blur(8px)',
         overflow: 'hidden',

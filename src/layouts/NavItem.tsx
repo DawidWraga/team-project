@@ -67,26 +67,30 @@ export function NavItem(props: IProps) {
 
   const Divider = useCallback(() => {
     return (
-      <AnimatePresence>
+      <>
         {isOpen && (
           <Box
             key={`${route}-underline`}
             as={motion.div}
             position="relative"
+            top="2"
             initial={{
               width: 0,
               left: '50%',
+              opacity: 1,
               // transition: { duration: 0.2, ease: 'linear' },
             }}
             animate={{
-              width: '90%',
+              width: 'calc(100% - 16px)',
               left: '5%',
+              opacity: 1,
               transition: { duration: 0.15, ease: 'linear' },
             }}
             exit={{
-              width: '200%',
+              opacity: 0,
+              width: '5%',
               left: '50%',
-              transition: { duration: 0.2, ease: 'linear' },
+              transition: { duration: 2, ease: 'linear' },
             }}
             // transition={'all 0.2'}
             // width={isOpen ? '200px' : '0px'}
@@ -95,7 +99,7 @@ export function NavItem(props: IProps) {
             // transition="all 0.4s"
           />
         )}
-      </AnimatePresence>
+      </>
     );
   }, [isOpen]);
 
@@ -128,7 +132,14 @@ export function NavItem(props: IProps) {
             ml="2"
             mr="3"
           />
-          <Text fontSize="1.18rem">{label}</Text>
+          <Text
+            fontSize="1.18rem"
+            textColor={isActive ? 'brand.300' : 'white'}
+            // textDecoration={isActive ? 'underline' : 'none'}
+            // textDecorationColor={isActive ? 'brand.300' : 'white'}
+          >
+            {label}
+          </Text>
           {hasSideNavLinks && (
             <Icon
               as={MdKeyboardArrowRight}
@@ -162,7 +173,7 @@ export function NavItem(props: IProps) {
               exit="closed"
               overflow={'hidden'}
             >
-              <Flex flexDir={'column'} mb="2" py="1">
+              <Flex flexDir={'column'} my="2" pt="1">
                 {page?.sideNavLinks?.map((page) => {
                   const sidenavActive = activeSideNavLink?.route?.includes(page?.route);
                   return (

@@ -72,12 +72,14 @@ export function DateSelector(props: IProps) {
         onClick: () => modifyDateAndRoute('next'),
         'aria-label': 'next date range',
       }}
+      centerProps={{ sx: { borderRadius: '0px !important' } }}
       centerContent={
         <>
           <Select
             sx={{
               '& > *': { textColor: 'black' },
               borderColor: 'transparent',
+
               pr: 0,
               textAlign: 'center',
               transition: 'min-width 500ms',
@@ -89,7 +91,9 @@ export function DateSelector(props: IProps) {
               })(),
             }}
             _hover={{
-              borderBottom: '1px solid white',
+              borderBottom: '2px solid',
+              borderColor: 'blue.300',
+              cursor: 'pointer',
             }}
             rootProps={{
               sx: {
@@ -122,6 +126,9 @@ export function DateSelector(props: IProps) {
             zIndex={1000}
             textColor="white"
             pointerEvents={'none'}
+            _hover={{ cursor: 'pointer' }}
+            borderRadius="0px !important"
+            fontWeight={500}
           >
             {selectedDateString}
           </Box>

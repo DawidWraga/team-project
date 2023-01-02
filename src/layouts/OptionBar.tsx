@@ -35,9 +35,10 @@ export default function OptionBar(props: IProps) {
           exit="closed"
           position="fixed"
           left={leftOffset}
+          transition="left 150ms"
           w="100%"
           h={optionBarHeight + 'px'}
-          bgColor="shade.light"
+          bgColor="pale.dark"
           zIndex="dropdown !important"
           textColor="white"
           alignItems="center"

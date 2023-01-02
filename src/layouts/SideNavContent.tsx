@@ -49,15 +49,15 @@ export default function SideNavContent(props) {
           sx={{
             '& > svg': {
               // display: { base: '', lg: 'inline-block' },
-              fontSize: '1.7rem',
+              fontSize: '2rem',
             },
-            '& > h2': { fontSize: '1.5rem', color: 'white' },
+            '& > h2': { fontSize: '1.6rem', color: 'white', pl: 4 },
             position: 'relative',
-            right: '6px',
+            right: '17px',
           }}
         />
       </Flex>
-      <Flex flexDir="column" textColor="white">
+      <Flex flexDir="column" textColor="white" overflowY={'auto'}>
         {relevantPages.map((page) => (
           <NavItem page={page} key={page.parentLink.route} />
         ))}
