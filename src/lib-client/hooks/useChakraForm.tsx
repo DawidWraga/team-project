@@ -31,6 +31,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { MdCheck, MdSend } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import moment from 'moment';
+import { PasswordInput } from 'components/PasswordInput';
 
 export interface IFieldAndFieldState<TFieldValues extends FieldValues = FieldValues> {
   field: ControllerRenderProps<TFieldValues, Path<TFieldValues>>;
@@ -160,6 +161,7 @@ export const useChakraForm = <
             type="submit"
             textTransform={'capitalize'}
             variant="solid"
+            fontWeight={500}
             colorScheme={isServerSuccess ? 'green' : 'brand'}
             isLoading={obj.formState.isSubmitting}
             {...props}
@@ -248,17 +250,34 @@ export const useChakraForm = <
                 <FormLabel textTransform={'capitalize'}>
                   {label || field.name.replace(/([A-Z])/g, ' $1').replace('_', ' ')}
                 </FormLabel>
-                {/* render custom inputs eg switch, slider etc */}
-                {!!customInput ? (
-                  customInput({ field: processedField, fieldState, defaults })
-                ) : (
+                {(() => {
+                  {
+                    /* render custom inputs eg switch, slider etc */
+                  }
+                  if (!!customInput) {
+                    return customInput({ field: processedField, fieldState, defaults });
+                  }
+
+                  // custom password input, including text hide toggle
+                  if (type === 'password')
+                    return (
+                      <PasswordInput
+                        {...processedField}
+                        {...defaults}
+                        {...(inputProps && inputProps({ field, fieldState }))}
+                      />
+                    );
+
                   // default = render Input from chakra (eg text, number, date, etc)
-                  <ChakraInput
-                    {...processedField}
-                    {...defaults}
-                    {...(inputProps && inputProps({ field, fieldState }))}
-                  />
-                )}
+                  return (
+                    <ChakraInput
+                      {...processedField}
+                      {...defaults}
+                      {...(inputProps && inputProps({ field, fieldState }))}
+                    />
+                  );
+                })()}
+
                 {helperText}
                 {error && <FormErrorMessage>{error.message}</FormErrorMessage>}
               </FormControl>
