@@ -211,8 +211,6 @@ export const createController = <TModel = unknown>({
           onMutate: async (newItem: any) => {
             if (mode === 'server' || mode === 'saveUiChanges') return;
 
-            console.log({ newItem, changeUiKey });
-
             // prevent refetches to stop them from overwriting optimistic update
             await queryClient.cancelQueries({ queryKey: changeUiKey });
 

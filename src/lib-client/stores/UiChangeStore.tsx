@@ -1,7 +1,7 @@
 import { anyQuery } from 'lib-client/controllers/createController';
 import { useCreateStore } from 'lib-client/hooks/useCreateStore';
 export interface IUiChangeStore {
-  // k = queryKey, v = changed data array
+  // k = changeUiKey, v = changed data array
   changedUiData: Record<string, any[]>;
   pushChangedUiData: (
     queryKey: string | string[],
@@ -46,14 +46,11 @@ export const useUiChangeStore = useCreateStore<IUiChangeStore>(
       const all = get().changedUiData;
 
       return all[identifer];
-      // const releva
-      // return [];
     },
     resetChangedData: (queryKey: string | string[], queryType: anyQuery) => {
       const identifer = createId(queryKey, queryType);
       set((state) => {
         const newData = { ...state.changedUiData };
-
         delete newData[identifer];
         return { changedUiData: newData };
       });
