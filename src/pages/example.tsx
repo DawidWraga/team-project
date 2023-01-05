@@ -12,7 +12,9 @@ interface IProps {}
 const useCreateExampleForm = () => {
   const { setContent, onClose } = useModalStore();
 
-  const { mutateAsync: createExample } = exampleController.create.use();
+  const { mutateAsync: createExample } = exampleController.create.use({
+    mode: 'optimistic',
+  });
   const { Form, Heading, Input, SubmitBtn } = useChakraForm({
     schema: ExampleModel.pick({ text: true }),
   });
@@ -49,9 +51,12 @@ export default function ExamplePage(props: IProps) {
   const openCreateExampleForm = useCreateExampleForm();
 
   const findMany = exampleController.findMany.use();
-  const update = exampleController.update.use({ optimistic: true });
-  const del = exampleController.delete.use({ optimistic: false });
+  const update = exampleController.update.use({ mode: 'server' });
+  const del = exampleController.delete.use({ mode: 'changeUi' });
+  const delSave = exampleController.delete.use<true>({ mode: 'saveUiChanges' });
+  // delSave.mutate
   // const delSave = del.useSave();
+
   // const delServer = exampleController.delete.use({ mode: 'server' });
 
   const UpdateForm = useChakraForm({
@@ -78,13 +83,13 @@ export default function ExamplePage(props: IProps) {
             open create form
           </Button>
         </Box>
-        <DeleteForm.Form onSubmit={del.changeUi}>
+        <DeleteForm.Form onSubmit={del.mutateAsync}>
           <DeleteForm.Heading>Delete</DeleteForm.Heading>
           <DeleteForm.Input type="number" name="id" />
           <DeleteForm.SubmitBtn />
           <Button
             onClick={() => {
-              del.saveUiChanges();
+              delSave.mutateAsync();
             }}
           >
             save
