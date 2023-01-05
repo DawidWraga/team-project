@@ -49,9 +49,9 @@ export default function ExamplePage(props: IProps) {
   const openCreateExampleForm = useCreateExampleForm();
 
   const findMany = exampleController.findMany.use();
-  const update = exampleController.update.use({ mode: 'client' });
-  const del = exampleController.delete.use({ mode: 'client' });
-  const delSave = del.useSave();
+  const update = exampleController.update.use({ optimistic: true });
+  const del = exampleController.delete.use({ optimistic: false });
+  // const delSave = del.useSave();
   // const delServer = exampleController.delete.use({ mode: 'server' });
 
   const UpdateForm = useChakraForm({
@@ -78,16 +78,17 @@ export default function ExamplePage(props: IProps) {
             open create form
           </Button>
         </Box>
-        <DeleteForm.Form onSubmit={del.mutateAsync}>
+        <DeleteForm.Form onSubmit={del.changeUi}>
           <DeleteForm.Heading>Delete</DeleteForm.Heading>
           <DeleteForm.Input type="number" name="id" />
           <DeleteForm.SubmitBtn />
           <Button
             onClick={() => {
-              delSave.mutateAsync();
+              del.saveUiChanges();
             }}
           >
-            save ({del.unsavedChangesCount})
+            save
+            {/* ({del.unsavedChangesCount}) */}
           </Button>
         </DeleteForm.Form>
         <UpdateForm.Form onSubmit={update.mutateAsync}>
