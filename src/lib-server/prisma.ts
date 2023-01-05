@@ -16,6 +16,10 @@ if (process.env.NODE_ENV === 'production') {
   }
   prisma = global.prisma;
 }
-export default prisma;
+export { prisma };
+
+// prisma.user.
+// type Operations = Prisma.PrismaClientOptions
+// const ops: Operations[] = ['find']
 
 export type PrismaModelNames = Uncapitalize<Prisma.ModelName>;

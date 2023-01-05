@@ -1,15 +1,16 @@
-import { readOperations, writeOperations } from 'lib-client/controllers/createController';
+import { anyQuery } from 'lib-client/controllers/createController';
 import { getAxiosErrorMessage } from 'lib-server/axios';
 import { apiHandler } from 'lib-server/nc';
-import prisma, { PrismaModelNames } from 'lib-server/prisma';
+import { prisma, PrismaModelNames } from 'lib-server/prisma';
 import { NextApiRequest } from 'next';
+import { setTimeout } from 'timers/promises';
 
 export interface IReqBody {
-  operation: readOperations | writeOperations;
+  query: anyQuery;
   prismaProps: { [key: string]: any };
 }
 interface ICheck {
-  operationType: 'create' | 'find' | 'update' | 'delete';
+  queryType: 'create' | 'find' | 'update' | 'delete';
   additionalGuards?: any[]; //converted into boolean, if true return prismaProps (unprocessed)
   processed: Record<string, any>;
 }
@@ -17,15 +18,16 @@ interface ICheck {
 export class BaseApiController {
   constructor(public model: PrismaModelNames, public handler = apiHandler()) {
     handler.post(async (req, res) => {
-      const { operation, prismaProps }: IReqBody = req.body;
+      const { query, prismaProps }: IReqBody = req.body;
 
       try {
         // specific handler
         // if (specificHandler) specificHandler(req);
 
         // default handler
-        const data = await (prisma[this.model] as any)[operation](
-          this.processPrismaProps(prismaProps, operation)
+        await setTimeout(1000);
+        const data = await (prisma[this.model] as any)[query](
+          this.processPrismaProps(prismaProps, query)
         );
         res.send(data);
       } catch (e: any) {
@@ -38,15 +40,15 @@ export class BaseApiController {
   //   const handler = apiHandler();
 
   //   handler.post(async (req, res) => {
-  //     const { operation, prismaProps }: IReqBody = req.body;
+  //     const { query, prismaProps }: IReqBody = req.body;
 
   //     try {
   //       // specific handler
   //       // if (specificHandler) specificHandler(req);
 
   //       // default handler
-  //       const data = await (prisma[this.model] as any)[operation](
-  //         this.processPrismaProps(prismaProps, operation)
+  //       const data = await (prisma[this.model] as any)[query](
+  //         this.processPrismaProps(prismaProps, query)
   //       );
   //       res.send(data);
   //     } catch (e: any) {
@@ -57,23 +59,23 @@ export class BaseApiController {
   //   return handler;
   // }
 
-  processPrismaProps(prismaProps: any | undefined, operation: string) {
+  processPrismaProps(prismaProps: any | undefined, query: string) {
     if (!prismaProps) return {};
     const checks: ICheck[] = [
       {
-        operationType: 'create',
+        queryType: 'create',
         processed: { data: prismaProps },
       },
       {
-        operationType: 'find',
+        queryType: 'find',
         processed: { where: prismaProps },
       },
       {
-        operationType: 'delete',
+        queryType: 'delete',
         processed: { where: prismaProps },
       },
       {
-        operationType: 'update',
+        queryType: 'update',
         processed: (() => {
           const { id, ...rest } = prismaProps || {};
           return { where: { id }, data: { ...rest } };
@@ -81,8 +83,8 @@ export class BaseApiController {
       },
     ];
 
-    for (const { operationType, additionalGuards, processed } of checks) {
-      if (!operation.includes(operationType)) continue;
+    for (const { queryType, additionalGuards, processed } of checks) {
+      if (!query.includes(queryType)) continue;
 
       // if props already nested then prevent processing to allow flexiblity
       for (const key of Object.keys(processed)) {
