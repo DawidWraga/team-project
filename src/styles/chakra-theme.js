@@ -9,8 +9,8 @@ const config = {
 };
 
 const fonts = {
-  heading: `'roboto', sans-serif`,
-  body: `'roboto', sans-serif`,
+  heading: `'Inter', sans-serif`,
+  body: `'Inter', sans-serif`,
 };
 
 // const breakpoints = {

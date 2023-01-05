@@ -10,7 +10,7 @@ import { useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { z } from 'zod';
 import { executeSignIn } from 'lib-client/controllers/auth';
 import ExternalFormWrapper from 'layouts/ExternalFormWrapper';
-import { Box } from '@chakra-ui/react';
+import { Box, Button, Checkbox, HStack } from '@chakra-ui/react';
 
 const schema = z.object({
   email: z.string().min(1, { message: 'Required' }),
@@ -64,6 +64,12 @@ export default function AuthPage(props: IProps) {
       >
         <Input name="email" type="email" />
         <Input name="password" type="password" />
+        <HStack justify="space-between">
+          <Checkbox defaultChecked>Remember me</Checkbox>
+          <Button variant="link" colorScheme="blue" size="sm">
+            Forgot password?
+          </Button>
+        </HStack>
         <SubmitBtn leftIcon={<MdLogin />} fontSize="1.2rem">
           Sign in
         </SubmitBtn>

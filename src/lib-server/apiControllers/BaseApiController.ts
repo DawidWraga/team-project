@@ -25,7 +25,7 @@ export class BaseApiController {
         // if (specificHandler) specificHandler(req);
 
         // default handler
-        await setTimeout(1000);
+        // await setTimeout(1000);
         const data = await (prisma[this.model] as any)[query](
           this.processPrismaProps(prismaProps, query)
         );

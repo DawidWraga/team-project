@@ -84,7 +84,17 @@ interface IControlWrite<
 > extends IControl {
   use: (
     options?: UseMutationOptionsCustom<TData, TError, TVariables, TContext>
-  ) => UseMutationResult<TData, TError, TVariables, TContext> & { save: any };
+  ) => UseMutationResult<TData, TError, TVariables, TContext> & {
+    useSave: (options?: UseMutationOptions<TData, TError, TVariables, TContext>) => Omit<
+      UseMutationResult<never, TError, TVariables, TContext>,
+      'mutateAsync' | 'mutate'
+    > & {
+      mutateAsync: () => Promise<any>;
+      mutate: () => any;
+    };
+    isSaved: boolean;
+    unsavedChangesCount: number;
+  };
 }
 
 interface IController<TModel = unknown> {
@@ -157,8 +167,7 @@ export const createController = <TModel = unknown>({
         {
           mode,
           ...options
-        }: UseMutationOptionsCustom<TModel, unknown, unknown, unknown> 
-        = {
+        }: UseMutationOptionsCustom<TModel, unknown, unknown, unknown> = {
           mode: 'optimistic',
         }
       ) => {
@@ -167,6 +176,8 @@ export const createController = <TModel = unknown>({
         const [savedMutations, setSavedMutations] = useState(
           [] as (() => Promise<any>)[]
         );
+
+
         const mutationReturn = useMutation<TModel>({
           mutationKey: key as any,
           mutationFn: (data: any) => {
@@ -203,6 +214,8 @@ export const createController = <TModel = unknown>({
               },
             };
 
+
+            // !!!change "key" to dependentQueryKey and assign value once (easier to chaneg in params eg findOne instead of findMany)
             queryClient.setQueryData([model, 'findMany'], handlers[query]);
 
             // Return a context object with the snapshotted value
@@ -217,19 +230,46 @@ export const createController = <TModel = unknown>({
           },
           // Always refetch after error or success:
           onSettled: () => {
-            if (mode === 'client') return;
-            queryClient.invalidateQueries({ queryKey: [model, 'findMany'] });
+            if (mode === 'optimistic') {
+              queryClient.invalidateQueries({ queryKey: [model, 'findMany'] });
+            }
           },
-          // onSuccess: async (data, variables, context) => {
-          //   await queryClient.invalidateQueries([model]);
-          //   if (options?.onSuccess) options?.onSuccess(data, variables, context);
-          // },
+          onSuccess: async (data, variables, context) => {
+            if (mode === 'server') {
+              await queryClient.invalidateQueries([model]);
+            }
+
+            if (options?.onSuccess) options?.onSuccess(data, variables, context);
+          },
           ...options,
         });
 
-        (mutationReturn as any).save = async () => {
-          savedMutations.forEach((fn) => fn());
+        if (mode === 'server' || mode === 'optimistic') return mutationReturn;
+
+        // runs all saved mutation functions in parallel
+        const saveFn = async () => {
+          if (!savedMutations.length) return;
+          const res = await Promise.any(
+            savedMutations.map(async (fn) => {
+              const res = await fn();
+              return res;
+            })
+          );
+
+          setSavedMutations([]);
+          return res;
         };
+
+        // ! unsaved changes are on original mutation return object. more useful to be on the useSave useMutation instead. eliminates issues w state management
+        (mutationReturn as any).useSave = (options: any) =>
+          use({
+            mode: 'server',
+            mutationFn: saveFn as any,
+            ...options,
+          });
+
+        (mutationReturn as any).unsavedChangesCount = savedMutations.length;
+        (mutationReturn as any).isSaved = savedMutations.length === 0;
 
         return mutationReturn;
       };
@@ -243,3 +283,8 @@ export const createController = <TModel = unknown>({
 
   return controller;
 };
+
+
+
+// on every mutation obj
+  // mutate, mutateAsync, changeUi, saveUiChanges

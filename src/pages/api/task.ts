@@ -1,11 +1,21 @@
-import { taskApiController } from 'lib-server/apiControllers/TaskApiController';
+import { BaseApiController } from 'lib-server/apiControllers/BaseApiController';
 
-const { handler } = taskApiController;
+function checkIsAuth() {
+  console.log('yes');
+}
 
-export default handler;
+export class TaskApiController extends BaseApiController {
+  constructor() {
+    super('task');
+  }
+}
+
+export const taskApiController = new TaskApiController();
+
+
+export default taskApiController.handler;
 
 // import { apiHandler } from 'lib-server/nc';
-// import prisma from 'lib-server/prisma';
 
 // const handler = apiHandler();
 

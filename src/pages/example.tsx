@@ -1,9 +1,8 @@
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import { useChakraForm } from 'lib-client/hooks/useChakraForm';
-import { Example } from 'lib-client/controllers';
+import { exampleController } from 'lib-client/controllers';
 import { ExampleModel } from 'prisma/zod';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
-import { breakpoints } from 'utils/breakpoints';
 import { DateSelector } from 'components/DateSelector';
 import { useModalStore } from 'lib-client/stores/ModalStore';
 import { toast } from 'react-toastify';
@@ -13,7 +12,7 @@ interface IProps {}
 const useCreateExampleForm = () => {
   const { setContent, onClose } = useModalStore();
 
-  const { mutateAsync: createExample } = Example.create.use();
+  const { mutateAsync: createExample } = exampleController.create.use();
   const { Form, Heading, Input, SubmitBtn } = useChakraForm({
     schema: ExampleModel.pick({ text: true }),
   });
@@ -49,9 +48,11 @@ export default function ExamplePage(props: IProps) {
 
   const openCreateExampleForm = useCreateExampleForm();
 
-  const findMany = Example.findMany.use();
-  const update = Example.update.use();
-  const del = Example.delete.use();
+  const findMany = exampleController.findMany.use();
+  const update = exampleController.update.use({ mode: 'client' });
+  const del = exampleController.delete.use({ mode: 'client' });
+  const delSave = del.useSave();
+  // const delServer = exampleController.delete.use({ mode: 'server' });
 
   const UpdateForm = useChakraForm({
     schema: ExampleModel.pick({ text: true, id: true }),
@@ -81,6 +82,13 @@ export default function ExamplePage(props: IProps) {
           <DeleteForm.Heading>Delete</DeleteForm.Heading>
           <DeleteForm.Input type="number" name="id" />
           <DeleteForm.SubmitBtn />
+          <Button
+            onClick={() => {
+              delSave.mutateAsync();
+            }}
+          >
+            save ({del.unsavedChangesCount})
+          </Button>
         </DeleteForm.Form>
         <UpdateForm.Form onSubmit={update.mutateAsync}>
           <UpdateForm.Heading>Update</UpdateForm.Heading>
