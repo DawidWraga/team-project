@@ -2,13 +2,12 @@ import { Flex, Text, Icon, FlexProps, Box } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { isMobile } from 'utils/checkScreenWidth';
-import { useActiveSideNavLink } from 'utils/useActiveSideNavLink';
 import { IPage } from 'config/pages';
 import { HiDocumentText } from 'react-icons/hi';
 import { FaTasks } from 'react-icons/fa';
 import { MdForum, MdKeyboardArrowRight, MdPeopleAlt } from 'react-icons/md';
 import { RiDashboardFill } from 'react-icons/ri';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const routeToIconMap = {
@@ -27,42 +26,47 @@ export function NavItem(props: IProps) {
   const router = useRouter();
 
   const { page } = props;
-
   const { route, label } = page.parentLink;
 
   const hasSideNavLinks = page?.sideNavLinks?.length;
 
-  const { activePage, setSideNavIsOpen, openAccordianRoute, setOpenAccordianRoute } =
-    useLayoutStore();
+  const {
+    activePage,
+    setSideNavIsOpen,
+    openAccordianRoute,
+    setOpenAccordianRoute,
+    activeSideNavLink,
+    setActiveSideNavLink,
+  } = useLayoutStore();
+  // const { activeSideNavLink } = useActiveSideNavLink();
 
   const isOpen = hasSideNavLinks && openAccordianRoute.includes(route);
-
-  // const [isOpen, setIsOpen] = useState(false);
-
-  const { activeSideNavLink } = useActiveSideNavLink();
 
   const isActive = activePage?.parentLink?.route?.includes(route);
 
   const linkStyling = (isActive: boolean): FlexProps => ({
     _hover: {
-      bgColor: 'shade.light',
+      bgColor: !isOpen && 'shade.light',
       cursor: 'pointer',
     },
-    // stroke: 'whiteAlpha.0',
-    // _active: {
-    //   stroke: 'whiteAlpha.400',
-    // },
-    // transition: 'stroke 0.1s',
     py: '2.5',
     px: '1.5',
-    // w: 'calc(100% - 4px)',
-    // w: 100
     mx: '5px',
     rounded: 'md',
-    _active: {
-      bgColor: 'shade.light',
-    },
-    bgColor: isActive || isOpen ? 'shade.light' : 'shade.main',
+    // _active: {
+    //   bgColor: 'shade.light',
+    // },
+
+    outline: isOpen
+      ? 'solid 1px hsla(255 100% 100% / 0.3)'
+      : 'solid 0px hsla(255 100% 100% / 0)',
+    transition: 'outline .2s ease-in-out, background-color .1s ease-in-out',
+
+    bgColor: isActive ? 'shade.light' : 'shade.main',
+    // fontWeight: isActive ? 600 : 400,
+    textColor: isActive ? 'white' : 'whiteAlpha.900',
+
+    // bgColor: isActive || isOpen ? 'shade.light' : hade.main',
   });
 
   const Divider = useCallback(() => {
@@ -126,7 +130,8 @@ export function NavItem(props: IProps) {
         <Flex justifyContent={'stretch'} alignItems={'center'}>
           <Icon
             fontSize="xl"
-            textColor={isActive ? 'brand.main' : 'white'}
+            textColor={isActive ? 'white' : 'whiteAlpha.900'}
+            // textColor={isActive ? 'brand.main' : 'white'}
             as={routeToIconMap[route]}
             transition="all 200ms"
             ml="2"
@@ -134,7 +139,7 @@ export function NavItem(props: IProps) {
           />
           <Text
             fontSize="1.18rem"
-            textColor={isActive ? 'brand.300' : 'white'}
+            // textColor={isActive ? 'brand.300' : 'white'}
             // textDecoration={isActive ? 'underline' : 'none'}
             // textDecorationColor={isActive ? 'brand.300' : 'white'}
           >
@@ -144,7 +149,7 @@ export function NavItem(props: IProps) {
             <Icon
               as={MdKeyboardArrowRight}
               ml="auto"
-              transform={isOpen && 'rotate(90deg)'}
+              transform={isOpen ? 'rotate(-90deg)' : 'rotate(90deg)'}
               transition="transform .2s"
             />
           )}
@@ -181,16 +186,21 @@ export function NavItem(props: IProps) {
                       key={page.route}
                       {...linkStyling(sidenavActive)}
                       onClick={() => {
-                        if (page.route.includes('/projects'))
-                          return router.push(page.route + '/tasks');
-                        router.push(page.route);
+                        // temporary fix for routing to /tasks by default
+                        let { route } = page;
+                        if (page.route.includes('/projects')) route += '/tasks';
+
+                        router.push(route);
+                        setActiveSideNavLink(page);
+                        isMobile() && setSideNavIsOpen(false);
                       }}
                       mx="auto"
                       w="calc(100% - 14px)"
                       px="2"
                       my="2px"
-                      bgColor={sidenavActive ? 'shade.min' : 'shade.light'}
-                      _hover={{ bgColor: 'shade.min' }}
+                      // bgColor={sidenavActive ? 'shade.min' : 'shade.light'}
+                      _hover={{ bgColor: 'shade.light' }}
+                      outline="none"
                     >
                       <Text fontSize={'md'}>{page.label}</Text>
                     </Flex>

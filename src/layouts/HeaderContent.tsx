@@ -1,14 +1,11 @@
-import { Box, Flex, Heading, Button, Icon, Text } from '@chakra-ui/react';
+import { Flex, Heading, Text } from '@chakra-ui/react';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { useRouter } from 'next/router';
-import { MdClose } from 'react-icons/md';
-import { useActiveSideNavLink } from 'utils/useActiveSideNavLink';
 
 export default function HeaderContent(props) {
   const {} = props;
   const router = useRouter();
-  const { activePage } = useLayoutStore();
-  const { activeSideNavLink } = useActiveSideNavLink();
+  const { activePage, activeSideNavLink } = useLayoutStore();
   if (!activePage) return <></>;
 
   const getHeaderLinkStart = () => {

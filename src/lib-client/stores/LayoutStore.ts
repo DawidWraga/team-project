@@ -1,4 +1,4 @@
-import { IPage } from 'config/pages';
+import { IPage, IRouteData } from 'config/pages';
 import {
   closedSideNavWidth,
   headerHeight,
@@ -30,6 +30,8 @@ export interface ILayoutStore {
   bottomOffset: offsetProp;
   openAccordianRoute: string;
   setOpenAccordianRoute: (route: string) => void;
+  activeSideNavLink: IRouteData | undefined;
+  setActiveSideNavLink: (page: IRouteData) => void;
 }
 
 const getLeftOffset = (isOpen: boolean) => {
@@ -87,4 +89,6 @@ export const useLayoutStore = useCreateStore<ILayoutStore>('Layout', (set, get) 
       if (state.openAccordianRoute === route) return { openAccordianRoute: '' };
       return { openAccordianRoute: route };
     }),
+  activeSideNavLink: undefined,
+  setActiveSideNavLink: (page: IRouteData) => set({ activeSideNavLink: page }),
 }));
