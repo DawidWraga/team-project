@@ -16,6 +16,8 @@ interface ICheck {
 }
 
 export class BaseApiController {
+
+
   constructor(public model: PrismaModelNames, public handler = apiHandler()) {
     handler.post(async (req, res) => {
       const { query, prismaProps }: IReqBody = req.body;
@@ -44,7 +46,7 @@ export class BaseApiController {
 
   //     try {
   //       // specific handler
-  //       // if (specificHandler) specificHandler(req);
+  //       if (specificHandler) specificHandler(req);
 
   //       // default handler
   //       const data = await (prisma[this.model] as any)[query](

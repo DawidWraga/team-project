@@ -1,7 +1,8 @@
 // 1. Import the extendTheme function
 import { defineStyleConfig, extendTheme } from '@chakra-ui/react';
 import '@fontsource/roboto';
-// import '@fontsource/open-sans';
+import '@fontsource/Inter';
+import '@fontsource/open-sans';
 
 const config = {
   initialColorMode: 'light',
@@ -9,7 +10,9 @@ const config = {
 };
 
 const fonts = {
-  heading: `'Inter', sans-serif`,
+  heading: `'Roboto', sans-serif`,
+  // heading: `'Open-sans', sans-serif`,
+  // body: `'Open-sans', sans-serif`,
   body: `'Inter', sans-serif`,
 };
 

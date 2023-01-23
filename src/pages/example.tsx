@@ -51,7 +51,9 @@ export default function ExamplePage(props: IProps) {
   const openCreateExampleForm = useCreateExampleForm();
 
   const findMany = exampleController.findMany.use();
-  const update = exampleController.update.use({ mode: 'server' });
+  const update = exampleController.update.use({ mode: 'changeUi' });
+  const updateSave = exampleController.update.use<true>({ mode: 'saveUiChanges' });
+
   const del = exampleController.delete.use({ mode: 'changeUi' });
   const delSave = exampleController.delete.use<true>({ mode: 'saveUiChanges' });
   // delSave.mutate
@@ -101,6 +103,13 @@ export default function ExamplePage(props: IProps) {
           <UpdateForm.Input name="text" />
           <UpdateForm.Input type="number" name="id" />
           <UpdateForm.SubmitBtn />
+          <Button
+            onClick={() => {
+              updateSave.mutateAsync();
+            }}
+          >
+            save
+          </Button>
         </UpdateForm.Form>
       </Flex>
       <Box bgColor="pale.main">

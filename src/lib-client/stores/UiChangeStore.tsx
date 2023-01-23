@@ -13,17 +13,18 @@ export interface IUiChangeStore {
 }
 
 function createId(queryKey: string | string[], queryType: anyQuery) {
-  // format query key: changedModel_changedModelQuery_changeType
+  // queryKeys can be made of arrays eg [model, queryType], however, object cannot be arrays. This utility helps to format query key into object key
+  // return format = changedModel_changedModelQuery_changeType
   let result: string;
   if (Array.isArray(queryKey)) {
     result = queryKey.join('_');
   } else result = queryKey;
   result += '_' + queryType;
-  console.log({ result, queryKey, queryType });
 
   return result;
 }
 
+// aim = store history of mutations made using controller.writeQuery.use(mode='changeUi') in order to enable save functionality
 export const useUiChangeStore = useCreateStore<IUiChangeStore>(
   'uiChangeStore',
   (set, get) => ({
@@ -36,7 +37,13 @@ export const useUiChangeStore = useCreateStore<IUiChangeStore>(
       set((state) => {
         const identifier = createId(queryKey, queryType);
 
-        const previousData = state.changedUiData[identifier];
+        let previousData = state.changedUiData[identifier];
+
+        // filter previous items with same ID to avoid sending redundant/ conflicting queries for same item - only save most recent
+        if (previousData) {
+          previousData = previousData.filter((item) => item.id && item.id !== data.id);
+        }
+
         const newData = previousData ? [...previousData, data] : [data];
 
         return { changedUiData: { ...state.changedUiData, [identifier]: newData } };

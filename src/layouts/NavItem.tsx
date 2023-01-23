@@ -137,16 +137,25 @@ export function NavItem(props: IProps) {
             ml="2"
             mr="3"
           />
-          <Text
-            fontSize="1.18rem"
-            // textColor={isActive ? 'brand.300' : 'white'}
-            // textDecoration={isActive ? 'underline' : 'none'}
-            // textDecorationColor={isActive ? 'brand.300' : 'white'}
+          {/* experiment with moving label to center on open */}
+          <Box
+          // mx={isOpen ? `calc(50% - ${-1 + label.length * 1.3}ch)` : 0}
+          // transition="margin-left 0.4s ease-in-out"
           >
-            {label}
-          </Text>
+            <Text
+              fontSize="1.15rem"
+              // ml={'25%'}
+              // textAlign={'center'}
+              // textColor={isActive ? 'brand.300' : 'white'}
+              // textDecoration={isActive ? 'underline' : 'none'}
+              // textDecorationColor={isActive ? 'brand.300' : 'white'}
+            >
+              {label}
+            </Text>
+          </Box>
           {hasSideNavLinks && (
             <Icon
+              // px="1px"
               as={MdKeyboardArrowRight}
               ml="auto"
               transform={isOpen ? 'rotate(-90deg)' : 'rotate(90deg)'}
@@ -178,7 +187,7 @@ export function NavItem(props: IProps) {
               exit="closed"
               overflow={'hidden'}
             >
-              <Flex flexDir={'column'} my="2" pt="1">
+              <Flex flexDir={'column'} my="3" pt="1">
                 {page?.sideNavLinks?.map((page) => {
                   const sidenavActive = activeSideNavLink?.route?.includes(page?.route);
                   return (
@@ -197,12 +206,14 @@ export function NavItem(props: IProps) {
                       mx="auto"
                       w="calc(100% - 14px)"
                       px="2"
-                      my="2px"
+                      // pl="1.5rem"
+                      my="1px"
+                      py={2.5}
                       // bgColor={sidenavActive ? 'shade.min' : 'shade.light'}
                       _hover={{ bgColor: 'shade.light' }}
                       outline="none"
                     >
-                      <Text fontSize={'md'}>{page.label}</Text>
+                      <Text fontSize={15}>{page.label}</Text>
                     </Flex>
                   );
                 })}

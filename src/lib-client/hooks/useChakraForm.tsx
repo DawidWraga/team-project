@@ -220,8 +220,8 @@ export const useChakraForm = <
             const defaults: ChakraInputProps = {
               placeholder,
               type,
-              borderColor: 'blackAlpha.300',
-              bgColor: 'pale.main',
+              borderColor: 'blackAlpha.500',
+              bgColor: 'hsl(204, 20%,97%)',
               shadow: 'sm',
               w: '100%',
             };

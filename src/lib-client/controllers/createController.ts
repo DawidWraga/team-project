@@ -18,6 +18,8 @@ import { IReqBody } from 'lib-server/apiControllers/BaseApiController';
 import { QUERY_STALE_TIME } from 'lib-client/constants';
 import { useUiChangeStore } from 'lib-client/stores/UiChangeStore';
 
+type Modify<T, R> = Omit<T, keyof R> & R;
+
 export type readQuery = 'findMany' | 'findUnique' | 'findFirst' | 'aggregate' | 'count';
 export type writeQuery =
   | 'update'
@@ -96,13 +98,11 @@ interface IControlWrite<
     : UseMutationResult<TData, TError, TVariables, TContext>;
 }
 
-interface IController<TModel = unknown> {
-  findMany: IControlRead<TModel[], AxiosError, TModel[]>;
-  findUnique: IControlRead<TModel, AxiosError, TModel>;
-  create: IControlWrite<TModel, AxiosError>;
-  update: IControlWrite<TModel, AxiosError>;
-  delete: IControlWrite<TModel, AxiosError>;
-}
+type IController<TModel = unknown> = {
+  [P in anyQuery]: P extends writeQuery
+    ? IControlWrite<TModel, AxiosError>
+    : IControlRead<TModel[], AxiosError, TModel[]>;
+};
 
 export const createController = <TModel = unknown>({
   model,
@@ -182,7 +182,7 @@ export const createController = <TModel = unknown>({
         return useMutation<TModel, any, any, any>({
           mutationKey: key as any,
           mutationFn: async (data: any) => {
-            const fn = (d) => fetcher({ data: { query, prismaProps: { ...d } } });
+            const fn = (d: any) => fetcher({ data: { query, prismaProps: { ...d } } });
 
             if (mode === 'server' || mode === 'optimistic') {
               return fn(data);
@@ -198,7 +198,7 @@ export const createController = <TModel = unknown>({
               if (!changedUiData) return;
 
               // runs all saved mutation functions in parallel
-              const res = await Promise.any(
+              const res = await Promise.all(
                 changedUiData.map(async (d) => {
                   const res = await fn(d);
                   return res;
@@ -217,6 +217,7 @@ export const createController = <TModel = unknown>({
             // Snapshot the previous value
             const previousState = queryClient.getQueryData(changeUiKey);
 
+            // =========== abstract into separate function for expandabiliy===
             // Optimistically update to the new value
             const handlers = {
               update: (prev: any[]) => {
@@ -234,6 +235,7 @@ export const createController = <TModel = unknown>({
             };
 
             queryClient.setQueryData(changeUiKey, handlers[query]);
+            // =========== end =========================================
 
             // Return a context object with the snapshotted value
             return { previousState };

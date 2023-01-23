@@ -1,4 +1,4 @@
-============= commit messages ==========
+## ============= commit messages ==========
 
 feat: add hat wobble
 ^--^ ^------------^
@@ -18,10 +18,12 @@ chore: (updating grunt tasks etc; no production code change)
 
 ============= File structue ============
 
-- styles (theme & styles)
-- layouts (layout components)
-- compontents (components - not layout or page specific)
+- assets
+  - styles (theme & styles)
+  - compontents (UI components - not layout or page specific)
+  - (optional) vanilla TS code (non framework)
 - views (page specific components & hooks)
+  - layouts (layout components)
 - pages
   - api (node.js service handlers backend)
 - lib-client (decoupled front-end logic)
@@ -32,10 +34,10 @@ chore: (updating grunt tasks etc; no production code change)
 - lib-server (decoupled back-end logic)
   - api-controllers
   - constants
-- prisma
+- prisma (rename to model?)
   - schema.prisma = model definitions
   - zod = zod schemas generated from prisma models
   - migrations = SQL syntax
 - utils (small helper functions)
-- config 
+- config
   - pages.ts = page layout data
