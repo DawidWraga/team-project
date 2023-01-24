@@ -35,23 +35,23 @@ generator zod {
 }
 
 model Example {
-  id           Int      @id @default(autoincrement())
-  date_created DateTime @default(now())
-  text         String ///@zod.min(3)
+  id          Int      @id @default(autoincrement())
+  dateCreated DateTime @default(now())
+  text        String ///@zod.min(3)
 }
 
 model Post {
-  id           Int       @id @default(autoincrement())
-  date_created DateTime  @default(now())
-  date_updated DateTime? @updatedAt
-  title        String    @db.Text ///@zod.min(3).trim
-  content      String    @db.Text
-  solved       Boolean
-  replies      Comment[]
+  id          Int       @id @default(autoincrement())
+  dateCreated DateTime  @default(now())
+  dateUpdated DateTime? @updatedAt
+  title       String    @db.Text ///@zod.min(3).trim
+  content     String    @db.Text
+  solved      Boolean
+  replies     Comment[]
 
-  author_id Int
+  authorId Int
 
-  author User @relation(fields: [author_id], references: [id])
+  author User @relation(fields: [authorId], references: [id])
 }
 
 model Comment {
@@ -59,11 +59,11 @@ model Comment {
   content   String   @db.Text
   createdAt DateTime @default(now())
 
-  author_id Int
-  post_id   Int
+  authorId Int
+  postId   Int
 
-  author User @relation(fields: [author_id], references: [id])
-  post   Post @relation(fields: [post_id], references: [id])
+  author User @relation(fields: [authorId], references: [id])
+  post   Post @relation(fields: [postId], references: [id])
 }
 
 model User {
@@ -92,34 +92,35 @@ model UserRole {
 }
 
 model Task {
-  id           Int      @id @default(autoincrement())
-  title        String   @db.Text ///@zod.trim()
-  created_date DateTime @default(now())
-  due_date     DateTime
-  description  String   @db.Text
-  list_name    String   @db.Text
+  id          Int      @id @default(autoincrement())
+  title       String   @db.Text ///@zod.trim()
+  createdDate DateTime @default(now())
+  dueDate     DateTime
+  description String   @db.Text
 
-  status_id  Int
-  project_id Int
-  asignees   User[]
+  statusId  Int
+  projectId Int
+  asignees  User[]
 
-  status  TaskStatus @relation(fields: [status_id], references: [id])
-  project Project    @relation(fields: [project_id], references: [id])
+  status  TaskStatus @relation(fields: [statusId], references: [id])
+  project Project    @relation(fields: [projectId], references: [id])
 }
 
 model TaskStatus {
   id    Int    @id @default(autoincrement())
   label String @db.Text ///@zod.trim()
 
-  tasks Task[]
+  tasks   Task[]
+  Project Project[]
 }
 
 model Project {
-  id           Int      @id @default(autoincrement())
-  title        String
-  created_date DateTime @default(now())
-  due_date     DateTime
-  assignees    User[]
-  managers     User[]   @relation(name: "ProjectManagers")
-  tasks        Task[]
+  id          Int          @id @default(autoincrement())
+  title       String
+  createdDate DateTime     @default(now())
+  dueDate     DateTime
+  statuses    TaskStatus[]
+  assignees   User[]
+  managers    User[]       @relation(name: "ProjectManagers")
+  tasks       Task[]
 }

@@ -12,7 +12,7 @@ const statusToColorMap = {
 export function KanbanCol(props) {
   const { tasks } = props;
 
-  const openAddTaskModal = useTaskModal();
+  const { openTaskModal } = useTaskModal();
 
   return (
     <Flex m={4} flexDir="column" gap="4" minW="300px">
@@ -36,7 +36,7 @@ export function KanbanCol(props) {
           bg={statusToColorMap[props.status]}
           textColor="white"
           gap="1"
-          onClick={openAddTaskModal && openAddTaskModal}
+          onClick={openTaskModal}
           _hover={{ cursor: 'pointer' }}
         >
           <MdAddCircle size="18px" pl="0" pr="0" as="AddIcon" />

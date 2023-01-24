@@ -24,7 +24,7 @@ export default function HeaderContent(props) {
   let headerLinkStart = getHeaderLinkStart();
 
   const activeHeaderPage = activePage?.headerLinks?.find((link) =>
-    router.asPath.includes(link.route)
+    router.asPath.includes(link.route.split('?')[0])
   );
 
   return (
@@ -38,17 +38,19 @@ export default function HeaderContent(props) {
       ml={{ base: 0, lg: 2 }}
       pr="50px"
     >
-      <Heading
-        // mx={{ base: 'auto', lg: 5 }}
-        fontSize={{ base: '1rem', sm: '1.2rem', lg: '1.35rem' }}
-        fontWeight={500}
-        wordBreak={'keep-all'}
-        ml={{ base: 'auto', md: 'unset' }}
-        mr={{ base: '4px', md: 'unset' }}
-        // minW={{ base: 'unset', lg: '100px' }}
-      >
-        {activePage?.parentLink?.label}
-      </Heading>
+      {!activeSideNavLink && (
+        <Heading
+          // mx={{ base: 'auto', lg: 5 }}
+          fontSize={{ base: '1rem', sm: '1.2rem', lg: '1.35rem' }}
+          fontWeight={500}
+          wordBreak={'keep-all'}
+          ml={{ base: 'auto', md: 'unset' }}
+          mr={{ base: '4px', md: 'unset' }}
+          // minW={{ base: 'unset', lg: '100px' }}
+        >
+          {activePage?.parentLink?.label}
+        </Heading>
+      )}
       {activeSideNavLink && (
         <Heading
           fontSize={{ base: '1rem', sm: '1.2rem', lg: '1.35rem' }}
@@ -56,7 +58,7 @@ export default function HeaderContent(props) {
           wordBreak={'keep-all'}
           mr={{ base: 'auto', md: 'unset' }}
         >
-          / {activeSideNavLink?.label}
+          {activeSideNavLink?.label}
         </Heading>
       )}
       {activePage.headerLinks && (
@@ -83,7 +85,7 @@ export default function HeaderContent(props) {
             pl="8px"
           >
             {activePage.headerLinks.map((link) => {
-              const isActive = router.asPath.includes(link.route);
+              const isActive = router.asPath.includes(link.route.split('?')[0]);
 
               return (
                 <Text

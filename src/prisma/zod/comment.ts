@@ -6,8 +6,8 @@ export const CommentModel = z.object({
   id: z.number().int(),
   content: z.string(),
   createdAt: z.date(),
-  author_id: z.number().int(),
-  post_id: z.number().int(),
+  authorId: z.number().int(),
+  postId: z.number().int(),
 })
 
 export interface CompleteComment extends z.infer<typeof CommentModel> {

@@ -32,6 +32,7 @@ import { MdCheck, MdSend } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import { PasswordInput } from 'components/PasswordInput';
+import { FormHeading } from 'components/FormHeading';
 
 export interface IFieldAndFieldState<TFieldValues extends FieldValues = FieldValues> {
   field: ControllerRenderProps<TFieldValues, Path<TFieldValues>>;
@@ -74,6 +75,7 @@ interface UseChakraFormReturn<TFieldValues extends FieldValues, TContext = any>
 interface UseChakraFormProps<TFieldValues extends FieldValues, TContext = any>
   extends UseFormProps<TFieldValues, TContext> {
   schema: ZodType<TFieldValues>;
+  logDataBeforeSubmit?: boolean;
 }
 
 export const useChakraForm = <
@@ -82,7 +84,7 @@ export const useChakraForm = <
 >(
   props: UseChakraFormProps<TFieldValues, TContext>
 ): UseChakraFormReturn<TFieldValues, TContext> => {
-  const { schema, ...otherProps } = props;
+  const { schema, logDataBeforeSubmit, ...otherProps } = props;
   const [isServerSuccess, setIsServerSuccess] = useState(false);
 
   // ======== Call default useForm hook
@@ -127,6 +129,9 @@ export const useChakraForm = <
         }}
         onSubmit={obj.handleSubmit(async (data) => {
           try {
+            if (logDataBeforeSubmit) {
+              console.log('LOG Form submit data: ', data);
+            }
             const res = await onSubmit!(data);
             setIsServerSuccess(true);
             if (onServerSuccess) onServerSuccess(res);
@@ -254,7 +259,7 @@ export const useChakraForm = <
                   {
                     /* render custom inputs eg switch, slider etc */
                   }
-                  if (!!customInput) {
+                  if (Boolean(customInput)) {
                     return customInput({ field: processedField, fieldState, defaults });
                   }
 
@@ -309,19 +314,7 @@ export const useChakraForm = <
   };
 
   const Heading = useCallback(({ children, ...props }: HeadingProps) => {
-    return (
-      <ChakraHeading
-        fontSize={[26, 28, 30]}
-        wordBreak="revert"
-        mx="auto"
-        textAlign={'center'}
-        fontWeight="semibold"
-        mb="2"
-        {...props}
-      >
-        {children}
-      </ChakraHeading>
-    );
+    return <FormHeading {...props}>{children}</FormHeading>;
   }, []);
 
   return { ...obj, isServerSuccess, Form, Input, DebugPanel, SubmitBtn, Heading };

@@ -11,6 +11,7 @@ export const axios = baseAxios.create({
 
 export const getAxiosErrorMessage = (error: AxiosError | any): any => {
   if ((error as any).meta?.cause) return { cause: (error as any).meta.cause };
+  if (error.cause) return { cause: error.cause };
 
   // duplicate email used in registration
   if (error?.code === 'P2002' && error?.meta?.target === 'User_email_key')

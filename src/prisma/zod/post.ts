@@ -4,12 +4,12 @@ import { CompleteComment, RelatedCommentModel, CompleteUser, RelatedUserModel } 
 
 export const PostModel = z.object({
   id: z.number().int(),
-  date_created: z.date(),
-  date_updated: z.date().nullish(),
+  dateCreated: z.date(),
+  dateUpdated: z.date().nullish(),
   title: z.string().min(3),
   content: z.string(),
   solved: z.boolean(),
-  author_id: z.number().int(),
+  authorId: z.number().int(),
 })
 
 export interface CompletePost extends z.infer<typeof PostModel> {

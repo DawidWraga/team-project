@@ -5,12 +5,11 @@ import { CompleteUser, RelatedUserModel, CompleteTaskStatus, RelatedTaskStatusMo
 export const TaskModel = z.object({
   id: z.number().int(),
   title: z.string().trim(),
-  created_date: z.date(),
-  due_date: z.date(),
+  createdDate: z.date(),
+  dueDate: z.date(),
   description: z.string(),
-  list_name: z.string(),
-  status_id: z.number().int(),
-  project_id: z.number().int(),
+  statusId: z.number().int(),
+  projectId: z.number().int(),
 })
 
 export interface CompleteTask extends z.infer<typeof TaskModel> {

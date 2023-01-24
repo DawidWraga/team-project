@@ -24,12 +24,15 @@ export const useSyncPageToRoute = () => {
       const conditionallyCloseOptionBar = () => {
         if (currentPage?.parentLink.hasOptionBar) return;
 
-        const currentSubPage = [
-          ...(currentPage?.sideNavLinks || []),
-          ...(currentPage?.headerLinks || []),
-        ].find((page) => url.includes(currentPage?.parentLink + page.route));
+        const subPages = [...(currentPage?.headerLinks || [])];
+
+        const currentSubPage = subPages.find((page) =>
+          url.includes(page.route.split('?')[0])
+        );
 
         if (currentSubPage && currentSubPage.hasOptionBar) return;
+
+        // console.log({ url });
 
         closeOptionBar();
       };

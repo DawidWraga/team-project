@@ -1,3 +1,5 @@
+import { getDateParams } from 'utils/getDateParams';
+
 export interface IRouteData {
   label: string;
   route: string;
@@ -53,11 +55,11 @@ const pages: IPage[] = [
       },
       {
         label: 'tasks',
-        route: '/tasks',
+        route: '/tasks' + '?' + getDateParams(),
         hasOptionBar: true,
       },
     ],
-    sideNavLinks: projectSideNavLinks,
+    // sideNavLinks: projectSideNavLinks,
   },
   {
     parentLink: {

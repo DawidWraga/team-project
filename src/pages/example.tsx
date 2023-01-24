@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
 import { useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { exampleController } from 'lib-client/controllers';
 import { ExampleModel } from 'prisma/zod';
@@ -6,34 +6,40 @@ import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { DateSelector } from 'components/DateSelector';
 import { useModalStore } from 'lib-client/stores/ModalStore';
 import { toast } from 'react-toastify';
+import { FormHeading } from 'components/FormHeading';
 
 interface IProps {}
 
 const useCreateExampleForm = () => {
   const { setContent, onClose } = useModalStore();
 
-  const { mutateAsync: createExample } = exampleController.create.use({
-    mode: 'optimistic',
-  });
-  const { Form, Heading, Input, SubmitBtn } = useChakraForm({
-    schema: ExampleModel.pick({ text: true }),
-  });
+  const Body = () => {
+    const { mutateAsync: createExample } = exampleController.useMutation('create', {
+      mode: 'optimistic',
+      invalidateClientChanges: true,
+    });
+    const { Form, Input, SubmitBtn } = useChakraForm({
+      schema: ExampleModel.pick({ text: true }),
+    });
+
+    return (
+      <Form
+        onSubmit={createExample}
+        onServerSuccess={() => {
+          onClose();
+          toast.success('example created');
+        }}
+      >
+        <Input name="text" />
+        <SubmitBtn />
+      </Form>
+    );
+  };
 
   return () =>
     setContent({
-      header: <Heading>Create example form</Heading>,
-      body: (
-        <Form
-          onSubmit={createExample}
-          onServerSuccess={() => {
-            onClose();
-            toast.success('example created');
-          }}
-        >
-          <Input name="text" />
-          <SubmitBtn />
-        </Form>
-      ),
+      header: <FormHeading>Create example form</FormHeading>,
+      body: <Body />,
     });
 };
 
@@ -50,16 +56,16 @@ export default function ExamplePage(props: IProps) {
 
   const openCreateExampleForm = useCreateExampleForm();
 
-  const findMany = exampleController.findMany.use();
-  const update = exampleController.update.use({ mode: 'changeUi' });
-  const updateSave = exampleController.update.use<true>({ mode: 'saveUiChanges' });
+  const findMany = exampleController.useQuery('findMany');
+  const update = exampleController.useMutation('update', { mode: 'changeUi' });
+  const updateSave = exampleController.useMutation('update', { mode: 'saveUiChanges' });
 
-  const del = exampleController.delete.use({ mode: 'changeUi' });
-  const delSave = exampleController.delete.use<true>({ mode: 'saveUiChanges' });
-  // delSave.mutate
-  // const delSave = del.useSave();
-
-  // const delServer = exampleController.delete.use({ mode: 'server' });
+  const del = exampleController.useMutation('delete', { mode: 'changeUi' });
+  const delSave = exampleController.useMutation('delete', {
+    mode: 'saveUiChanges',
+    logConfig: true,
+    logMutationFnData: true,
+  });
 
   const UpdateForm = useChakraForm({
     schema: ExampleModel.pick({ text: true, id: true }),

@@ -1,26 +1,13 @@
-import { createController } from 'lib-client/controllers/createController';
-import { ExampleModel, TaskModel, UserModel } from 'prisma/zod';
+import { Controller } from 'lib-client/controllers/Controller';
+import { ExampleModel, ProjectModel, TaskModel, UserModel } from 'prisma/zod';
 import { z } from 'zod';
 
-type IExample = z.infer<typeof ExampleModel>;
+export type IExample = z.infer<typeof ExampleModel>;
+export type ITask = z.infer<typeof TaskModel>;
+export type IUser = z.infer<typeof UserModel>;
+export type IProject = z.infer<typeof ProjectModel>;
 
-export const exampleController = createController<IExample>({
-  model: 'example',
-  queries: ['findMany', 'findUnique', 'update', 'delete', 'create'],
-});
-
-type ITask = z.infer<typeof TaskModel>;
-export const taskController = createController<ITask>({
-  model: 'task',
-  queries: ['findMany', 'findUnique', 'update', 'delete', 'create'],
-});
-
-type IUser = z.infer<typeof UserModel>;
-export const userController = createController<IUser>({
-  model: 'user',
-  queries: ['findMany', 'findUnique', 'update', 'delete', 'create'],
-});
-
-// userController.findMany.use({})
-
-// userController.use('findMany',)
+export const exampleController = new Controller<IExample>('example', {});
+export const taskController = new Controller<ITask>('task');
+export const userController = new Controller<IUser>('user');
+export const projectController = new Controller<IProject>('project');

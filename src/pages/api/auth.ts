@@ -1,24 +1,18 @@
-import query from 'lib-client/controllers/query';
-import { setTimeoutPromise } from 'utils/setTimeoutPromise';
+import { prisma } from 'lib-server/prisma';
 
 export default async function handler(req, res) {
   try {
-    const validUsers = await query('users');
-
-    await setTimeoutPromise(1500);
-
-    const userDetails = validUsers.find((user) => {
-      if (user.email !== req.body.email) return false;
-      if (user.password !== req.body.password) return false;
-      return true;
+    const user = await prisma.user.findUniqueOrThrow({
+      where: {
+        email: req.body.email,
+      },
     });
 
-    if (userDetails) {
-      delete userDetails.password;
-      return res.status(200).json(userDetails);
-    } else {
+    if (user.password !== req.body.password)
       return res.status(403).json({ cause: 'Invalid credentials' });
-    }
+
+    delete user.password;
+    return res.json(user);
   } catch (e) {
     console.error(e);
     res.status(403).send();

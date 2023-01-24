@@ -1,23 +1,8 @@
-import { BaseApiController } from 'lib-server/apiControllers/BaseApiController';
+import { createApiHandler } from 'lib-server/ApiController';
 
-export class ExampleApiController extends BaseApiController {
-constructor() {
-super('example')
-
-}
-}
-
-export const exampleApiController = new ExampleApiController();
-
-export default exampleApiController.handler;
-
-
-console.log('hello world')
-
-
-
-
-// aim: model = example & operation = 'findMany' then customhandler()
-
-
-// completely specific => inside Specific model controller
+export default createApiHandler('example', {
+  create: {},
+  findMany: {
+    logDataBeforeQuery: true,
+  },
+});

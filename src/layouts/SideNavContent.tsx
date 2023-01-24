@@ -4,12 +4,43 @@ import pages from 'config/pages';
 import { getCurrentUser } from 'lib-client/controllers/auth';
 import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
 import { NavItem } from 'layouts/NavItem';
+import { projectController } from 'lib-client/controllers';
+import { getDateParams } from 'utils/getDateParams';
 
+const usePagesConfig = () => {
+  const { data: projects } = projectController.useQuery('findMany', {
+    prismaQueryOptions: {
+      select: {
+        title: true,
+        id: true,
+      },
+    },
+    cacheTime: 60 * 60 * 1000,
+  });
+
+  const projectsData =
+    projects &&
+    projects.map((p) => ({
+      label: p.title,
+      route: `/projects/${p.id}`,
+      defaultHeaderLink: '/tasks?' + getDateParams(),
+    }));
+
+  const projectsPageIndex = pages.findIndex((p) => p.parentLink.route === '/projects');
+  const newPages = [...pages];
+  newPages.splice(projectsPageIndex, 1, {
+    ...pages[projectsPageIndex],
+    sideNavLinks: projectsData,
+  });
+  return newPages;
+};
 
 export default function SideNavContent(props) {
   const {} = props;
 
   const isHydrated = useIsHydrated();
+
+  const pages = usePagesConfig();
 
   const relevantPages = pages.filter((page) => {
     const role = getCurrentUser().role;

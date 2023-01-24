@@ -1,27 +1,43 @@
-import { BaseApiController } from 'lib-server/apiControllers/BaseApiController';
+import { ITask } from 'lib-client/controllers';
+import { createApiHandler } from 'lib-server/ApiController';
+import { prisma } from 'lib-server/prisma';
 
-function checkIsAuth() {
-  console.log('yes');
-}
-
-export class TaskApiController extends BaseApiController {
-  constructor() {
-    super('task');
-  }
-}
-
-export const taskApiController = new TaskApiController();
-
-
-export default taskApiController.handler;
-
-// import { apiHandler } from 'lib-server/nc';
-
-// const handler = apiHandler();
-
-// handler.get(async (req, res) => {
-//   // res.json({ bod: req.body });
-//   const prismaRes = await prisma.example.findMany();
-//   res.json(prismaRes);
-// });
-// export default handler;
+export default createApiHandler<ITask>('task', {
+  findMany: {
+    formatPrismaOptions(prismaQueryOptions) {
+      return prismaQueryOptions;
+    },
+  },
+  create: {
+    formatPrismaOptions(prismaQueryOptions) {
+      return prismaQueryOptions;
+    },
+    async queryFn({ prismaQueryOptions }: any) {
+      console.log(prismaQueryOptions);
+      const { projectId, ...options } = prismaQueryOptions;
+      return prisma.task.create({
+        data: {
+          ...options,
+          // title: 'hi',
+          // due_date: new Date(),
+          // description: 'hello',
+          status: {
+            connect: {
+              id: 1,
+            },
+          },
+          asignees: {
+            connect: {
+              id: 1,
+            },
+          },
+          project: {
+            connect: {
+              id: projectId,
+            },
+          },
+        },
+      });
+    },
+  },
+});

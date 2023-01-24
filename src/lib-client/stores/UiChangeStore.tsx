@@ -1,4 +1,4 @@
-import { anyQuery } from 'lib-client/controllers/createController';
+import { anyQuery } from 'lib-client/controllers/types/Controller';
 import { useCreateStore } from 'lib-client/hooks/useCreateStore';
 export interface IUiChangeStore {
   // k = changeUiKey, v = changed data array
@@ -10,9 +10,12 @@ export interface IUiChangeStore {
   ) => void;
   getChangedData: (queryKey: string | string[], queryType: anyQuery) => any[];
   resetChangedData: (queryKey: string | string[], queryType: anyQuery) => void;
+  currentItemId: number;
+  createItemId: () => number;
+  incrementCurrentItemId: (count: number) => void;
 }
 
-function createId(queryKey: string | string[], queryType: anyQuery) {
+function createQueryId(queryKey: string | string[], queryType: anyQuery) {
   // queryKeys can be made of arrays eg [model, queryType], however, object cannot be arrays. This utility helps to format query key into object key
   // return format = changedModel_changedModelQuery_changeType
   let result: string;
@@ -24,10 +27,26 @@ function createId(queryKey: string | string[], queryType: anyQuery) {
   return result;
 }
 
+export const UI_ITEM_ID_START = 1000000;
+
 // aim = store history of mutations made using controller.writeQuery.use(mode='changeUi') in order to enable save functionality
 export const useUiChangeStore = useCreateStore<IUiChangeStore>(
   'uiChangeStore',
   (set, get) => ({
+    currentItemId: UI_ITEM_ID_START,
+
+    createItemId: () => {
+      /**
+       * prevent id num collisions between database and temporary Ui ids by starting at very high numbers
+       */
+      const curr = get().currentItemId;
+      const next = curr + 1;
+      set((state) => ({ currentItemId: state.currentItemId + 1 }));
+      return next;
+    },
+    incrementCurrentItemId: (count: number = 1) =>
+      set((state) => ({ currentItemId: state.currentItemId + count })),
+
     changedUiData: {},
     pushChangedUiData: (
       queryKey: string | string[],
@@ -35,7 +54,7 @@ export const useUiChangeStore = useCreateStore<IUiChangeStore>(
       data: Record<any, any>
     ) =>
       set((state) => {
-        const identifier = createId(queryKey, queryType);
+        const identifier = createQueryId(queryKey, queryType);
 
         let previousData = state.changedUiData[identifier];
 
@@ -46,16 +65,18 @@ export const useUiChangeStore = useCreateStore<IUiChangeStore>(
 
         const newData = previousData ? [...previousData, data] : [data];
 
-        return { changedUiData: { ...state.changedUiData, [identifier]: newData } };
+        return {
+          changedUiData: { ...state.changedUiData, [identifier]: newData },
+        };
       }),
     getChangedData: (queryKey: string | string[], queryType: anyQuery) => {
-      const identifer = createId(queryKey, queryType);
+      const identifer = createQueryId(queryKey, queryType);
       const all = get().changedUiData;
 
       return all[identifer];
     },
     resetChangedData: (queryKey: string | string[], queryType: anyQuery) => {
-      const identifer = createId(queryKey, queryType);
+      const identifer = createQueryId(queryKey, queryType);
       set((state) => {
         const newData = { ...state.changedUiData };
         delete newData[identifer];

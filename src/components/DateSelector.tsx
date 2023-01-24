@@ -2,7 +2,9 @@ import { ButtonWithArrows } from 'components/ButtonWithArrows';
 import { useRouter } from 'next/router';
 import { Box, Select } from '@chakra-ui/react';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNextQueryParams } from 'lib-client/hooks/useNextQueryParams';
+import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
 
 interface IProps {
   saveChangesBeforeRouting?: () => Promise<void>;
@@ -37,13 +39,18 @@ const formatDate = (date, unit = 'month') => {
 
 export function DateSelector(props: IProps) {
   const { saveChangesBeforeRouting } = props;
+  // const query = useNextQueryParams();
+  // const dateRangeUnits: moment.unitOfTime.StartOf = props.dateRangeUnits ?? 'month';
   const router = useRouter();
-  let date = router.query.date ?? moment();
+  const query = useNextQueryParams();
+
+  const isHydrated = useIsHydrated();
 
   const [unit, setUnit] = useState<moment.unitOfTime.DurationConstructor>('month');
+  const date = moment(query.startDate).startOf(unit);
   const [selectedDateString, setSelectedDateString] = useState(formatDate(date, unit));
 
-  const modifyDateAndRoute = async (dir: 'prev' | 'next') => {
+  const modifyDateAndRoute = async (dir?: 'prev' | 'next') => {
     // save changed data before routing
     saveChangesBeforeRouting && (await saveChangesBeforeRouting());
 
@@ -52,15 +59,20 @@ export function DateSelector(props: IProps) {
     if (dir === 'next') targetDate = targetDate.add(1, unit);
     if (dir === 'prev') targetDate = targetDate.subtract(1, unit);
 
-    // change query
     router.push({
       query: {
-        date: targetDate.format('MM-DD-YYYY'),
+        ...router.query,
+        startDate: targetDate.format('MM-DD-YYYY'),
+        endDate: targetDate.endOf(unit).format('MM-DD-YYYY'),
       },
     });
     // change date string
     setSelectedDateString(formatDate(targetDate, unit));
   };
+
+  useEffect(() => {
+    modifyDateAndRoute();
+  }, []);
 
   return (
     <ButtonWithArrows

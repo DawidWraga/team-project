@@ -63,7 +63,7 @@ export default function RegisterPage(props) {
   const {} = props;
   const router = useRouter();
 
-  const { mutateAsync: createUser } = userController.create.use();
+  const { mutateAsync: createUser } = userController.useMutation('create');
 
   const { Input, Form, SubmitBtn, trigger, DebugPanel, Heading } = useChakraForm({
     schema: createUserSchema,

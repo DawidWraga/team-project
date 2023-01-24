@@ -195,11 +195,9 @@ export function NavItem(props: IProps) {
                       key={page.route}
                       {...linkStyling(sidenavActive)}
                       onClick={() => {
-                        // temporary fix for routing to /tasks by default
                         let { route } = page;
-                        if (page.route.includes('/projects')) route += '/tasks';
 
-                        router.push(route);
+                        router.push(route + page.defaultHeaderLink);
                         setActiveSideNavLink(page);
                         isMobile() && setSideNavIsOpen(false);
                       }}

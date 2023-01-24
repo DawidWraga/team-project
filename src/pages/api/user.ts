@@ -1,7 +1,3 @@
-import { BaseApiController } from 'lib-server/apiControllers/BaseApiController';
+import { createApiHandler } from 'lib-server/ApiController';
 
-export class UserApiController extends BaseApiController {}
-
-export const userApiController = new UserApiController('user');
-
-export default userApiController.handler;
+export default createApiHandler('user', {});
