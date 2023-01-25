@@ -9,7 +9,7 @@ import { getDateParams } from 'utils/getDateParams';
 
 const usePagesConfig = () => {
   const { data: projects } = projectController.useQuery('findMany', {
-    prismaQueryOptions: {
+    prismaProps: {
       select: {
         title: true,
         id: true,

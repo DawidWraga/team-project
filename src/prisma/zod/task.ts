@@ -1,6 +1,6 @@
 import * as z from "zod"
 import * as imports from "./helpers"
-import { CompleteUser, RelatedUserModel, CompleteTaskStatus, RelatedTaskStatusModel, CompleteProject, RelatedProjectModel } from "./index"
+import { CompleteUser, RelatedUserModel, CompleteTaskStatus, RelatedTaskStatusModel, CompleteProject, RelatedProjectModel, CompleteSubTask, RelatedSubTaskModel } from "./index"
 
 export const TaskModel = z.object({
   id: z.number().int(),
@@ -16,6 +16,7 @@ export interface CompleteTask extends z.infer<typeof TaskModel> {
   asignees: CompleteUser[]
   status: CompleteTaskStatus
   project: CompleteProject
+  SubTask: CompleteSubTask[]
 }
 
 /**
@@ -27,4 +28,5 @@ export const RelatedTaskModel: z.ZodSchema<CompleteTask> = z.lazy(() => TaskMode
   asignees: RelatedUserModel.array(),
   status: RelatedTaskStatusModel,
   project: RelatedProjectModel,
+  SubTask: RelatedSubTaskModel.array(),
 }))

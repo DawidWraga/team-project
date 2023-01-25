@@ -59,29 +59,28 @@ export class Controller<TModel> {
   ) {
     // get most relevant config
     const config = this.getConfig(query, options).useQueryOptions;
-    if (config.logConfig) {
-      console.log(`LOG ${this.model} ${query} config: `, config);
-    } // log for debugging
-    const { prismaQueryOptions, fetcherConfig, logConfig, ...useQueryOptions } = config;
 
-    // form query key
-    const queryKey: any = [this.model, query];
-    if (prismaQueryOptions && Object.keys(prismaQueryOptions).length)
-      // enables automatic refresh when prismaQueryOptions change eg filtering
-      queryKey.push({
-        prismaQueryOptions,
-        // prismaQueryOptions: useDebounce(prismaQueryOptions, 0),
-      });
+    const { prismaProps, fetcherConfig, logConfig, ...useQueryOptions } = config;
+
+    const getQueryKey = () => {
+      const queryKey: any = [this.model, query];
+      if (prismaProps && Object.keys(prismaProps).length)
+        // enables automatic refresh when prismaProps change eg filtering
+        queryKey.push({
+          prismaProps,
+        });
+      return queryKey;
+    };
 
     return useQuery<TData, AxiosError, TData, any>({
-      queryKey,
+      queryKey: getQueryKey(),
       queryFn: ({ queryKey }: any) => {
         return this.fetcher({
           ...fetcherConfig,
           data: {
             query,
             ...fetcherConfig?.data,
-            prismaQueryOptions,
+            prismaProps,
           },
         });
       },
@@ -103,9 +102,6 @@ export class Controller<TModel> {
   ) {
     // get most relevant config
     const config = this.getConfig(query, options).useMutationOptions;
-    if (config.logConfig) {
-      console.log(`LOG ${this.model} ${query} config: `, config);
-    } // log for debugging
     const {
       mode,
       changeUiKey,
@@ -127,12 +123,12 @@ export class Controller<TModel> {
     const { resourceId } = useUserStore();
 
     // create query funtion for Api controller
-    const queryApiController = (prismaQueryOptions: any) =>
+    const queryApiController = (prismaProps: any) =>
       this.fetcher({
         data: {
           query,
-          prismaQueryOptions: {
-            ...prismaQueryOptions,
+          prismaProps: {
+            ...prismaProps,
             ...(includeResourceId && {
               resourceId,
             }),
@@ -240,7 +236,7 @@ export class Controller<TModel> {
         ? { useQueryOptions: functionCallOptions }
         : { useMutationOptions: functionCallOptions });
 
-    return mergeDeep(
+    const mergedConfig = mergeDeep(
       // least specific therefore will be overwritten if possible
       this.baseQueryConfigs?.default && this.baseQueryConfigs?.default,
       this.customQueryConfigs?.default && this.customQueryConfigs?.default,
@@ -249,6 +245,16 @@ export class Controller<TModel> {
       _functionCallOptions
       // most specific therefore will be prioritised if available
     ) as IQueryConfig<TModel>;
+
+    // log for debugging
+    if (
+      mergedConfig.useQueryOptions.logConfig ||
+      mergedConfig.useMutationOptions.logConfig
+    ) {
+      console.log(`LOG ${this.model} ${query} mergedConfig: `, mergedConfig);
+    }
+
+    return mergedConfig;
   }
   baseQueryConfigs: IPartialQueryConfigs<TModel> = {
     default: {
@@ -259,7 +265,7 @@ export class Controller<TModel> {
         logConfig: false,
       },
       useQueryOptions: {
-        prismaQueryOptions: {},
+        prismaProps: {},
         refetchOnMount: false,
         refetchOnWindowFocus: false,
         logConfig: false,

@@ -63,8 +63,6 @@ export default function ExamplePage(props: IProps) {
   const del = exampleController.useMutation('delete', { mode: 'changeUi' });
   const delSave = exampleController.useMutation('delete', {
     mode: 'saveUiChanges',
-    logConfig: true,
-    logMutationFnData: true,
   });
 
   const UpdateForm = useChakraForm({

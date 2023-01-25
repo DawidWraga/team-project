@@ -26,6 +26,7 @@ import {
   Text,
   HeadingProps,
   Flex,
+  FormHelperText,
 } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { MdCheck, MdSend } from 'react-icons/md';
@@ -119,13 +120,17 @@ export const useChakraForm = <
           w: '100%',
           bgColor: '#fff',
           flexDir: 'column',
-          gap: '4',
+          gap: '6',
           display: 'flex',
           py: '1rem',
           width: '100%',
           maxW: '480px',
           px: { base: 3, sm: 6, lg: 8 },
           mx: 'auto',
+          '& .chakra-form-control:not(:first-of-type)': {
+            mt: 1,
+            // bg,
+          },
         }}
         onSubmit={obj.handleSubmit(async (data) => {
           try {
@@ -184,7 +189,7 @@ export const useChakraForm = <
 
   const Input = useCallback(
     (props: ICreateInputProps<TFieldValues>) => {
-      const {
+      let {
         name,
         controllerProps,
         customInput,
@@ -194,6 +199,10 @@ export const useChakraForm = <
         helperText,
         type,
       } = props;
+
+      const defaultLabel = name.replace(/([A-Z])/g, ' $1').replace('_', ' ');
+
+      label ??= defaultLabel;
 
       if (!!customInput && (!!inputProps || !!placeholder || !!type))
         console.warn(
@@ -223,10 +232,10 @@ export const useChakraForm = <
             } as typeof field;
 
             const defaults: ChakraInputProps = {
-              placeholder,
+              placeholder: ' ',
               type,
               borderColor: 'blackAlpha.500',
-              bgColor: 'hsl(204, 20%,97%)',
+              // bgColor: 'hsl(204, 20%,97%)',
               shadow: 'sm',
               w: '100%',
             };
@@ -251,10 +260,11 @@ export const useChakraForm = <
             }
 
             return (
-              <FormControl isRequired={required} isInvalid={Boolean(error)}>
-                <FormLabel textTransform={'capitalize'}>
-                  {label || field.name.replace(/([A-Z])/g, ' $1').replace('_', ' ')}
-                </FormLabel>
+              <FormControl
+                variant={'floating'}
+                isRequired={required}
+                isInvalid={Boolean(error)}
+              >
                 {(() => {
                   {
                     /* render custom inputs eg switch, slider etc */
@@ -269,6 +279,7 @@ export const useChakraForm = <
                       <PasswordInput
                         {...processedField}
                         {...defaults}
+                        label={label}
                         {...(inputProps && inputProps({ field, fieldState }))}
                       />
                     );
@@ -282,8 +293,11 @@ export const useChakraForm = <
                     />
                   );
                 })()}
-
-                {helperText}
+                {/* for floating label selectors to work, label elem must be directly below input elem. Password returns input group therefore must place form label *inside* the Inputgroup */}
+                {type !== 'password' && (
+                  <FormLabel textTransform={'capitalize'}>{label}</FormLabel>
+                )}
+                {helperText && <FormHelperText>{helperText}</FormHelperText>}
                 {error && <FormErrorMessage>{error.message}</FormErrorMessage>}
               </FormControl>
             );

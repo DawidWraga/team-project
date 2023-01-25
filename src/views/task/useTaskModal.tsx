@@ -5,6 +5,7 @@ import { TaskModel } from 'prisma/zod';
 import { useModalStore } from 'lib-client/stores/ModalStore';
 import { FormHeading } from 'components/FormHeading';
 import { useUrlData } from 'lib-client/hooks/useNextQueryParams';
+import { InputRow } from 'components/InputRow';
 
 interface IProps {
   onClose: () => void;
@@ -37,6 +38,7 @@ const TaskModalBody = (props: IProps) => {
         )}
       />
       <Input name="dueDate" type="date" />
+      <InputRow />
       <SubmitBtn w="100%">Create task</SubmitBtn>
     </Form>
   );

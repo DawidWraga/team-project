@@ -59,13 +59,13 @@ export function DateSelector(props: IProps) {
     if (dir === 'next') targetDate = targetDate.add(1, unit);
     if (dir === 'prev') targetDate = targetDate.subtract(1, unit);
 
-    router.push({
-      query: {
-        ...router.query,
-        startDate: targetDate.format('MM-DD-YYYY'),
-        endDate: targetDate.endOf(unit).format('MM-DD-YYYY'),
-      },
-    });
+    const query = {
+      ...router.query,
+      startDate: targetDate.format('MM-DD-YYYY'),
+      endDate: targetDate.endOf(unit).format('MM-DD-YYYY'),
+    };
+
+    isHydrated && router.push({ query });
     // change date string
     setSelectedDateString(formatDate(targetDate, unit));
   };

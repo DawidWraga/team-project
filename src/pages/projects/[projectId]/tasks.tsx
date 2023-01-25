@@ -25,7 +25,7 @@ export default function ProjectKanbanPage() {
   );
 
   const { data: tasks } = taskController.useQuery('findMany', {
-    prismaQueryOptions: {
+    prismaProps: {
       where: {
         dueDate: useUrlDateToPrismaOptions(),
         project: {

@@ -12,15 +12,8 @@ export const useCreateStore = <StoreType>(
 ) => {
   const useStore = create<StoreType>(initializer);
 
-  if (
-    typeof window !== 'undefined' &&
-    isDevEnv &&
-    !Boolean(document?.getElementById(`simple-zustand-devtools-${identifier}`)) //avoid remounting the same dev tools
-  )
-    mountStoreDevtool(identifier, useStore);
-  // devtools showing data in store avaiable at root of html body tag
+  conditionallyMountStoreDevTools(identifier, useStore);
 
-  // return () => useStore();
   return () => createTrackedSelector(useStore)();
 
   // ! decided stop spending time on fixing hydration errors as we have moved away from SSR and are fetching data on the client using react-query instead.
@@ -47,6 +40,18 @@ export const useCreateStore = <StoreType>(
     return isHydrated ? processedStore : dehydratedStore;
   };
 };
+
+const isDevToolsMounted = (identifier: string) =>
+  Boolean(document?.getElementById(`simple-zustand-devtools-${identifier}`));
+
+function conditionallyMountStoreDevTools(identifier: any, useStore: any) {
+  // devtools showing data in store avaiable at root of html body tag
+  if (typeof window === 'undefined') return;
+  if (isDevEnv) return;
+  if (isDevToolsMounted(identifier)) return;
+
+  mountStoreDevtool(identifier, useStore);
+}
 
 // HELPERS FOR PREVENTING HYDRATION ERRORS IN NEXT.JS
 

@@ -4,11 +4,12 @@ import { apiHandler } from 'lib-server/nc';
 import { prisma } from 'lib-server/prisma';
 import { PrismaModelNames } from 'lib-server/prisma';
 import { mergeDeep } from 'utils/deepMerge';
+import { ZodAnyDef, z } from 'zod';
 
 /**
  * Server side controller for interacting with database.
  * 1. Controller sends requests to ApiController
- * 3. ApiController executes prisma query
+ * 2. ApiController executes prisma query
  * 3. Prisma interacts with database and returns response
  * 4. ApiController returns Prisma response to Controller
  *
@@ -20,39 +21,40 @@ import { mergeDeep } from 'utils/deepMerge';
  */
 
 export class ApiController<TModel> {
+  private currentQuery: anyQuery;
   constructor(
     public model: PrismaModelNames,
     public customQueryConfigs?: IPartialQueryConfigs<TModel>
   ) {}
   public handler = apiHandler().post(async (req, res) => {
     try {
-      const { query, prismaQueryOptions: unprocessedOptions }: IRequestData<TModel> =
-        req.body;
+      const { query, prismaProps }: IRequestData<TModel> = req.body;
+
+      this.currentQuery = query;
 
       // get handlers for specific query
-      const config = this.getConfig(query);
-      const { queryFn, guard, formatPrismaOptions, logDataBeforeQuery } = config;
+      const config = this.getConfig(query, prismaProps);
+      const { queryFn, guard, logDataBeforeQuery } = config;
 
+      console.log(config);
       // guard clause for validation
       const errorMessage = guard(req.body);
       if (typeof errorMessage === 'string') {
         throw new Error('Request failed.', { cause: errorMessage });
       }
 
-      // format prisma options
-      const prismaQueryOptions = formatPrismaOptions(unprocessedOptions);
-
-      const processedReqData = {
-        ...req.body,
-        prismaQueryOptions,
-      };
       // log for debugging
       if (logDataBeforeQuery) {
-        console.log({ model: this.model, ...processedReqData });
+        console.log({
+          model: this.model,
+          query: this.baseQueryConfigs,
+          options: prismaProps,
+          config,
+        });
       }
 
       // run prisma query
-      const data = await queryFn(processedReqData);
+      const data = await queryFn(prismaProps);
 
       res.send(data);
     } catch (e: any) {
@@ -60,81 +62,108 @@ export class ApiController<TModel> {
     }
   });
 
-  getConfig(query: anyQuery) {
+  getConfig(query: anyQuery, options?: Record<any, any>): IQueryConfig<TModel> {
     /**
      * merges configs to select most specific and fallback to highest possible specificity
+     least specific therefore will be overwritten if possible
+     most specific therefore will be prioritised if available
      */
 
-    return mergeDeep(
-      // least specific therefore will be overwritten if possible
+    const defaultConfig = mergeDeep(
       this.baseQueryConfigs?.default && this.baseQueryConfigs?.default,
-      this.customQueryConfigs?.default && this.customQueryConfigs?.default,
+      this.customQueryConfigs?.default && this.customQueryConfigs?.default
+    );
+
+    const specificQueryConfig = mergeDeep(
       this.baseQueryConfigs?.[query] && this.baseQueryConfigs?.[query],
       this.customQueryConfigs?.[query] && this.customQueryConfigs?.[query]
-      // most specific therefore will be prioritised if available
-    ) as IQueryConfig<TModel>;
+    );
+
+    const mergedConfig = mergeDeep(defaultConfig, specificQueryConfig) as any;
+
+    const isNonData = optionsIncludeNonDataValues(options);
+    const isOnlyData = !isNonData;
+
+    if (isOnlyData) return mergedConfig;
+    if (isNonData) {
+      return {
+        ...mergedConfig,
+        queryFn: defaultConfig.queryFn,
+        // replace specificQueryFn with defaultQueryFn
+      } as any;
+    }
   }
+  prismaModel: any = prisma[this.model] as any;
+
   // warning - baseQueryConfigs is object therefore resets 'this' value.
   // to access class 'this' eg this.model, must use ARROW FUNCTION =>
+
+  whereWrapperQuery = (prismaProps) => {
+    return this.prismaModel.findMany({
+      where: {
+        ...prismaProps,
+      },
+    });
+  };
   baseQueryConfigs: IPartialQueryConfigs<TModel> = {
     default: {
       guard(requestData) {
         //future auth check
       },
-      queryFn: (requestData) => {
-        const { query, prismaQueryOptions } = requestData;
-
-        return (prisma[this.model] as any)[query](prismaQueryOptions);
+      queryFn: (prismaProps) => {
+        return (prisma[this.model] as any)[this.currentQuery](prismaProps);
       },
-      formatPrismaOptions(prismaQueryOptions) {
-        return prismaQueryOptions;
-      },
+      // formatPrismaOptions(prismaProps) {
+      //   return prismaProps;
+      // },
       logDataBeforeQuery: false,
     },
     findMany: {
-      formatPrismaOptions: whereWrapper,
+      queryFn: this.whereWrapperQuery,
     },
     findFirst: {
-      formatPrismaOptions: whereWrapper,
+      queryFn: this.whereWrapperQuery,
     },
     findUnique: {
-      formatPrismaOptions: whereWrapper,
+      queryFn: this.whereWrapperQuery,
     },
     delete: {
-      formatPrismaOptions: whereWrapper,
+      queryFn: this.whereWrapperQuery,
     },
     update: {
-      formatPrismaOptions(prismaQueryOptions) {
-        const { id, ...rest } = prismaQueryOptions || {};
-        return { where: { id }, data: { ...rest } };
+      queryFn: ({ id, ...rest }) => {
+        return this.prismaModel.update({ where: { id }, data: { ...rest } });
       },
     },
     create: {
       guard(requestData) {},
-      formatPrismaOptions(prismaQueryOptions) {
-        if (!prismaQueryOptions.resourceId) return { data: prismaQueryOptions };
-        const { resourceId, ...rest } = prismaQueryOptions;
-
-        return {
+      queryFn: ({ resourceId, ...rest }: any) => {
+        return this.prismaModel.create({
           data: {
             ...rest,
-            resource: { connect: { id: resourceId } },
+            ...(resourceId && { resource: { connect: { id: resourceId } } }),
           },
-        };
+        });
       },
     },
   };
 }
 
-const whereWrapper = <T>({
-  where = {},
-  ...item
-}: {
-  where?: anyObj;
-  item?: T;
-} = {}) => ({
-  where: { ...where, ...item },
-});
+function optionsIncludeNonDataValues(options: Record<any, any>) {
+  // non value options may conflict with processPrismaProps
+  const nonDataValues = [
+    'data',
+    'distinct',
+    'where',
+    'cursor',
+    'include',
+    'orderBy',
+    'select',
+    'skip',
+    'take',
+  ];
+  return Object.keys(options).some((option) => nonDataValues.includes(option));
+}
 
 /**
  * Wrapper for instanciating ApiController class:
@@ -162,20 +191,19 @@ export function createApiHandler<TModel>(
 
 export interface IReqBody extends Record<any, any> {
   query: anyQuery;
-  prismaQueryOptions: Record<string, any>;
+  prismaProps: Record<string, any>;
 }
 
 type anyObj = Record<string, any>;
 
 export interface IRequestData<TModel> extends anyObj {
   query: anyQuery;
-  prismaQueryOptions: Partial<TModel>;
+  prismaProps: Partial<TModel>;
 }
 
 interface IQueryConfig<TModel> {
-  queryFn: (requestData: IRequestData<TModel>) => Promise<anyObj>;
+  queryFn: (prismaOptions: Partial<TModel> | any) => Promise<anyObj>;
   guard: (requestData: IRequestData<TModel>) => string | void;
-  formatPrismaOptions: (prismaQueryOptions: anyObj) => anyObj;
   logDataBeforeQuery: boolean;
 }
 

@@ -16,7 +16,7 @@ export type anyQuery = readQuery | writeQuery;
 type anyObj = Record<string, any>;
 export interface IRequestData extends anyObj {
   query: anyQuery;
-  prismaQueryOptions: anyObj;
+  prismaProps: anyObj;
 }
 export interface IPrismaAxiosConfig extends AxiosRequestConfig<any> {
   data?: Partial<IRequestData>;
@@ -28,7 +28,7 @@ export type mutationMode = 'server' | 'optimistic' | 'changeUi' | 'saveUiChanges
 
 export interface ICustomUseQueryOptions<TModel>
   extends UseQueryOptions<TModel, AxiosError, TModel, any> {
-  prismaQueryOptions?: Record<string, any>;
+  prismaProps?: Record<string, any>;
   fetcherConfig?: AxiosRequestConfig<any>;
   logConfig?: boolean;
 }
