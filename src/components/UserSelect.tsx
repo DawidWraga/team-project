@@ -30,7 +30,7 @@ export const UserSelect = ({ defaults, field: { ...field }, ...props }: any) => 
       options={userDummyData}
       {...field}
       onBlur={(ev) => {
-        const keepActive = (field.value as any).length > 0;
+        const keepActive = field.value && (field.value as any).length > 0;
         keepFloatingLabelActive(ev.target, keepActive);
       }}
       isMulti
