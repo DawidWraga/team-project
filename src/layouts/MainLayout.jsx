@@ -21,7 +21,7 @@ export default function MainLayout(props) {
       {/* <PageNavBar /> */}
       {/* <UserModal /> */}
 
-      <Box mb={bottomOffset} zIndex="40" bgColor="blackAlpha.300">
+      <Box mb={bottomOffset} zIndex="40" bgColor="#FAF7F1">
         <SideNav />
         <Header />
         <Box

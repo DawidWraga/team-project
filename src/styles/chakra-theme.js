@@ -98,10 +98,15 @@ const Form = defineStyleConfig({
         // 'input:not(:placeholder-shown) + label': {
         //   ...activeLabelStyles,
         // },
-        'input:not(:placeholder-shown) + label, .chakra-select__wrapper + label, textarea:not(:placeholder-shown) ~ label':
+        'input:not(:placeholder-shown) + label, .chakra-select__wrapper + label, textarea:not(:placeholder-shown) ~ label, &[data-floating-label] > label':
+        // label must be directly below input element OR parent must contain data-floating-label attribute
           {
             ...activeLabelStyles,
           },
+        '': {
+          bgColor: 'red',
+        },
+
         label: {
           top: 0,
           left: 0,
