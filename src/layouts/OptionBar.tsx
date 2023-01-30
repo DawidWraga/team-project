@@ -38,11 +38,14 @@ export default function OptionBar(props: IProps) {
           transition="left 150ms"
           w="100%"
           h={optionBarHeight + 'px'}
-          bgColor="pale.dark"
+          // bgColor="pale.dark"
+          borderBottom={'1px solid'}
+          borderBottomColor={'blackAlpha.200'}
           zIndex="dropdown !important"
           textColor="white"
           alignItems="center"
           px={[2, 3, 4, 5]}
+          overflow="visible"
         >
           {optionBar}
         </Flex>

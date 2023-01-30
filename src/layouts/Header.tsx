@@ -79,7 +79,6 @@ export default function Header(props) {
               top="1.5"
             />
           </IconButton>
-          <ProfileMenu offset={[4, 11]} />
         </Flex>
       </Flex>
       <OptionBar />

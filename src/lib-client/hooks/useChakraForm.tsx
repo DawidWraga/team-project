@@ -10,7 +10,7 @@ import {
   UseFormReturn,
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AnyZodObject, ZodType, ZodTypeDef, z } from 'zod';
+import { AnyZodObject, ZodType, ZodTypeDef } from 'zod';
 import {
   Box,
   BoxProps,
@@ -22,7 +22,6 @@ import {
   FormLabel,
   Input as ChakraInput,
   InputProps as ChakraInputProps,
-  Heading as ChakraHeading,
   Text,
   HeadingProps,
   Flex,
@@ -30,14 +29,17 @@ import {
   FormControlProps,
   FormLabelProps,
 } from '@chakra-ui/react';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { MdCheck, MdSend } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import { PasswordInput } from 'components/PasswordInput';
 import { FormHeading } from 'components/FormHeading';
-import { UserSelect } from 'components/UserSelect';
-import { setTimeoutPromise } from 'utils/setTimeoutPromise';
+import {
+  formatDynamicSchemaData,
+  groupSchemaNames,
+  useDynamicSchema,
+} from 'lib-client/hooks/useDynamicSchema';
 
 export interface IFieldAndFieldState<TFieldValues extends FieldValues = FieldValues> {
   field: ControllerRenderProps<TFieldValues, Path<TFieldValues>>;
@@ -72,6 +74,8 @@ export interface ICreateInputProps<TFieldValues extends FieldValues = FieldValue
 export interface IInputListProps<TFieldValues extends FieldValues = FieldValues> {
   name: string;
   inputs: (names: Record<any, any>) => JSX.Element;
+  onChange?: (items: any[]) => any;
+  ConditionalWrapper?: (props: any) => JSX.Element;
 }
 
 interface UpdateSchema<TFieldValues extends FieldValues> {
@@ -92,6 +96,7 @@ interface UseChakraFormReturn<TFieldValues extends FieldValues, TContext = any>
   Heading: (props: HeadingProps) => JSX.Element;
   isServerSuccess: boolean;
   // setSchema: React.Dispatch<React.SetStateAction<z.ZodObject<TFieldValues>>>;
+  dynamicSchema: AnyZodObject;
   updateSchema: UpdateSchema<TFieldValues>;
 }
 
@@ -99,18 +104,9 @@ interface UseChakraFormProps<TFieldValues extends FieldValues, TContext = any>
   extends UseFormProps<TFieldValues, TContext> {
   schema: ZodType<TFieldValues>;
   logDataBeforeSubmit?: boolean;
+  dynamicSchemaObjectNames?: string[];
+  onChange?: () => void;
 }
-
-const addPrefixToObject = (obj: Record<any, any>, prefix: string) => {
-  const entries = Object.entries(obj);
-  const mapped = entries.map(([k, v]) => [`${prefix}_${k}`, v]);
-  return Object.fromEntries(mapped);
-};
-const addSuffixToObject = (obj: Record<any, any>, suffix: string | number) => {
-  const entries = Object.entries(obj);
-  const mapped = entries.map(([k, v]) => [`${k.split('-')[0]}-${suffix}`, v]);
-  return Object.fromEntries(mapped);
-};
 
 export const useChakraForm = <
   TFieldValues extends FieldValues = FieldValues,
@@ -118,7 +114,16 @@ export const useChakraForm = <
 >(
   props: UseChakraFormProps<TFieldValues, TContext>
 ): UseChakraFormReturn<TFieldValues, TContext> => {
-  const { schema, logDataBeforeSubmit, ...otherProps } = props;
+  const {
+    schema,
+    logDataBeforeSubmit,
+    onChange,
+    dynamicSchemaObjectNames,
+    ...otherProps
+  } = {
+    dynamicSchemaObjectNames: [],
+    ...props,
+  };
   const [isServerSuccess, setIsServerSuccess] = useState(false);
 
   const [dynamicSchema, updateDynamicSchema] = useDynamicSchema(schema);
@@ -128,6 +133,15 @@ export const useChakraForm = <
     ...otherProps,
     resolver: zodResolver(dynamicSchema),
   } as UseFormProps<TFieldValues, TContext>);
+
+  useEffect(() => {
+    let subscription: any;
+    if (onChange) {
+      subscription = useFormReturn.watch(onChange);
+      useFormReturn.watch();
+    }
+    return () => subscription?.unsubscribe();
+  }, [useFormReturn, onChange]);
 
   // reset server success state if user changes any inputs
   useEffect(() => {
@@ -171,6 +185,10 @@ export const useChakraForm = <
           try {
             if (logDataBeforeSubmit) {
               console.log('LOG Form submit data: ', data);
+            }
+
+            if (dynamicSchemaObjectNames.length) {
+              data = formatDynamicSchemaData(data, dynamicSchemaObjectNames) as any;
             }
             const res = await onSubmit!(data);
             setIsServerSuccess(true);
@@ -303,6 +321,7 @@ export const useChakraForm = <
                 variant={'floating'}
                 isRequired={required}
                 isInvalid={Boolean(error)}
+                id={name}
                 {...formControlProps}
               >
                 {(() => {
@@ -323,11 +342,6 @@ export const useChakraForm = <
                         {...(inputProps && inputProps({ field, fieldState }))}
                       />
                     );
-
-                  if (type === 'userSelect') {
-                    console.log('useChakraForm', field, defaults);
-                    return <UserSelect field={field} defaults={defaults} />;
-                  }
 
                   // default = render Input from chakra (eg text, number, date, etc)
                   return (
@@ -356,20 +370,36 @@ export const useChakraForm = <
   );
 
   const InputList = (props: IInputListProps<TFieldValues>) => {
-    const { name, inputs } = props;
+    const { name, inputs, onChange, ConditionalWrapper } = {
+      ConditionalWrapper: ({ children }) => <>{children}</>,
+      ...props,
+    };
 
-    const schemaKeys = Object.keys((dynamicSchema as any).shape);
-    const relevantKeys = schemaKeys.filter((k) => k.includes(name));
-    const newKeys = formatObjectKeys(relevantKeys);
+    const schemaNames = Object.keys((dynamicSchema as any).shape);
+    const relevantSchemas = schemaNames.filter((k) => k.includes(name));
+    const groupedSchemas = groupSchemaNames(relevantSchemas);
+
+    useEffect(() => {
+      onChange && onChange(groupedSchemas);
+    }, groupedSchemas);
 
     return (
       <>
-        {newKeys &&
-          newKeys.map((keysObject) => {
-            return (
-              <div key={Object.values(keysObject).join('_')}>{inputs(keysObject)}</div>
-            );
-          })}
+        {groupedSchemas.length > 0 && (
+          <ConditionalWrapper>
+            {groupedSchemas.map((keysObject) => {
+              return (
+                <div
+                  key={
+                    Object.values(keysObject).join('_') + new Date().getUTCMilliseconds()
+                  }
+                >
+                  {inputs(keysObject)}
+                </div>
+              );
+            })}
+          </ConditionalWrapper>
+        )}
       </>
     );
   };
@@ -391,7 +421,17 @@ export const useChakraForm = <
           errors
         </Button>
         <Button onClick={() => useFormReturn.reset()}>reset</Button>
-        <Button onClick={() => console.log((dynamicSchema as any).keyof()._def.values)}>
+        <Button
+          onClick={() =>
+            dynamicSchema &&
+            console.log(
+              ((dynamicSchema as any)?.keyof &&
+                (dynamicSchema as any)?.keyof()?._def.values) ||
+                dynamicSchema.shape ||
+                dynamicSchema
+            )
+          }
+        >
           schema keys
         </Button>
       </ButtonGroup>
@@ -411,84 +451,20 @@ export const useChakraForm = <
     SubmitBtn,
     Heading,
     InputList,
+    dynamicSchema,
     updateSchema: updateDynamicSchema as any,
   };
 };
 
-function useDynamicSchema(schema) {
-  const [dynamicSchema, setDynamicSchema] = useState(schema);
+export function ChakraFormWrapper<
+  TFieldValues extends FieldValues = FieldValues,
+  TContext = any
+>(
+  props: UseChakraFormProps<TFieldValues, TContext> & {
+    children: (props: UseChakraFormReturn<TFieldValues, TContext>) => JSX.Element;
+  }
+) {
+  const useFormReturn = useChakraForm<TFieldValues, TContext>(props);
 
-  const updateSchema = {
-    set: setDynamicSchema,
-    addObj: (key: string, schema: AnyZodObject | Record<any, any>) => {
-      let newSchema: Record<any, any> = schema.shape ? schema.shape : schema;
-
-      newSchema = addPrefixToObject(newSchema, key);
-
-      setDynamicSchema((prev: any) => {
-        const prevKeys = Object.keys(prev.shape);
-        const relatedKeys = prevKeys.filter((k) => k.split('_')[0].includes(key));
-
-        let id: string | number = '0';
-        if (relatedKeys.length) {
-          const relatedIds = relatedKeys.map((k) => {
-            return Number(k.split('-')[1]);
-          });
-          const maxId = Math.max(...relatedIds);
-          id = maxId + 1;
-        }
-        newSchema = addSuffixToObject(newSchema, id);
-        const extended = prev.extend(newSchema);
-        return extended;
-      });
-      return newSchema;
-    },
-    remove: (keys: string[]) => {
-      setDynamicSchema((prev) => {
-        // const sch = z.object({ test: z.string() });
-        const mask = Object.fromEntries(keys.map((k) => [k, true]));
-        // sch.omit(m);
-        return prev.omit(mask);
-
-        // prev.
-      });
-    },
-  };
-
-  return [dynamicSchema, updateSchema] as const;
+  return props.children(useFormReturn);
 }
-
-export const getNameFromObjectKey = (objectKey: string) =>
-  objectKey.split('-')[0].split('_')[1];
-
-function formatObjectKeys(objectKeys: string[]) {
-  const arr = objectKeys.reduce((acc, currentKey) => {
-    const id = currentKey.split('-')[1];
-    const name = getNameFromObjectKey(currentKey);
-    acc[id] = {
-      ...(acc[id] && acc[id]),
-      [name]: currentKey,
-    };
-
-    return acc;
-  }, {} as Record<string, any>);
-  return Object.values(arr);
-}
-
-// export function focusOnSchema(schema: Record<any, any>, target: string) {
-//   const keys = Object.keys(schema);
-//   const key = keys.find((key) => key.includes(target));
-
-//   setTimeoutPromise(100).then(() => {
-//     const ele: HTMLInputElement = document.querySelector(`[name=${key}]`);
-
-//     const previewElem = ele.querySelector('.chakra-editable__preview');
-//     const inputElem = ele.querySelector('.chakra-editable__input');
-
-//     previewElem.setAttribute('hidden', '');
-//     // ele.focus();
-//     inputElem.classList.add('focus-visible');
-//     inputElem.removeAttribute('hidden');
-//     // ele.outerHTML += 'testing';
-//   });
-// }

@@ -34,7 +34,7 @@ export interface ILayoutStore {
   setActiveSideNavLink: (page: IRouteData) => void;
 }
 
-const getLeftOffset = (isOpen: boolean) => {
+export const getLeftOffset = (isOpen: boolean) => {
   if (isOpen) return { base: '0px', lg: openSideNavWidth + closedSideNavWidth + 'px' };
   else
     return {
@@ -86,6 +86,7 @@ export const useLayoutStore = useCreateStore<ILayoutStore>('Layout', (set, get) 
   openAccordianRoute: '',
   setOpenAccordianRoute: (route: string) =>
     set((state) => {
+      // toggle open state
       if (state.openAccordianRoute === route) return { openAccordianRoute: '' };
       return { openAccordianRoute: route };
     }),

@@ -67,15 +67,16 @@ export default function RegisterPage(props) {
 
   const { Input, Form, SubmitBtn, trigger, DebugPanel, Heading } = useChakraForm({
     schema: createUserSchema,
+    dynamicSchemaObjectNames: [],
   });
 
   return (
     <ExternalFormWrapper>
       <Form
-        onSubmit={async ({ confirmPassword, ...data }) => {
+        onSubmit={({ confirmPassword, ...data }) => {
           return createUser({
             ...data,
-            userIcon: defaultUserIcon,
+            userIcon: `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 1000)}`,
           });
         }}
         onServerSuccess={async () => {
@@ -102,6 +103,7 @@ export default function RegisterPage(props) {
         <Input name="confirmPassword" type="password" />
         <SubmitBtn>Register</SubmitBtn>
       </Form>
+      <DebugPanel />
     </ExternalFormWrapper>
   );
 }

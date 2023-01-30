@@ -13,8 +13,14 @@ import MainLayout from 'layouts/MainLayout';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { MainModal } from 'components/MainModal';
-import { useAuthGuard } from 'lib-client/hooks/useAuthguard';
+import { useAuthGuard } from 'lib-client/hooks/useAuthGuard';
 import { useSyncPageToRoute } from 'lib-client/hooks/useSyncPageToRoute';
+import { SaasProvider } from '@saas-ui/react';
+import NextLink from 'next/link';
+
+const Link = (props) => {
+  return <NextLink {...props} />;
+};
 
 function MyApp({ Component, pageProps }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -43,7 +49,7 @@ function MyApp({ Component, pageProps }) {
         transition={Slide}
       />
       <Suspense fallback="loading...">
-        <ChakraProvider theme={theme}>
+        <SaasProvider theme={theme} linkComponent={Link}>
           {loading ? (
             <Loading />
           ) : (
@@ -57,7 +63,7 @@ function MyApp({ Component, pageProps }) {
               </Hydrate>
             </QueryClientProvider>
           )}
-        </ChakraProvider>
+        </SaasProvider>
       </Suspense>
     </>
   );

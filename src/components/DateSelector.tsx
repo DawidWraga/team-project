@@ -1,10 +1,14 @@
 import { ButtonWithArrows } from 'components/ButtonWithArrows';
 import { useRouter } from 'next/router';
-import { Box, Select } from '@chakra-ui/react';
+import { Box, Select as ChackraSelect, Flex, Text } from '@chakra-ui/react';
+import { Select } from 'chakra-react-select';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { useNextQueryParams } from 'lib-client/hooks/useNextQueryParams';
+import { useNextQueryParams, useUrlData } from 'lib-client/hooks/useNextQueryParams';
 import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
+import { useChakraForm } from 'lib-client/hooks/useChakraForm';
+import { z } from 'zod';
+import { colors } from 'styles/chakra-theme';
 
 interface IProps {
   saveChangesBeforeRouting?: () => Promise<void>;
@@ -23,7 +27,7 @@ const formatOrdinalNum = (n) => {
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 };
 
-const formatDate = (date, unit = 'month') => {
+export const formatDate = (date, unit = 'month') => {
   let dateString = moment(date, 'MM/DD/YYYY').format(unitToFormat[unit]);
 
   if (unit === 'week')
@@ -42,20 +46,42 @@ export function DateSelector(props: IProps) {
   // const query = useNextQueryParams();
   // const dateRangeUnits: moment.unitOfTime.StartOf = props.dateRangeUnits ?? 'month';
   const router = useRouter();
-  const query = useNextQueryParams();
+  const { startDate, endDate } = useUrlData('queryParams') as any;
+
+  // const query = useNextQueryParams<{}>();
 
   const isHydrated = useIsHydrated();
 
-  const [unit, setUnit] = useState<moment.unitOfTime.DurationConstructor>('month');
-  const date = moment(query.startDate).startOf(unit);
-  const [selectedDateString, setSelectedDateString] = useState(formatDate(date, unit));
+  // const [unit, setUnit] = useState<moment.unitOfTime.DurationConstructor>('month');
+  // const [selectedDateString, setSelectedDateString] = useState(formatDate(date, unit));
 
+  const { Input, getValues, watch } = useChakraForm<{
+    date: { label: string; value: moment.unitOfTime.DurationConstructor };
+  }>({
+    schema: z.object({
+      date: z.object({
+        label: z.string(),
+        value: z.string(),
+      }),
+    }) as any,
+    defaultValues: {
+      date: {
+        label: 'Month',
+        value: 'month',
+      },
+    },
+  });
+
+  const urlQuery = useUrlData<{ startDate: string; endDate: string }>('queryParams');
   const modifyDateAndRoute = async (dir?: 'prev' | 'next') => {
+    const unit = getValues().date?.value;
+    const startDate = moment(urlQuery?.startDate || '').startOf(unit);
+    if (!unit) return;
     // save changed data before routing
     saveChangesBeforeRouting && (await saveChangesBeforeRouting());
 
     // calculate new date
-    let targetDate = moment(date, 'MM/DD/YYYY');
+    let targetDate = moment(startDate, 'MM/DD/YYYY');
     if (dir === 'next') targetDate = targetDate.add(1, unit);
     if (dir === 'prev') targetDate = targetDate.subtract(1, unit);
 
@@ -67,69 +93,144 @@ export function DateSelector(props: IProps) {
 
     isHydrated && router.push({ query });
     // change date string
-    setSelectedDateString(formatDate(targetDate, unit));
+    // setSelectedDateString(formatDate(targetDate, unit));
   };
+
+  const dateUnit = watch()?.date?.value;
 
   useEffect(() => {
     modifyDateAndRoute();
-  }, []);
+  }, [dateUnit]);
 
   return (
-    <ButtonWithArrows
-      leftProps={{
-        onClick: () => modifyDateAndRoute('prev'),
-        'aria-label': 'previous date range',
-      }}
-      rightProps={{
-        onClick: () => modifyDateAndRoute('next'),
-        'aria-label': 'next date range',
-      }}
-      centerProps={{ sx: { borderRadius: '0px !important' } }}
-      centerContent={
-        <>
-          <Select
-            sx={{
-              '& > *': { textColor: 'black' },
-              borderColor: 'transparent',
+    <>
+      <Flex gap={4} alignItems="center">
+        <ButtonWithArrows
+          containerProps={{
+            sx: { w: 165 },
+          }}
+          leftProps={{
+            onClick: () => modifyDateAndRoute('prev'),
+            'aria-label': 'previous date range',
+            type: 'submit',
+          }}
+          rightProps={{
+            onClick: () => modifyDateAndRoute('next'),
+            'aria-label': 'next date range',
+            type: 'submit',
+          }}
+          centerProps={{ sx: { borderRadius: '0px !important', width: 80 } }}
+          centerContent={
+            <>
+              <Input
+                name="date"
+                hideLabel={true}
+                customInput={({ field }) => {
+                  return (
+                    <Select
+                      {...field}
+                      variant="unstyled"
+                      {...props}
+                      // colorScheme="hsl(32, 100%, 53%)"
+                      // selectedOptionColor="orange"
+                      // defaultInputValue="month"
+                      isSearchable={false}
+                      chakraStyles={{
+                        dropdownIndicator: (prev) => ({
+                          ...prev,
+                          display: 'none',
+                        }),
 
-              pr: 0,
-              textAlign: 'center',
-              transition: 'min-width 500ms',
-              minW: (() => {
-                if (unit === 'week') return '140px';
-                if (unit === 'month') return '80px';
-                if (unit === 'day') return '70px';
-                if (unit === 'year') return '60px';
-              })(),
-            }}
-            _hover={{
-              borderBottom: '2px solid',
-              borderColor: 'blue.300',
-              cursor: 'pointer',
-            }}
-            rootProps={{
-              sx: {
-                '& .chakra-select__icon-wrapper': { display: 'none' }, //hide default dropdown icon
-              },
-              title: 'select date',
-            }}
-            // text
-            variant="flushed"
-            colorScheme={'brand'}
-            position="relative"
-            textColor="transparent"
-            onChange={(ev) => {
-              setUnit(ev.target.value as moment.unitOfTime.DurationConstructor);
-              setSelectedDateString(formatDate(date, ev.target.value));
-            }}
-          >
-            <option value="year">Year</option>
-            <option value="month">Month</option>
-            <option value="week">Week</option>
-            <option value="day">Day</option>
-          </Select>
-          {/* overlay description text over dropdown */}
-          <Box
+                        container: (prev) => ({
+                          ...prev,
+                          bgColor: 'blue.800',
+                          rounded: 'none',
+                          borderRadius: 0,
+                          color: 'white',
+                          textAlign: 'center',
+                          '&:hover': {
+                            cursor: 'pointer',
+                          },
+                        }),
+                        valueContainer: (prev) => ({
+                          ...prev,
+                          bgColor: 'blue.800',
+                          textAlign: 'center',
+                          borderX: '1px solid lightGray',
+                          my: 1,
+                          justifyContent: 'center',
+                          // px: 'auto',
+                          // mx: 'auto',
+                          // pl: 3,
+                        }),
+
+                        placeholder: (prev) => ({
+                          ...prev,
+                          textAlign: 'center',
+                          bgColor: 'blue.800',
+                          // pl: 5,
+                        }),
+                        input: (prev) => ({
+                          ...prev,
+                          textAlign: 'center',
+                        }),
+                        menuList: (prev) => ({
+                          ...prev,
+                          zIndex: 999999999999,
+                          color: 'black',
+                        }),
+                      }}
+                      id="date"
+                      // defaultValue={{ label: 'Month', value: 'month' }}
+                      // defaultValue={'month'}
+                      isClearable={false}
+                      options={[
+                        {
+                          label: 'Year',
+                          value: 'year',
+                        },
+                        {
+                          label: 'Month',
+                          value: 'month',
+                        },
+                        {
+                          label: 'Week',
+                          value: 'week',
+                        },
+                        {
+                          label: 'Day',
+                          value: 'day',
+                        },
+                      ]}
+                    />
+                  );
+                }}
+              />
+            </>
+          }
+        />
+        <Box bgColor="whiteAlpha.600" px="3" py="1" rounded="md">
+          <Text fontWeight={'semibold'} fontSize={'1.1rem'} textTransform={'uppercase'}>
+            {moment(startDate).format('DD MMMM yyyy ')}
+            {dateUnit !== 'day' && (
+              <>
+                <Box as="span" pr="2px" mx="10px">
+                  -
+                </Box>
+                {moment(endDate).format('DD MMMM yyyy ')}
+              </>
+            )}
+          </Text>
+        </Box>
+      </Flex>
+    </>
+  );
+}
+{
+  /* overlay description text over dropdown */
+}
+{
+  /* <Box
             position="absolute"
             w="100%"
             h="100%"
@@ -143,9 +244,5 @@ export function DateSelector(props: IProps) {
             fontWeight={500}
           >
             {selectedDateString}
-          </Box>
-        </>
-      }
-    />
-  );
+          </Box> */
 }

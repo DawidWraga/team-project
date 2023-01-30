@@ -36,7 +36,6 @@ export class ApiController<TModel> {
       const config = this.getConfig(query, prismaProps);
       const { queryFn, guard, logDataBeforeQuery } = config;
 
-      console.log(config);
       // guard clause for validation
       const errorMessage = guard(req.body);
       if (typeof errorMessage === 'string') {
@@ -203,7 +202,7 @@ export interface IRequestData<TModel> extends anyObj {
 
 interface IQueryConfig<TModel> {
   queryFn: (prismaOptions: Partial<TModel> | any) => Promise<anyObj>;
-  guard: (requestData: IRequestData<TModel>) => string | void;
+  guard: (requestData: IRequestData<TModel>) => string | void | Promise<string>;
   logDataBeforeQuery: boolean;
 }
 

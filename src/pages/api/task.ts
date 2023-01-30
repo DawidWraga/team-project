@@ -7,26 +7,42 @@ export default createApiHandler<ITask>('task', {
   findMany: {},
   default: {},
   create: {
-    queryFn({ projectId, ...options }: any) {
+    queryFn({ projectId, subTask, assignees, ...options }: any) {
+      console.log(assignees);
       return prisma.task.create({
         data: {
           ...options,
-          // title: 'hi',
-          // due_date: new Date(),
-          // description: 'hello',
           status: {
             connect: {
               id: 1,
             },
           },
-          asignees: {
-            connect: {
-              id: 1,
-            },
+          assignees: {
+            connect: assignees,
           },
           project: {
             connect: {
               id: projectId,
+            },
+          },
+          subTasks: {
+            create: subTask,
+          },
+        },
+      });
+    },
+  },
+  update: {
+    queryFn({ id, statusId, ...data }) {
+      return prisma.task.update({
+        where: {
+          id,
+        },
+        data: {
+          ...data,
+          status: {
+            connect: {
+              id: statusId,
             },
           },
         },

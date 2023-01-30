@@ -13,10 +13,10 @@ export const TaskModel = z.object({
 })
 
 export interface CompleteTask extends z.infer<typeof TaskModel> {
-  asignees: CompleteUser[]
+  assignees: CompleteUser[]
   status: CompleteTaskStatus
   project: CompleteProject
-  SubTask: CompleteSubTask[]
+  subTasks: CompleteSubTask[]
 }
 
 /**
@@ -25,8 +25,8 @@ export interface CompleteTask extends z.infer<typeof TaskModel> {
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
 export const RelatedTaskModel: z.ZodSchema<CompleteTask> = z.lazy(() => TaskModel.extend({
-  asignees: RelatedUserModel.array(),
+  assignees: RelatedUserModel.array(),
   status: RelatedTaskStatusModel,
   project: RelatedProjectModel,
-  SubTask: RelatedSubTaskModel.array(),
+  subTasks: RelatedSubTaskModel.array(),
 }))

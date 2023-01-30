@@ -1,10 +1,12 @@
 import {
   Avatar,
+  Flex,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
   useDisclosure,
+  Text,
 } from '@chakra-ui/react';
 import { MdGroupAdd } from 'react-icons/md';
 import { BsPersonCircle } from 'react-icons/bs';
@@ -14,8 +16,7 @@ import { useRouter } from 'next/router';
 import UserModal from 'views/profile/UserModal';
 import InviteTeamModal from 'components/InviteTeamModal';
 
-export default function ProfileMenu(props) {
-  const {} = props;
+export default function ProfileMenu(...props) {
   const router = useRouter();
   const {
     isOpen: userModalIsOpen,
@@ -40,13 +41,33 @@ export default function ProfileMenu(props) {
       >
         <MenuButton
           _hover={{ cursor: 'pointer' }}
-          as={Avatar}
+          position="absolute"
+          bottom="0"
+          h="70px"
+          w="100%"
+          bgColor="shade.main"
+          _hover={{
+            bgColor: 'shade.min',
+            cursor: 'pointer',
+          }}
+          // alignItems={'center'}
+          display="flex"
+          gap={1}
+          px={1}
+          color="white"
           aria-label="Options"
-          // icon={<BsThreeDotsVertical color="white" />}
-          variant="link"
-          w={{ base: '32px', lg: '42px' }}
-          h={{ base: '32px', lg: '42px' }}
-        />
+          flexDir={'row'}
+          overflow={'visible'}
+          mb="2"
+        >
+          <Flex gap="2">
+            <Avatar />
+            <Flex flexDir="column" alignItems="start">
+              <Text>Name</Text>
+              <Text>Johnsmith@gmail.com</Text>
+            </Flex>
+          </Flex>
+        </MenuButton>
         <MenuList color="gray">
           <MenuItem
             icon={<BsPersonCircle fontSize="1.25rem" />}

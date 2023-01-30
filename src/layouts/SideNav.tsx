@@ -1,9 +1,10 @@
-import { Box, Icon } from '@chakra-ui/react';
+import { Avatar, Box, Flex, Icon, Text, forwardRef } from '@chakra-ui/react';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { MdClose } from 'react-icons/md';
 import { isMobile } from 'utils/checkScreenWidth';
 import { AnimatePresence, motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
+import ProfileMenu from 'views/profile/ProfileMenu';
 const SideNavContent = dynamic(() => import('layouts/SideNavContent'), {
   ssr: false,
 });
@@ -42,6 +43,7 @@ export default function SideNav(props) {
           color="gray.100"
         />
         <SideNavContent />
+        <ProfileMenu offset={[22, 22]} />
       </Box>
       <AnimatePresence>
         {sideNavIsOpen && isMobile() && (
@@ -63,6 +65,42 @@ export default function SideNav(props) {
       </AnimatePresence>
     </>
   );
+}
+
+function ProfileSection(props: any) {
+  return (
+    <Flex
+      position="absolute"
+      bottom="0"
+      h="70px"
+      w="100%"
+      bgColor="shade.main"
+      _hover={{
+        bgColor: 'shade.min',
+        cursor: 'pointer',
+      }}
+      alignItems={'center'}
+      gap={1}
+      px={1}
+      color="white"
+    >
+      <Avatar />
+      <Flex flexDir="column">
+        <Text>Name</Text>
+        <Text>Johnsmith@gmail.com</Text>
+      </Flex>
+    </Flex>
+  );
+  // return (
+  // <ProfileMenu
+  //   // offset={[22, 22]}
+  //   menuButtonProps={{
+  //     as: (
+
+  //     ),
+  //   }}
+  // />
+  // );
 }
 
 // function SideNavContent() {

@@ -100,17 +100,17 @@ model Task {
 
   statusId  Int
   projectId Int
-  asignees  User[]
+  assignees User[]
 
-  status  TaskStatus @relation(fields: [statusId], references: [id])
-  project Project    @relation(fields: [projectId], references: [id])
-  SubTask SubTask[]
+  status   TaskStatus @relation(fields: [statusId], references: [id])
+  project  Project    @relation(fields: [projectId], references: [id])
+  subTasks SubTask[]
 }
 
 model SubTask {
   id          Int     @id @default(autoincrement())
   description String
-  completed   Boolean
+  completed   Boolean @default(false)
   task        Task    @relation(fields: [taskId], references: [id])
   taskId      Int
 }
@@ -120,7 +120,7 @@ model TaskStatus {
   label String @db.Text ///@zod.trim()
 
   tasks     Task[]
-  Project   Project @relation(fields: [projectId], references: [id])
+  project   Project @relation(fields: [projectId], references: [id])
   projectId Int
 }
 

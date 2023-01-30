@@ -10,7 +10,7 @@ export const TaskStatusModel = z.object({
 
 export interface CompleteTaskStatus extends z.infer<typeof TaskStatusModel> {
   tasks: CompleteTask[]
-  Project: CompleteProject
+  project: CompleteProject
 }
 
 /**
@@ -20,5 +20,5 @@ export interface CompleteTaskStatus extends z.infer<typeof TaskStatusModel> {
  */
 export const RelatedTaskStatusModel: z.ZodSchema<CompleteTaskStatus> = z.lazy(() => TaskStatusModel.extend({
   tasks: RelatedTaskModel.array(),
-  Project: RelatedProjectModel,
+  project: RelatedProjectModel,
 }))

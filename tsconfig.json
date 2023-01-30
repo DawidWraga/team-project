@@ -19,11 +19,10 @@
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "pages/api/inviteTeam.js",
-    "styles/chakra-theme.js",
-    "styles/chakra-theme.js"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/styles/chakra-theme.js",
+    "src/pages/_app.tsx"
   ],
   "exclude": ["node_modules"]
 }

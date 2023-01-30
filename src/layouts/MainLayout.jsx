@@ -5,11 +5,15 @@ import { useRouter } from 'next/router';
 import SideNav from 'layouts/SideNav';
 import Header from 'layouts/Header';
 import { LAYOUT_DISABLED_ROUTES } from 'lib-client/constants';
+import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
+import { getLeftOffset } from 'lib-client/stores/LayoutStore';
 
 export default function MainLayout(props) {
   const { children } = props;
 
-  const { topOffset, bottomOffset, leftOffset } = useLayoutStore();
+  const { topOffset, bottomOffset, sideNavIsOpen } = useLayoutStore();
+
+  const leftOffset = useIsHydrated() && getLeftOffset && getLeftOffset(sideNavIsOpen);
 
   const router = useRouter();
 
@@ -21,13 +25,20 @@ export default function MainLayout(props) {
       {/* <PageNavBar /> */}
       {/* <UserModal /> */}
 
-      <Box mb={bottomOffset} zIndex="40" bgColor="#FAF7F1">
+      <Box
+        mb={bottomOffset}
+        zIndex="40"
+        bgColor="#FAF7F1"
+        // w="100%"
+        overflowX="hidden"
+      >
         <SideNav />
         <Header />
         <Box
           ml={leftOffset}
           transition="all 250ms"
           mt={topOffset}
+          // overflowX="auto"
           overflowX="hidden"
           h={{
             base: `calc(100vh - ${

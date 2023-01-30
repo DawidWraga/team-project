@@ -4,6 +4,7 @@ import '@fontsource/roboto';
 import '@fontsource/Inter';
 import '@fontsource/open-sans';
 
+import { theme as saasTheme } from '@saas-ui/react';
 const config = {
   initialColorMode: 'light',
   useSystemColorMode: false,
@@ -26,7 +27,7 @@ const fonts = {
 // }
 
 // 2. Extend the theme to include custom colors, fonts, etc
-const colors = {
+export const colors = {
   brand: {
     50: 'hsl(37, 100%, 93%)',
     100: 'hsl(33, 100%, 84%)',
@@ -98,8 +99,8 @@ const Form = defineStyleConfig({
         // 'input:not(:placeholder-shown) + label': {
         //   ...activeLabelStyles,
         // },
-        'input:not(:placeholder-shown) + label, .chakra-select__wrapper + label, textarea:not(:placeholder-shown) ~ label, &[data-floating-label] > label':
-        // label must be directly below input element OR parent must contain data-floating-label attribute
+        'input:not(:placeholder-shown) + label, .chakra-select__wrapper + label, textarea:not(:placeholder-shown) ~ label, &[data-floating-label] > label, &.keep-floating-label > label':
+          // label must be directly below input element OR parent must contain data-floating-label attribute
           {
             ...activeLabelStyles,
           },
@@ -124,9 +125,12 @@ const Form = defineStyleConfig({
   },
 });
 
-export const theme = extendTheme({
-  colors,
-  config,
-  fonts,
-  components: { Paper, Form },
-});
+export const theme = extendTheme(
+  {
+    colors,
+    config,
+    fonts,
+    components: { Paper, Form },
+  },
+  saasTheme
+);

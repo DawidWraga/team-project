@@ -5,6 +5,7 @@ import {
   IconButton,
   IconButtonProps,
   Stack,
+  StackProps,
 } from '@chakra-ui/react';
 
 interface IButtonWithArrows {
@@ -12,9 +13,10 @@ interface IButtonWithArrows {
   rightProps?: IconButtonProps;
   centerProps?: ButtonProps;
   centerContent: string | React.ReactNode;
+  containerProps?: StackProps;
 }
 export function ButtonWithArrows(props: IButtonWithArrows) {
-  const { leftProps, rightProps, centerProps, centerContent } = props;
+  const { leftProps, rightProps, centerProps, centerContent, containerProps } = props;
   const round = 6;
 
   return (
@@ -22,7 +24,21 @@ export function ButtonWithArrows(props: IButtonWithArrows) {
       flexDirection={'row'}
       spacing={0}
       alignItems="center"
+      overflow="visible"
+      {...(() => {
+        // spread container props
+        if (!containerProps) return {};
+
+        // omit sx and combine in next property instead
+        if (containerProps.sx) {
+          const { sx, ...rest } = containerProps;
+          return rest;
+        }
+
+        return containerProps;
+      })()}
       sx={{
+        ...containerProps?.sx,
         '& > ': {
           ':first-of-type': {
             borderLeftRadius: round,
@@ -45,15 +61,15 @@ export function ButtonWithArrows(props: IButtonWithArrows) {
           // backgroundColor: 'hsla(0, 0%, 100%, 0.1)',
         },
         backdropFilter: 'blur(8px)',
-        overflow: 'hidden',
+        // overflow: 'hidden',
       }}
     >
       <IconButton {...leftProps}>
         <MdChevronLeft />
       </IconButton>
-      <Button variant="text" {...centerProps}>
-        {centerContent}
-      </Button>
+      {/* <Button variant="text" {...centerProps}>
+      </Button> */}
+      {centerContent}
 
       <IconButton {...rightProps}>
         <MdChevronRight />

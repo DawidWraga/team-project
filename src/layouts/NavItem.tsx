@@ -1,4 +1,4 @@
-import { Flex, Text, Icon, FlexProps, Box } from '@chakra-ui/react';
+import { Flex, Text, Icon, FlexProps, Box, IconButton } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { isMobile } from 'utils/checkScreenWidth';
@@ -9,6 +9,8 @@ import { MdForum, MdKeyboardArrowRight, MdPeopleAlt } from 'react-icons/md';
 import { RiDashboardFill } from 'react-icons/ri';
 import { useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { AddIcon } from '@chakra-ui/icons';
+import { useProjectModal } from 'views/task/useProjectModal';
 
 const routeToIconMap = {
   '/forums': MdForum,
@@ -27,6 +29,7 @@ export function NavItem(props: IProps) {
 
   const { page } = props;
   const { route, label } = page.parentLink;
+  const { openProjectModal } = useProjectModal();
 
   const hasSideNavLinks = page?.sideNavLinks?.length;
 
@@ -42,7 +45,7 @@ export function NavItem(props: IProps) {
 
   const isOpen = hasSideNavLinks && openAccordianRoute.includes(route);
 
-  const isActive = activePage?.parentLink?.route?.includes(route);
+  const isActive = (activePage?.parentLink?.route + '/').includes(route);
 
   const linkStyling = (isActive: boolean): FlexProps => ({
     _hover: {
@@ -53,9 +56,6 @@ export function NavItem(props: IProps) {
     px: '1.5',
     mx: '5px',
     rounded: 'md',
-    // _active: {
-    //   bgColor: 'shade.light',
-    // },
 
     outline: isOpen
       ? 'solid 1px hsla(255 100% 100% / 0.3)'
@@ -63,10 +63,7 @@ export function NavItem(props: IProps) {
     transition: 'outline .2s ease-in-out, background-color .1s ease-in-out',
 
     bgColor: isActive ? 'shade.light' : 'shade.main',
-    // fontWeight: isActive ? 600 : 400,
     textColor: isActive ? 'white' : 'whiteAlpha.900',
-
-    // bgColor: isActive || isOpen ? 'shade.light' : hade.main',
   });
 
   const Divider = useCallback(() => {
@@ -127,7 +124,15 @@ export function NavItem(props: IProps) {
         // alignItems="center"
         {...linkStyling(isActive && !isOpen)}
       >
-        <Flex justifyContent={'stretch'} alignItems={'center'}>
+        <Flex
+          justifyContent={'stretch'}
+          alignItems={'center'}
+          _hover={{
+            '> [data-add-project]': {
+              opacity: 1,
+            },
+          }}
+        >
           <Icon
             fontSize="xl"
             textColor={isActive ? 'white' : 'whiteAlpha.900'}
@@ -137,34 +142,37 @@ export function NavItem(props: IProps) {
             ml="2"
             mr="3"
           />
-          {/* experiment with moving label to center on open */}
-          <Box
-          // mx={isOpen ? `calc(50% - ${-1 + label.length * 1.3}ch)` : 0}
-          // transition="margin-left 0.4s ease-in-out"
-          >
-            <Text
-              fontSize="1.15rem"
-              // ml={'25%'}
-              // textAlign={'center'}
-              // textColor={isActive ? 'brand.300' : 'white'}
-              // textDecoration={isActive ? 'underline' : 'none'}
-              // textDecorationColor={isActive ? 'brand.300' : 'white'}
-            >
-              {label}
-            </Text>
+          <Box>
+            <Text fontSize="1.15rem">{label}</Text>
           </Box>
+          {route === '/projects' && (
+            <IconButton
+              data-add-project
+              variant="link"
+              colorScheme={'whiteAlpha'}
+              aria-label="add project"
+              icon={<AddIcon />}
+              ml="auto"
+              opacity={0}
+              _peerActive={{
+                opacity: 1,
+              }}
+              onClick={(ev) => {
+                ev.stopPropagation();
+                openProjectModal({});
+              }}
+            />
+          )}
           {hasSideNavLinks && (
             <Icon
               // px="1px"
               as={MdKeyboardArrowRight}
-              ml="auto"
+              ml={route !== '/projects' ? 'auto' : '1'}
               transform={isOpen ? 'rotate(-90deg)' : 'rotate(90deg)'}
               transition="transform .2s"
             />
           )}
         </Flex>
-        {/* <div> */}
-        {/* </div> */}
 
         <Divider />
         <AnimatePresence>
@@ -189,12 +197,17 @@ export function NavItem(props: IProps) {
             >
               <Flex flexDir={'column'} my="3" pt="1">
                 {page?.sideNavLinks?.map((page) => {
-                  const sidenavActive = activeSideNavLink?.route?.includes(page?.route);
+                  const sidenavActive = (activeSideNavLink?.route + '/').includes(
+                    page?.route
+                  );
+
                   return (
                     <Flex
                       key={page.route}
                       {...linkStyling(sidenavActive)}
-                      onClick={() => {
+                      onClick={(ev) => {
+                        // prevent closing accordian parent on child click
+                        ev.stopPropagation();
                         let { route } = page;
 
                         router.push(route + page.defaultHeaderLink);
@@ -216,7 +229,6 @@ export function NavItem(props: IProps) {
                   );
                 })}
               </Flex>
-              {/* <Divider /> */}
             </Box>
           )}
         </AnimatePresence>

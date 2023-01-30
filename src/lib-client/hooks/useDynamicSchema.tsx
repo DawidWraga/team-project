@@ -2,24 +2,18 @@ import { AnyZodObject } from 'zod';
 import { useState } from 'react';
 import { objectMap } from 'utils/objectMap';
 
-export const addPrefixToObject = (obj: Record<any, any>, prefix: string) => {
-  const entries = Object.entries(obj);
-  const mapped = entries.map(([k, v]) => [`${prefix}_${k}`, v]);
-  return Object.fromEntries(mapped);
-};
-export const addSuffixToObject = (obj: Record<any, any>, suffix: string | number) => {
-  const entries = Object.entries(obj);
-  const mapped = entries.map(([k, v]) => [`${k.split('-')[0]}-${suffix}`, v]);
-  return Object.fromEntries(mapped);
-};
-
-// whole = schemaName
-// objectName=string&property=string&index=stringNum
+interface SchemaIdData {
+  objectName: string;
+  property: string;
+  index: string;
+}
 
 /**
  *
  * Hook for creating and updating zod schema.
  * Supports adding / removing arrays of objects
+ * schemaName = entire string used to identify schema
+ * eg objectName=string&property=string&index=stringNum
  *
  * @param schema
  * @returns
@@ -29,37 +23,39 @@ export function useDynamicSchema(schema) {
 
   const updateSchema = {
     set: setDynamicSchema,
-    addObj: (key: string, schema: AnyZodObject | Record<any, any>) => {
-      let newSchema: Record<any, any> = schema.shape ? schema.shape : schema;
-
-      newSchema = addPrefixToObject(newSchema, key);
-
+    addObj: (objectName: string, schema: AnyZodObject | Record<any, any>) => {
       setDynamicSchema((prev: any) => {
-        const prevKeys = Object.keys(prev.shape);
-        const relatedKeys = prevKeys.filter((k) => k.split('_')[0].includes(key));
-
-        let id: string | number = '0';
-        if (relatedKeys.length) {
-          const relatedIds = relatedKeys.map((k) => {
-            return Number(k.split('-')[1]);
-          });
-          const maxId = Math.max(...relatedIds);
-          id = maxId + 1;
+        let newSchema: Record<any, any> = schema.shape ? schema.shape : schema;
+        if (!prev) {
+          return schemaObjectToSchemaNames(newSchema, objectName, '0');
         }
-        newSchema = addSuffixToObject(newSchema, id);
+
+        const prevSchemaNames = Object.keys(prev.shape);
+        const relatedSchemaNames = getRelatedSchemaNames(
+          prevSchemaNames,
+          'objectName',
+          objectName
+        );
+
+        let index: string | number = '0';
+        if (relatedSchemaNames.length) {
+          const relatedIndexes = relatedSchemaNames.map((name) =>
+            Number(parseSchemaName(name).index)
+          );
+          const maxId = Math.max(...relatedIndexes);
+          index = (maxId + 1).toString();
+        }
+        newSchema = schemaObjectToSchemaNames(newSchema, objectName, index);
         const extended = prev.extend(newSchema);
         return extended;
       });
-      return newSchema;
     },
-    remove: (keys: string[]) => {
-      setDynamicSchema((prev) => {
-        // const sch = z.object({ test: z.string() });
-        const mask = Object.fromEntries(keys.map((k) => [k, true]));
-        // sch.omit(m);
-        return prev.omit(mask);
+    remove: (schemaNames: string | string[]) => {
+      const names = typeof schemaNames === 'string' ? [schemaNames] : schemaNames;
 
-        // prev.
+      setDynamicSchema((prev) => {
+        const mask = Object.fromEntries(names.map((schemaName) => [schemaName, true]));
+        return prev.omit(mask);
       });
     },
   };
@@ -67,76 +63,84 @@ export function useDynamicSchema(schema) {
   return [dynamicSchema, updateSchema] as const;
 }
 
-export function stringifiedToDataArray(
-  stringifiedData: Record<string, any>,
-  dynamicSchemaNames: string[]
-) {
-  // separate dynamic and nondynamic data
-  const [dynamicData, restData] = [{}, {}] as any;
-  for (const [k, v] of Object.entries(stringifiedData)) {
-    if (dynamicSchemaNames.some((schemaName) => k.includes(schemaName))) {
-      dynamicData[k] = v;
-    } else {
-      restData[k] = v;
-    }
-  }
-
-  // for each dynamic schema, format data into array of objects
-  dynamicSchemaNames.forEach((schemaName) => {
-    const keys = Object.keys(dynamicData);
-    const relevantkeys = keys.filter((key) => key.includes(schemaName));
-    const aliasKeyToRealKey = formatObjectKeys(relevantkeys);
-
-    const formattedDynamicData = aliasKeyToRealKey.map((obj) =>
-      objectMap(obj, (realKey) => dynamicData[realKey])
-    );
-    restData[schemaName] = formattedDynamicData;
-  });
-
-  return restData;
-
-  // const processedData = Object.entries(stringifiedData).reduce((acc, [k, v]) => {
-  //   //if key is not dynamic, do not process value
-  //   if (!dynamicSchemaNames.some((schemaName) => k.includes(schemaName))) return acc[k]=v;
-
-  //   // process dynamic values into k=name, v=array
-  //     const name = getNameFromObjectKey(k);
-  //     const id = k.split('-')[1];
-  //     const entity = k.split('_')[0];
-
-  //   acc[name] = [
-  //   ...(acc[name]&&acc[name]),
-  //   v
-
-  // ]
-  //   {
-  //     ...(acc[id] && acc[id]),
-  //     [name]: currentKey,
-  //   };
-
-  //   return acc;
-  // }, {} as Record<string, any>);
-
-  // const data = {...stringifiedData}
-  // const dynamicSchemaData = dynamicSchemaNames.map((schemaName) => {
-  //   // const dataEnteries = Object.entries(stringifiedData).filter(
-  //   //   ([k, v]) => getNameFromObjectKey(k) === schemaName
-  //   // );
-
-  //   // const dataO
-
-  //   for (const [k,v] of Object.entries(data)){
-  //     if(!k.includes(schemaName)) continue
-  //   }
-
-  // });
+export function parseSchemaName(schemaName: string): SchemaIdData {
+  const props = schemaName.split('&');
+  const entries = props.map((prop) => prop.split('='));
+  return Object.fromEntries(entries);
 }
 
-// stringifiedToName
-export const getNameFromObjectKey = (objectKey: string) =>
-  objectKey.split('-')[0].split('_')[1];
+export function getSchemaName(props: SchemaIdData) {
+  return Object.entries(props)
+    .map((prop) => prop.join('='))
+    .join('&');
+}
 
-// stringifiedToNames
+export function schemaObjectToSchemaNames(
+  schema: Record<any, any>,
+  objectName: string,
+  index: string
+) {
+  return Object.fromEntries(
+    Object.entries(schema).map(([property, schema]) => [
+      getSchemaName({ objectName, property, index }),
+      schema,
+    ])
+  );
+}
+
+export function getRelatedSchemas(
+  schemas: Record<string, any>[],
+  targetKey: keyof SchemaIdData,
+  targetValue: string | number
+) {
+  return schemas.filter((schema) => schema[targetKey] === targetValue);
+}
+export function getRelatedSchemaNames(
+  schemaNames: string[],
+  targetKey: keyof SchemaIdData,
+  targetValue: string | number
+) {
+  return schemaNames.filter(
+    (schema) => parseSchemaName(schema)[targetKey] === targetValue
+  );
+}
+
+export function formatDynamicSchemaData(
+  schemaNameToData: Record<string, any>,
+  dynamicSchemaObjectNames: string[]
+) {
+  // for each dynamic schema, format data into array of objects
+  const formattedData = dynamicSchemaObjectNames.reduce((acc, objectName) => {
+    const relevantSchemaNames = getRelatedSchemaNames(
+      Object.keys(schemaNameToData),
+      'objectName',
+      objectName
+    );
+
+    if (!relevantSchemaNames || !relevantSchemaNames.length) {
+      acc[objectName] = [];
+      return acc;
+    }
+
+    const groupedSchemaNames = groupSchemaNames(relevantSchemaNames);
+
+    const formattedDynamicData = groupedSchemaNames.map((obj) =>
+      objectMap(obj, (schemaName) => schemaNameToData[schemaName])
+    );
+    acc[objectName] = formattedDynamicData;
+    return acc;
+  }, {} as Record<any, any>);
+
+  const staticData = Object.fromEntries(
+    Object.entries(schemaNameToData).filter(
+      ([schema]) =>
+        !dynamicSchemaObjectNames.some((schemaName) => schema.includes(schemaName))
+    )
+  );
+
+  return { ...staticData, ...formattedData };
+}
+
 /**
  *
  * @example
@@ -151,13 +155,13 @@ export const getNameFromObjectKey = (objectKey: string) =>
  * ///]
  * ```
  */
-export function formatObjectKeys(objectKeys: string[]): Record<string, string>[] {
-  const arr = objectKeys.reduce((acc, currentKey) => {
-    const id = currentKey.split('-')[1];
-    const name = getNameFromObjectKey(currentKey);
-    acc[id] = {
-      ...(acc[id] && acc[id]),
-      [name]: currentKey,
+
+export function groupSchemaNames(schemaNames: string[]): Record<string, string>[] {
+  const arr = schemaNames.reduce((acc, currentName) => {
+    const { index, property } = parseSchemaName(currentName);
+    acc[index] = {
+      ...(acc[index] && acc[index]),
+      [property]: currentName,
     };
 
     return acc;
