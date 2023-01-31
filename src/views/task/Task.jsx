@@ -63,7 +63,7 @@ export function Task(props) {
 
   const menuIcon = (
     <Menu placement="left-start" offset={[0, 0]} w="30px">
-      <MenuButton>
+      <MenuButton as="div">
         <IconButton variant="ghost" icon={<BiDotsVerticalRounded />} />
       </MenuButton>
       <MenuList w="30px">
@@ -101,8 +101,15 @@ export function Task(props) {
 
   // const [avatarMax,setAvatarMax] = useState(3)
 
+  const getTaskWithoutRelations = ({ assignees, ...task }) => ({ ...task });
+
   return (
-    <Draggable key={task.id} draggableId={task.id.toString()} index={index} id={index}>
+    <Draggable
+      key={task.id}
+      draggableId={JSON.stringify(getTaskWithoutRelations(task))}
+      index={index}
+      id={index}
+    >
       {(provided, snapshot) => (
         <Box
           // ref={provided.innerRef}
@@ -110,7 +117,7 @@ export function Task(props) {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
           // isDragging={snapshot.isDragging}
-          as={motion.div}
+          // as={motion.div}
           // drag
           // borderStyle="dashed"
           borderWidth="1px"
@@ -119,7 +126,7 @@ export function Task(props) {
           transition="box-shadow 1s"
           // borderColor="gray"
           // whileHover={{ borderWidth: '1px' }}
-          dragMomentum={false}
+          // dragMomentum={false}
           // dragTransition={{ bounceStiffness: 800, bounceDamping: 10 }}
           // whileTap={{ scale: 0.99 }}
           w="1/3"
@@ -144,7 +151,7 @@ export function Task(props) {
               fontWeight="semibold"
               mb="1"
             >
-              {task.title}
+              {task.title} ({task.id})
             </Text>
             <Text
               as={Flex}
@@ -165,7 +172,7 @@ export function Task(props) {
           </Flex>
           <Divider borderColor="gray.400"></Divider>
 
-          <Flex alignItem="center" py="1.5" px="1">
+          <Flex alignItems="center" py="1.5" px="1">
             <Assignees />
             <Spacer />
             {/* <Flex pt="1px" gap="2" alignItems="center">

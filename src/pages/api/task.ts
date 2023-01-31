@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { ITask } from 'lib-client/controllers';
 import { createApiHandler } from 'lib-server/ApiController';
 import { prisma } from 'lib-server/prisma';
@@ -7,14 +8,14 @@ export default createApiHandler<ITask>('task', {
   findMany: {},
   default: {},
   create: {
-    queryFn({ projectId, subTask, assignees, ...options }: any) {
+    queryFn({ projectId, subTask, assignees, statusId, ...options }: any) {
       console.log(assignees);
       return prisma.task.create({
         data: {
           ...options,
           status: {
             connect: {
-              id: 1,
+              id: statusId,
             },
           },
           assignees: {
@@ -33,18 +34,35 @@ export default createApiHandler<ITask>('task', {
     },
   },
   update: {
-    queryFn({ id, statusId, ...data }) {
+    queryFn({
+      id,
+      status,
+      statusId,
+      assignees,
+      projectId,
+      statusToOrderedTaskIds,
+      ...data
+    }) {
       return prisma.task.update({
         where: {
           id,
         },
         data: {
           ...data,
+          ...(statusToOrderedTaskIds && {
+            statusToOrderedTaskIds: statusToOrderedTaskIds as Prisma.JsonObject,
+          }),
           status: {
             connect: {
-              id: statusId,
+              id: status?.id || statusId,
             },
           },
+          assignees: {
+            connect: assignees?.map((user) => ({ id: user.id })) || [],
+          },
+          // subTasks: {
+          //   create: subTask,
+          // },
         },
       });
     },

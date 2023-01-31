@@ -2,6 +2,8 @@ import { Flex, Spacer, Tag, TagLabel, Text } from '@chakra-ui/react';
 import { Paper } from 'components/Paper';
 import { Task, getListStyle } from 'views/task/Task';
 import { MdAddCircle } from 'react-icons/md';
+import { ITask } from 'lib-client/controllers';
+import { Droppable } from 'react-beautiful-dnd';
 
 const statusToColorMap = {
   todo: 'red.500',
@@ -11,9 +13,21 @@ const statusToColorMap = {
 };
 
 // import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Droppable } from 'react-beautiful-dnd';
-export function KanbanCol(props) {
-  const { tasks, index } = props;
+
+interface IProps {
+  tasks: ITask[];
+  status: {
+    label: string;
+    id: number;
+    projectId?: number;
+  };
+  index: number;
+}
+
+export function KanbanCol(props: IProps) {
+  const { tasks, status, index } = { tasks: [], ...props };
+
+  if (status.projectId) delete status.projectId;
 
   return (
     <Flex
@@ -35,40 +49,47 @@ export function KanbanCol(props) {
         borderBottom="4px"
         // bg="#eeeced45"
         mx="0.5px"
-        borderColor={statusToColorMap[props.status]}
+        borderColor={statusToColorMap[status.label]}
       >
+        <div>test</div>
         <Text
           pl="0"
           fontSize={'lg'}
           pr="4"
           textTransform="uppercase"
-          fontWeight="semibold
-        "
+          fontWeight="semibold"
           textAlign="center"
         >
-          {props.status}
+          {status.label}
         </Text>
         <Tag variant="outline" border="cyan.200" borderRadius="full" textColor={'black'}>
-          {tasks.length}
+          {tasks?.length || 0}
         </Tag>
       </Paper>
-      <Droppable key={index} droppableId={index?.toString()}>
+      <Droppable
+        // key={'droppable-key-' + status.id}
+
+        droppableId={JSON.stringify(status)}
+      >
         {(provided, snapshot) => (
           <Flex
             ref={provided.innerRef}
             {...provided.droppableProps}
             style={getListStyle(snapshot.isDraggingOver)}
-            isDraggingOver={snapshot.isDraggingOver}
-            key={index}
+            // isDraggingOver={snapshot.isDraggingOver}
+            key={'flex-key-' + status.id}
             flexDir={'column'}
             // h="100%"
             h="100%"
             // justifySelf="stretch"
             w="100%"
           >
-            {tasks.map((task, i) => {
-              return <Task key={task.id} task={task} index={i} />;
-            })}
+            {tasks.length &&
+              tasks.map((task, i) => {
+                // console.log(task);
+                // if (task === undefined) console.log(i);
+                if (task?.id) return <Task key={task.id} task={task} index={i} />;
+              })}
             {provided.placeholder}
           </Flex>
         )}

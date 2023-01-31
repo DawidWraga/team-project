@@ -92,11 +92,13 @@ model UserRole {
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())
-  title       String   @db.Text ///@zod.trim()
-  createdDate DateTime @default(now())
-  dueDate     DateTime
-  description String   @db.Text
+  id               Int      @id @default(autoincrement())
+  title            String   @db.Text ///@zod.trim()
+  createdDate      DateTime @default(now())
+  dueDate          DateTime
+  description      String   @db.Text
+  kanbanOrderIndex Int?
+  updatedAt        DateTime @updatedAt
 
   statusId  Int
   projectId Int
@@ -117,7 +119,7 @@ model SubTask {
 
 model TaskStatus {
   id    Int    @id @default(autoincrement())
-  label String @db.Text ///@zod.trim()
+  label String ///@zod.trim()
 
   tasks     Task[]
   project   Project @relation(fields: [projectId], references: [id])
@@ -125,12 +127,13 @@ model TaskStatus {
 }
 
 model Project {
-  id          Int          @id @default(autoincrement())
-  title       String
-  createdDate DateTime     @default(now())
-  dueDate     DateTime
-  statuses    TaskStatus[]
-  assignees   User[]
-  managers    User[]       @relation(name: "ProjectManagers")
-  tasks       Task[]
+  id                     Int          @id @default(autoincrement())
+  title                  String
+  createdDate            DateTime     @default(now())
+  dueDate                DateTime
+  statusToOrderedTaskIds Json?
+  statuses               TaskStatus[]
+  assignees              User[]
+  managers               User[]       @relation(name: "ProjectManagers")
+  tasks                  Task[]
 }

@@ -11,6 +11,7 @@
   "css.validate": false,
   "less.validate": false,
   "scss.validate": false,
-
-  "editor.snippetSuggestions": "top"
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "editor.snippetSuggestions": "top",
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }

@@ -43,6 +43,7 @@ export interface ICustomUseMutationOptions<TModel, TMode>
   mode?: TMode;
   invalidateClientChanges?: boolean;
   changeUiKey?: string | string[];
+  changeUiType?: 'array' | 'object' | 'reorder';
   includeResourceId?: boolean;
   logConfig?: boolean;
   logMutationFnData?: boolean;

@@ -7,7 +7,7 @@ import {
   Text,
   Textarea,
 } from '@chakra-ui/react';
-import { taskController } from 'lib-client/controllers';
+import { projectController, taskController } from 'lib-client/controllers';
 import { ChakraFormWrapper } from 'lib-client/hooks/useChakraForm';
 import { TaskModel } from 'prisma/zod';
 import { useModalStore } from 'lib-client/stores/ModalStore';
@@ -25,6 +25,22 @@ export const useTaskModal = () => {
   const { setContent, onClose } = useModalStore();
   const { mutateAsync: createTask } = taskController.useMutation('create', {});
   const { projectId } = useUrlData<{ projectId: number }>('dynamicPath');
+  const projectPrismaProps = {
+    where: {
+      id: projectId,
+    },
+    include: {
+      statuses: true,
+      assignees: true,
+    },
+  };
+
+  const { data: currentProject } = projectController.useQuery('findUnique', {
+    prismaProps: projectPrismaProps,
+    enabled: Boolean(projectId),
+    cacheTime: 60 * 60 * 1000,
+  });
+  const { mutateAsync: updateProject } = projectController.useMutation('update', {});
 
   const openTaskModal = () =>
     setContent &&
@@ -48,13 +64,28 @@ export const useTaskModal = () => {
         >
           {({ Form, Input, SubmitBtn, DebugPanel, updateSchema, InputList }) => (
             <Form
-              onSubmit={({ assignees, ...data }) =>
+              onSubmit={({ assignees, ...data }) => {
+                const firstStatus = currentProject?.statuses[0].id;
+
                 createTask({
                   projectId,
                   assignees: assignees.map((d) => ({ id: d.value })),
+                  statusId: firstStatus,
                   ...data,
-                } as any)
-              }
+                } as any).then((res) => {
+                  console.log(res);
+                  updateProject({
+                    id: currentProject.id,
+                    statusToOrderedTaskIds: {
+                      ...(currentProject.statusToOrderedTaskIds || {}),
+                      [firstStatus]: [
+                        ...(currentProject.statusToOrderedTaskIds[firstStatus] || []),
+                        res.id,
+                      ],
+                    },
+                  });
+                });
+              }}
               onServerSuccess={onClose}
             >
               <DebugPanel />

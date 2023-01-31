@@ -47,21 +47,20 @@ export class Controller<TModel> {
 
     return res.data;
   }
+  /**
+   * hook for fetching read queries from ApiController
+   */
   public useQuery<
     TQuery extends readQuery,
     TData = TQuery extends 'findMany' ? TModel[] : TModel
-  >(
-    query: TQuery,
-    options?: ICustomUseQueryOptions<TData>
-    /**
-     * hook for fetching read queries from ApiController
-     */
-  ) {
+  >(query: TQuery, options?: ICustomUseQueryOptions<TData>) {
     // get most relevant config
     const config = this.getConfig(query, options).useQueryOptions;
 
     const { prismaProps, fetcherConfig, logConfig, ...useQueryOptions } = config;
 
+    // construct standardised default query key based on query options
+    // starting with model name enables predictable key for query invalidation
     const getQueryKey = () => {
       const queryKey: any = [this.model, query];
       if (prismaProps && Object.keys(prismaProps).length)
@@ -88,9 +87,10 @@ export class Controller<TModel> {
       ...useQueryOptions,
     });
   }
-  public useMutation<TMode extends mutationMode = mutationMode>(
+  // "Nested" is used to differenciate between between parent TModel & Tmodel specific to useMutation
+  public useMutation<TModelNested = TModel, TMode extends mutationMode = mutationMode>(
     query: writeQuery,
-    options?: ICustomUseMutationOptions<TModel, TMode>
+    options?: ICustomUseMutationOptions<TModelNested, TMode>
     /**
      * hook for handling write queries & their state to ApiController
      * @return {
@@ -109,6 +109,7 @@ export class Controller<TModel> {
       includeResourceId,
       logConfig,
       logMutationFnData,
+      changeUiType,
       ...useMutationOptions
     } = config;
 
@@ -117,8 +118,9 @@ export class Controller<TModel> {
 
     const { changeQueryState } = useChangeQueryState({
       changeUiKey,
-      query: query as any,
-    });
+      query,
+      changeUiType: changeUiKey as any,
+    } as any);
 
     const { resourceId } = useUserStore();
 
@@ -162,7 +164,7 @@ export class Controller<TModel> {
         if (mode === 'saveUiChanges') {
           const changedUiData = getChangedData(changeUiKey!, query);
           if (!changedUiData) return;
-          console.log('changed ui data', changedUiData);
+          // console.log('changed ui data', changedUiData);
           // runs all saved mutation functions in parallel
           const res = await Promise.all(
             changedUiData.map(async (data) => {
@@ -219,6 +221,10 @@ export class Controller<TModel> {
     // prefetch query data for Nextj.js server side rendering (SSR/SSR/ISR)
     return prefetchQuery([this.model, query], () => this.fetcher({ data: query }));
   }
+  /**
+   * merges configs to select most specific and fallback to highest possible specificity
+   */
+
   getConfig<
     TQuery extends anyQuery,
     TData = TQuery extends 'findMany' ? TModel[] : TModel, //array if findMany
@@ -226,10 +232,6 @@ export class Controller<TModel> {
       ? Partial<ICustomUseQueryOptions<TData>>
       : Partial<ICustomUseMutationOptions<TData, mutationMode>>
   >(query: TQuery, functionCallOptions?: TConfig) {
-    /**
-     * merges configs to select most specific and fallback to highest possible specificity
-     */
-
     const _functionCallOptions =
       functionCallOptions &&
       (query.includes('find')

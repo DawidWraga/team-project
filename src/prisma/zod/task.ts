@@ -8,6 +8,8 @@ export const TaskModel = z.object({
   createdDate: z.date(),
   dueDate: z.date(),
   description: z.string(),
+  kanbanOrderIndex: z.number().int().nullish(),
+  updatedAt: z.date(),
   statusId: z.number().int(),
   projectId: z.number().int(),
 })
