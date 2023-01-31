@@ -140,9 +140,11 @@ export default function ProjectKanbanPage() {
       };
       console.log({ task, newStatus, newTask, statusToOrderedTaskIds, prevStatus });
 
+      // 1. Remove the task from the previous status' array
       statusToOrderedTaskIds[prevStatus.id] = statusToOrderedTaskIds[
         prevStatus.id
       ]?.filter((id) => id !== newTask.id);
+      // 2. Add the task to the new status' array
       statusToOrderedTaskIds[newStatus.id].push(newTask.id);
 
       updateTask(newTask);
@@ -170,6 +172,21 @@ export default function ProjectKanbanPage() {
   }
 
   if (!currentProject) return <>loading...</>;
+
+
+  // function getTaskById(id) {
+  //   return tasks.find((t) => t.id === id);
+  // }
+
+  // function getAllTasksByStatusId(statusId) {
+  //   return tasks.filter((t) => t.status.id === statusId);
+  // }
+
+  // function getOrderedTasksByStatusId(statusId) {
+  //   const ordered = currentProject?.statusToOrderedTaskIds?.[statusId];
+  //   if (!ordered) return getAllTasksByStatusId(statusId);
+  //   return ordered.map((id) => getTaskById(id));
+  // }
 
   function getRelevantTasks(statusId) {
     if (!tasks || !currentProject) return [];

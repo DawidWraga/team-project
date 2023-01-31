@@ -134,12 +134,15 @@ export const useChakraForm = <
     resolver: zodResolver(dynamicSchema),
   } as UseFormProps<TFieldValues, TContext>);
 
+  // =======Subscribe to form state changes.=====
   useEffect(() => {
     let subscription: any;
+    // If we have a callback function to call on change...
     if (onChange) {
+      // Subscribe to form state changes.
       subscription = useFormReturn.watch(onChange);
-      useFormReturn.watch();
     }
+    // Unsubscribe when the component unmounts.
     return () => subscription?.unsubscribe();
   }, [useFormReturn, onChange]);
 
@@ -375,10 +378,11 @@ export const useChakraForm = <
       ...props,
     };
 
+    // Get all the keys in the dynamicSchema object
     const schemaNames = Object.keys((dynamicSchema as any).shape);
+    // Filter out the keys that don't contain the passed in name
     const relevantSchemas = schemaNames.filter((k) => k.includes(name));
     const groupedSchemas = groupSchemaNames(relevantSchemas);
-
     useEffect(() => {
       onChange && onChange(groupedSchemas);
     }, groupedSchemas);
@@ -455,6 +459,32 @@ export const useChakraForm = <
     updateSchema: updateDynamicSchema as any,
   };
 };
+
+/**
+ * This is a wrapper component for useChakraForm hook. It takes the same props as useChakraForm hook and passes the return value to child callback function inside children
+ * @param props useChakraFormProps
+ * @param props.children callback function that takes useFormReturn as argument
+ * @returns JSX.Element
+ *
+ * @example
+ * ```tsx
+ *
+ * <ChakraFormWrapper
+ *    schema={z.object({
+ *        example1: z.string().min(3)
+ *    })}
+ * >
+ *  {({ Form,Input }) => (
+ *  <Form
+ *    onSubmit={async (values) => { console.log(values) }}
+ *  >
+ *    <Input name="example1"  />
+ * </Form>
+ * )}
+ * </ChakraFormWrapper>
+ *
+ * ```
+ * */
 
 export function ChakraFormWrapper<
   TFieldValues extends FieldValues = FieldValues,

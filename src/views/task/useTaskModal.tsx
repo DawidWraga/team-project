@@ -72,19 +72,20 @@ export const useTaskModal = () => {
                   assignees: assignees.map((d) => ({ id: d.value })),
                   statusId: firstStatus,
                   ...data,
-                } as any).then((res) => {
-                  console.log(res);
-                  updateProject({
-                    id: currentProject.id,
-                    statusToOrderedTaskIds: {
-                      ...(currentProject.statusToOrderedTaskIds || {}),
-                      [firstStatus]: [
-                        ...(currentProject.statusToOrderedTaskIds[firstStatus] || []),
-                        res.id,
-                      ],
-                    },
-                  });
-                });
+                } as any)
+                // .then((res) => {
+                //   console.log(res);
+                //   updateProject({
+                //     id: currentProject.id,
+                //     // statusToOrderedTaskIds: {
+                //     //   ...(currentProject.statusToOrderedTaskIds || {}),
+                //     //   [firstStatus]: [
+                //     //     ...(currentProject.statusToOrderedTaskIds[firstStatus] || []),
+                //     //     res.id,
+                //     //   ],
+                //     // },
+                //   });
+                // });
               }}
               onServerSuccess={onClose}
             >
@@ -102,7 +103,6 @@ export const useTaskModal = () => {
                 customInput={(props) => {
                   return <UserSelect {...props} />;
                 }}
-              />
 
               <InputList
                 name="subTask"

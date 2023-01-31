@@ -63,11 +63,12 @@ export class Controller<TModel> {
     // starting with model name enables predictable key for query invalidation
     const getQueryKey = () => {
       const queryKey: any = [this.model, query];
-      if (prismaProps && Object.keys(prismaProps).length)
+      if (prismaProps && Object.keys(prismaProps).length) {
         // enables automatic refresh when prismaProps change eg filtering
         queryKey.push({
           prismaProps,
         });
+      }
       return queryKey;
     };
 
