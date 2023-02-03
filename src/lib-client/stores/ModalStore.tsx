@@ -6,7 +6,7 @@ import {
   ModalBodyProps,
   ModalFooterProps,
 } from '@chakra-ui/react';
-import { useCreateStore } from 'lib-client/hooks/useCreateStore';
+import { createStore } from 'lib-client/hooks/createStore';
 
 export interface IModalStore {
   isOpen: boolean;
@@ -27,7 +27,7 @@ export interface IModalContent {
   modalFooterProps?: ModalFooterProps;
 }
 
-export const useModalStore = useCreateStore<IModalStore>('Dialogue', (set) => ({
+export const useModalStore = createStore<IModalStore>('Dialogue', (set) => ({
   isOpen: false,
   content: { header: '', body: '' },
   onOpen: () => set({ isOpen: true }),

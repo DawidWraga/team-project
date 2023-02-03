@@ -3,7 +3,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 
 import { DateSelector } from 'components/DateSelector';
 import { projectController, taskController } from 'lib-client/controllers';
-import { useUrlData } from 'lib-client/hooks/useNextQueryParams';
+import { useUrlData } from 'lib-client/hooks/useUrlData';
 import { useUrlDateToPrismaOptions } from 'lib-client/hooks/useUrlDateToPrismaOptions';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { KanbanCol } from 'views/task/KanbanCol';

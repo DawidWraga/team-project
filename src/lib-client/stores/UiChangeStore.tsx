@@ -1,5 +1,5 @@
 import { anyQuery } from 'lib-client/controllers/types/Controller';
-import { useCreateStore } from 'lib-client/hooks/useCreateStore';
+import { createStore } from 'lib-client/hooks/createStore';
 export interface IUiChangeStore {
   // k = changeUiKey, v = changed data array
   changedUiData: Record<string, any[]>;
@@ -30,7 +30,7 @@ function createQueryId(queryKey: string | string[], queryType: anyQuery) {
 export const UI_ITEM_ID_START = 1000000;
 
 // aim = store history of mutations made using controller.writeQuery.use(mode='changeUi') in order to enable save functionality
-export const useUiChangeStore = useCreateStore<IUiChangeStore>(
+export const useUiChangeStore = createStore<IUiChangeStore>(
   'uiChangeStore',
   (set, get) => ({
     currentItemId: UI_ITEM_ID_START,

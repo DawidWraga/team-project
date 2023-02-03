@@ -6,7 +6,7 @@ import {
   openSideNavWidth,
   optionBarHeight,
 } from 'lib-client/constants';
-import { useCreateStore } from 'lib-client/hooks/useCreateStore';
+import { createStore } from 'lib-client/hooks/createStore';
 import { useEffect } from 'react';
 
 type offsetProp = {
@@ -43,7 +43,7 @@ export const getLeftOffset = (isOpen: boolean) => {
     };
 };
 
-export const useLayoutStore = useCreateStore<ILayoutStore>('Layout', (set, get) => ({
+export const useLayoutStore = createStore<ILayoutStore>('Layout', (set, get) => ({
   // ======== active page ========
   activePage: {} as any,
   setActivePage: (page: IPage) => set({ activePage: page }),

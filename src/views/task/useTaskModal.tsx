@@ -12,7 +12,7 @@ import { ChakraForm, ChakraFormWrapper } from 'lib-client/hooks/useChakraForm';
 import { TaskModel } from 'prisma/zod';
 import { useModalStore } from 'lib-client/stores/ModalStore';
 import { FormHeading } from 'components/FormHeading';
-import { useUrlData } from 'lib-client/hooks/useNextQueryParams';
+import { useUrlData } from 'lib-client/hooks/useUrlData';
 import { z } from 'zod';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import { UserSelect, multiUserOptionsSchema } from 'components/UserSelect';
