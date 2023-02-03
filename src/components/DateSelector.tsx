@@ -4,7 +4,7 @@ import { Box, Select as ChackraSelect, Flex, Text } from '@chakra-ui/react';
 import { Select } from 'chakra-react-select';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { useNextQueryParams, useUrlData } from 'lib-client/hooks/useNextQueryParams';
+import { useUrlData } from 'lib-client/hooks/useUrlData';
 import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
 import { useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { z } from 'zod';
@@ -43,17 +43,10 @@ export const formatDate = (date, unit = 'month') => {
 
 export function DateSelector(props: IProps) {
   const { saveChangesBeforeRouting } = props;
-  // const query = useNextQueryParams();
-  // const dateRangeUnits: moment.unitOfTime.StartOf = props.dateRangeUnits ?? 'month';
   const router = useRouter();
   const { startDate, endDate } = useUrlData('queryParams') as any;
 
-  // const query = useNextQueryParams<{}>();
-
   const isHydrated = useIsHydrated();
-
-  // const [unit, setUnit] = useState<moment.unitOfTime.DurationConstructor>('month');
-  // const [selectedDateString, setSelectedDateString] = useState(formatDate(date, unit));
 
   const { Input, getValues, watch } = useChakraForm<{
     date: { label: string; value: moment.unitOfTime.DurationConstructor };
@@ -92,11 +85,9 @@ export function DateSelector(props: IProps) {
     };
 
     isHydrated && router.push({ query });
-    // change date string
-    // setSelectedDateString(formatDate(targetDate, unit));
   };
 
-  const dateUnit = watch()?.date?.value;
+  const dateUnit = watch('date.value');
 
   useEffect(() => {
     modifyDateAndRoute();

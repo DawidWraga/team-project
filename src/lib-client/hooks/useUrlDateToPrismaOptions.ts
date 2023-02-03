@@ -1,4 +1,4 @@
-import { useUrlData } from 'lib-client/hooks/useNextQueryParams';
+import { useUrlData } from 'lib-client/hooks/useUrlData';
 
 type optionsOrObj = {} | Record<'gte' | 'lte', Date>;
 
