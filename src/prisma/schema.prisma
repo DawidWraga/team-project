@@ -126,6 +126,10 @@ model TaskStatus {
   projectId Int
 }
 
+
+
+
+
 model Project {
   id                     Int          @id @default(autoincrement())
   title                  String

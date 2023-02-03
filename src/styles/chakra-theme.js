@@ -28,6 +28,7 @@ const fonts = {
 
 // 2. Extend the theme to include custom colors, fonts, etc
 export const colors = {
+  primary: saasTheme.colors.blue,
   brand: {
     50: 'hsl(37, 100%, 93%)',
     100: 'hsl(33, 100%, 84%)',

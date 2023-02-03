@@ -8,7 +8,7 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import { projectController, taskController } from 'lib-client/controllers';
-import { ChakraFormWrapper } from 'lib-client/hooks/useChakraForm';
+import { ChakraForm, ChakraFormWrapper } from 'lib-client/hooks/useChakraForm';
 import { TaskModel } from 'prisma/zod';
 import { useModalStore } from 'lib-client/stores/ModalStore';
 import { FormHeading } from 'components/FormHeading';
@@ -47,7 +47,7 @@ export const useTaskModal = () => {
     setContent({
       header: <FormHeading>Create new task</FormHeading>,
       body: (
-        <ChakraFormWrapper
+        <ChakraForm
           schema={TaskModel.pick({
             title: true,
             description: true,
@@ -61,8 +61,7 @@ export const useTaskModal = () => {
             dueDate: new Date(),
           }}
           dynamicSchemaObjectNames={['subTask']}
-        >
-          {({ Form, Input, SubmitBtn, DebugPanel, updateSchema, InputList }) => (
+          render={({ Form, Input, SubmitBtn, DebugPanel, updateSchema, InputList }) => (
             <Form
               onSubmit={({ assignees, ...data }) => {
                 const firstStatus = currentProject?.statuses[0].id;
@@ -72,20 +71,7 @@ export const useTaskModal = () => {
                   assignees: assignees.map((d) => ({ id: d.value })),
                   statusId: firstStatus,
                   ...data,
-                } as any)
-                // .then((res) => {
-                //   console.log(res);
-                //   updateProject({
-                //     id: currentProject.id,
-                //     // statusToOrderedTaskIds: {
-                //     //   ...(currentProject.statusToOrderedTaskIds || {}),
-                //     //   [firstStatus]: [
-                //     //     ...(currentProject.statusToOrderedTaskIds[firstStatus] || []),
-                //     //     res.id,
-                //     //   ],
-                //     // },
-                //   });
-                // });
+                } as any);
               }}
               onServerSuccess={onClose}
             >
@@ -103,25 +89,28 @@ export const useTaskModal = () => {
                 customInput={(props) => {
                   return <UserSelect {...props} />;
                 }}
+              />
 
               <InputList
                 name="subTask"
-                ConditionalWrapper={({ children }: any) => (
-                  <>
-                    <Flex alignItems="center" gap={2}>
+                ConditionalWrapper={({ children }) => (
+                  <Flex flexDir="column" gap={1}>
+                    <Flex alignItems="center" gap={2} mb={2}>
                       <Divider bgColor="shade.main" />
-                      <Text fontSize="lg">Subtasks</Text>
+                      <Text fontSize="lg" fontWeight={'semibold'}>
+                        Subtasks
+                      </Text>
                       <Divider bgColor="shade.main" />
                     </Flex>
                     {children}
-                  </>
+                  </Flex>
                 )}
                 inputs={({ description }) => {
                   return (
                     <Flex alignItems="center" gap="1">
                       <Input
                         name={description}
-                        label={'Subtask'}
+                        hideLabel={true}
                         placeholder="add subtask"
                       />
                       <IconButton
@@ -150,7 +139,7 @@ export const useTaskModal = () => {
               <SubmitBtn w="100%">Create task</SubmitBtn>
             </Form>
           )}
-        </ChakraFormWrapper>
+        />
       ),
     });
   return { openTaskModal };

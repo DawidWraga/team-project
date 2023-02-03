@@ -28,6 +28,7 @@ import { motion } from 'framer-motion';
 import moment from 'moment';
 import { taskController } from 'lib-client/controllers';
 import { BsClock } from 'react-icons/bs';
+import { DraggableWrapper } from 'components/DragNDrop';
 
 const tagToColorMap = {
   design: 'cyan.500',
@@ -40,26 +41,26 @@ export function Task(props) {
   const { mutateAsync: deleteTask } = taskController.useMutation('delete');
   const { mutateAsync: updateTask } = taskController.useMutation('update');
 
-  const Assignees = useCallback(() => {
-    return (
-      <AvatarGroup size="xs" max={5} alignContent="left" gap="1">
-        {task?.assignees?.map((user) => {
-          return (
-            <Tooltip key={user.id} label={user.fullName}>
-              <Avatar
-                size="xs"
-                borderColor="grey.50"
-                name={user.fullName}
-                // src={user.userIcon}
-                loading="eager"
-                // loading="lazy"
-              />
-            </Tooltip>
-          );
-        })}
-      </AvatarGroup>
-    );
-  }, []);
+  // const Assignees = useCallback(() => {
+  //   return (
+  //     <AvatarGroup size="xs" max={5} alignContent="left" gap="1">
+  //       {task?.assignees?.map((user) => {
+  //         return (
+  //           <Tooltip key={user.id} label={user.fullName}>
+  //             <Avatar
+  //               size="xs"
+  //               borderColor="grey.50"
+  //               name={user.fullName}
+  //               // src={user.userIcon}
+  //               loading="eager"
+  //               // loading="lazy"
+  //             />
+  //           </Tooltip>
+  //         );
+  //       })}
+  //     </AvatarGroup>
+  //   );
+  // }, []);
 
   const menuIcon = (
     <Menu placement="left-start" offset={[0, 0]} w="30px">
@@ -99,129 +100,89 @@ export function Task(props) {
     </ButtonGroup>
   );
 
-  // const [avatarMax,setAvatarMax] = useState(3)
-
   const getTaskWithoutRelations = ({ assignees, ...task }) => ({ ...task });
 
   return (
-    <Draggable
-      key={task.id}
-      draggableId={JSON.stringify(getTaskWithoutRelations(task))}
+    <DraggableWrapper
+      id={JSON.stringify(getTaskWithoutRelations(task))}
       index={index}
-      id={index}
+      dragContainerProps={({ isDragging }) => ({
+        sx: {
+          borderWidth: '1px',
+          borderColor: 'blackAlpha.200',
+          shadow: 'sm',
+          transition: 'box-shadow 1s',
+          w: '100%',
+          display: 'inline-block',
+          px: '2.5',
+          py: '2',
+          positon: 'relative',
+          userSelect: 'none',
+          padding: 1 * 2.5,
+          margin: `0 0 ${1}px 0`,
+          backgroundColor: 'white',
+          boxShadow: isDragging ? '0px 0px 0px 1px #3182ce' : '0px 0px 0px 0px #FFF',
+        },
+      })}
     >
-      {(provided, snapshot) => (
-        <Box
-          // ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          ref={provided.innerRef}
-          // isDragging={snapshot.isDragging}
-          // as={motion.div}
-          // drag
-          // borderStyle="dashed"
-          borderWidth="1px"
-          borderColor="blackAlpha.200"
-          shadow="sm"
-          transition="box-shadow 1s"
-          // borderColor="gray"
-          // whileHover={{ borderWidth: '1px' }}
-          // dragMomentum={false}
-          // dragTransition={{ bounceStiffness: 800, bounceDamping: 10 }}
-          // whileTap={{ scale: 0.99 }}
-          w="1/3"
-          display="inline-block"
-          px="2.5"
-          py="2"
-          positon="relative"
-          style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
-          // shadow={'xl'}
-          // boxShadow={'outline'}
+      <Flex flexDir="column" margin={1} position="relative">
+        <Box position="absolute" right="-3" top="-2">
+          {menuIcon}
+        </Box>
+
+        <Text
+          fontSize={'xl'}
+          textAlign="left"
+          textColor="gray.800"
+          fontWeight="semibold"
+          mb="1"
         >
-          <Flex flexDir="column" margin={1} position="relative">
-            <Box position="absolute" right="-3" top="-2">
-              {menuIcon}
-            </Box>
-            {/* <Box pt="4"></Box> */}
+          {task.title} ({task.id})
+        </Text>
+        <Text
+          as={Flex}
+          alignItems="center"
+          fontSize="sm"
+          fontWeight="normal"
+          textColor="gray.600"
+        >
+          <FaClock display="inline" />
+          {moment(task.dueDate).format('DD/MM/YYYY')}
+        </Text>
+        <Text fontSize="sm" fontWeight="normal" textColor="gray.600">
+          {task.description}
+        </Text>
+        <Text fontSize="sm" fontWeight="normal" textColor="gray.600">
+          {task.status.label}
+        </Text>
+      </Flex>
+      <Divider borderColor="gray.400"></Divider>
 
-            <Text
-              fontSize={'xl'}
-              textAlign="left"
-              textColor="gray.800"
-              fontWeight="semibold"
-              mb="1"
-            >
-              {task.title} ({task.id})
-            </Text>
-            <Text
-              as={Flex}
-              alignItems="center"
-              fontSize="sm"
-              fontWeight="normal"
-              textColor="gray.600"
-            >
-              <FaClock display="inline" />
-              {moment(task.dueDate).format('DD/MM/YYYY')}
-            </Text>
-            <Text fontSize="sm" fontWeight="normal" textColor="gray.600">
-              {task.description}
-            </Text>
-            <Text fontSize="sm" fontWeight="normal" textColor="gray.600">
-              {task.status.label}
-            </Text>
-          </Flex>
-          <Divider borderColor="gray.400"></Divider>
-
-          <Flex alignItems="center" py="1.5" px="1">
-            <Assignees />
-            <Spacer />
-            {/* <Flex pt="1px" gap="2" alignItems="center">
+      <Flex alignItems="center" py="1.5" px="1">
+        <AvatarGroup size="xs" max={5} alignContent="left" gap="1">
+          {task?.assignees?.map((user) => {
+            return (
+              <Tooltip key={user.id} label={user.fullName}>
+                <Avatar
+                  size="xs"
+                  borderColor="grey.50"
+                  name={user.fullName}
+                  // src={user.userIcon}
+                  loading="eager"
+                  // loading="lazy"
+                />
+              </Tooltip>
+            );
+          })}
+        </AvatarGroup>
+        <Spacer />
+        {/* <Flex pt="1px" gap="2" alignItems="center">
               <FaComments size="24px" />
               <Text>{task.comments}</Text>
             </Flex> */}
-          </Flex>
+      </Flex>
 
-          <Spacer />
-        </Box>
-      )}
-    </Draggable>
+      <Spacer />
+    </DraggableWrapper>
   );
 }
-
-const grid = 1;
-export const getItemStyle = (isDragging, draggableStyle) => ({
-  // some basic styles to make the items look a bit nicer
-  userSelect: 'none',
-  padding: grid * 2.5,
-  margin: `0 0 ${grid}px 0`,
-
-  // background: isDragging ? 'lightgreen' : 'white',
-  // change background colour if dragging
-  backgroundColor: 'white',
-  // transition: 'box-shadow 1s',
-
-  ...(isDragging && {
-    // background: 'blue',
-    // shadow: 'sm',
-    boxShadow: '0px 0px 0px 1px #3182ce',
-    // border: '1px solid gray',
-  }),
-  ...(!isDragging && {
-    boxShadow: '0px 0px 0px 0px #FFF',
-
-    // shadow: 'sm',
-    // boxShadow: '0px 0px 15px 2px rgba(150,82,0,0.0)',
-    // background: 'white',
-  }),
-
-  // styles we need to apply on draggables
-  ...draggableStyle,
-});
-export const getListStyle = (isDraggingOver) => ({
-  // background: isDraggingOver ? 'lightblue' : '#eeeced99',
-  background: '#eeeced33',
-  // boxShadow: isDraggingOver ? 'darklg' : 'sm',
-
-  padding: grid,
-  width: 'auto',
-});

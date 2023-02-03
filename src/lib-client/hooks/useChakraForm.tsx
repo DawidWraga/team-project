@@ -75,7 +75,7 @@ export interface IInputListProps<TFieldValues extends FieldValues = FieldValues>
   name: string;
   inputs: (names: Record<any, any>) => JSX.Element;
   onChange?: (items: any[]) => any;
-  ConditionalWrapper?: (props: any) => JSX.Element;
+  ConditionalWrapper?: (props: { children: React.ReactNode }) => JSX.Element;
 }
 
 interface UpdateSchema<TFieldValues extends FieldValues> {
@@ -277,7 +277,7 @@ export const useChakraForm = <
         : true;
 
       return (
-        <Controller
+        <Controller<TFieldValues>
           name={name as Path<TFieldValues>}
           key={name}
           control={useFormReturn.control}
@@ -292,7 +292,7 @@ export const useChakraForm = <
             } as typeof field;
 
             const defaults: ChakraInputProps = {
-              placeholder: ' ',
+              placeholder: placeholder || ' ',
               type,
               borderColor: 'blackAlpha.500',
               // bgColor: 'hsl(204, 20%,97%)',
@@ -372,9 +372,13 @@ export const useChakraForm = <
     [useFormReturn.reset]
   );
 
+  const inputListDefaultProps = {
+    ConditionalWrapper: ({ children }) => <>{children}</>,
+  };
+
   const InputList = (props: IInputListProps<TFieldValues>) => {
     const { name, inputs, onChange, ConditionalWrapper } = {
-      ConditionalWrapper: ({ children }) => <>{children}</>,
+      ...inputListDefaultProps,
       ...props,
     };
 
@@ -497,4 +501,18 @@ export function ChakraFormWrapper<
   const useFormReturn = useChakraForm<TFieldValues, TContext>(props);
 
   return props.children(useFormReturn);
+}
+
+export function ChakraForm<
+  TFieldValues extends FieldValues = FieldValues,
+  TContext = any
+>(
+  props: UseChakraFormProps<TFieldValues, TContext> & {
+    render: (props: UseChakraFormReturn<TFieldValues, TContext>) => JSX.Element;
+  }
+) {
+  const useFormReturn = useChakraForm<TFieldValues, TContext>(props);
+  const View = props.render;
+
+  return <View {...useFormReturn} />;
 }

@@ -4,6 +4,7 @@ import { Task, getListStyle } from 'views/task/Task';
 import { MdAddCircle } from 'react-icons/md';
 import { ITask } from 'lib-client/controllers';
 import { Droppable } from 'react-beautiful-dnd';
+import { DroppableWrapper } from 'components/DragNDrop';
 
 const statusToColorMap = {
   todo: 'red.500',
@@ -21,11 +22,10 @@ interface IProps {
     id: number;
     projectId?: number;
   };
-  index: number;
 }
 
 export function KanbanCol(props: IProps) {
-  const { tasks, status, index } = { tasks: [], ...props };
+  const { tasks, status } = { tasks: [], ...props };
 
   if (status.projectId) delete status.projectId;
 
@@ -51,7 +51,6 @@ export function KanbanCol(props: IProps) {
         mx="0.5px"
         borderColor={statusToColorMap[status.label]}
       >
-        <div>test</div>
         <Text
           pl="0"
           fontSize={'lg'}
@@ -59,6 +58,9 @@ export function KanbanCol(props: IProps) {
           textTransform="uppercase"
           fontWeight="semibold"
           textAlign="center"
+          onClick={() => {
+            console.log(JSON.stringify(status));
+          }}
         >
           {status.label}
         </Text>
@@ -66,34 +68,23 @@ export function KanbanCol(props: IProps) {
           {tasks?.length || 0}
         </Tag>
       </Paper>
-      <Droppable
-        // key={'droppable-key-' + status.id}
-
-        droppableId={JSON.stringify(status)}
+      <DroppableWrapper
+        id={JSON.stringify(status)}
+        dropContainerProps={({ isDraggingOver }) => ({
+          // background: isDraggingOver ? 'lightblue' : '#eeeced99',
+          // boxShadow: isDraggingOver ? 'darklg' : 'sm',
+          background: '#eeeced33',
+          padding: 1,
+          width: 'auto',
+          flexDir: 'column',
+          h: '100%',
+        })}
       >
-        {(provided, snapshot) => (
-          <Flex
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-            style={getListStyle(snapshot.isDraggingOver)}
-            // isDraggingOver={snapshot.isDraggingOver}
-            key={'flex-key-' + status.id}
-            flexDir={'column'}
-            // h="100%"
-            h="100%"
-            // justifySelf="stretch"
-            w="100%"
-          >
-            {tasks.length &&
-              tasks.map((task, i) => {
-                // console.log(task);
-                // if (task === undefined) console.log(i);
-                if (task?.id) return <Task key={task.id} task={task} index={i} />;
-              })}
-            {provided.placeholder}
-          </Flex>
-        )}
-      </Droppable>
+        {Boolean(tasks.length) &&
+          tasks.map((task, i) => {
+            if (task?.id) return <Task key={task.id} task={task} index={i} />;
+          })}
+      </DroppableWrapper>
     </Flex>
   );
 }

@@ -30,7 +30,8 @@ export default function ProjectKanbanPage() {
     },
   };
 
-  const { data: currentProject } = projectController.useQuery('findUnique', {
+
+  const { data: currentProject, } = projectController.useQuery('findUnique', {
     prismaProps: projectPrismaProps,
     cacheTime: 60 * 60 * 1000,
     enabled: Boolean(projectId),
@@ -65,6 +66,7 @@ export default function ProjectKanbanPage() {
   const { mutateAsync: updateTask } = taskController.useMutation('update', {
     mode: 'optimistic',
     changeUiKey: ['task', 'findMany', { prismaProps: taskPrismaProps }] as any,
+    changeUiType: 'array',
   });
 
   const { useSetOptionBar, leftOffset, sideNavIsOpen } = useLayoutStore();
@@ -138,41 +140,40 @@ export default function ProjectKanbanPage() {
         ...task,
         status: newStatus,
       };
-      console.log({ task, newStatus, newTask, statusToOrderedTaskIds, prevStatus });
+      // console.log({ task, newStatus, newTask, statusToOrderedTaskIds, prevStatus });
 
-      // 1. Remove the task from the previous status' array
-      statusToOrderedTaskIds[prevStatus.id] = statusToOrderedTaskIds[
-        prevStatus.id
-      ]?.filter((id) => id !== newTask.id);
-      // 2. Add the task to the new status' array
-      statusToOrderedTaskIds[newStatus.id].push(newTask.id);
+      // // 1. Remove the task from the previous status' array
+      // statusToOrderedTaskIds[prevStatus.id] = statusToOrderedTaskIds[
+      //   prevStatus.id
+      // ]?.filter((id) => id !== newTask.id);
+      // // 2. Add the task to the new status' array
+      // statusToOrderedTaskIds[newStatus.id].push(newTask.id);
 
       updateTask(newTask);
     }
 
-    if (true) {
-      const reordered = {
-        ...(statusToOrderedTaskIds || {}),
-        [newStatus.id]: reorder(
-          statusToOrderedTaskIds[newStatus.id] || [],
-          source.index,
-          destination.index
-        ),
-      };
+    // if (true) {
+    //   const reordered = {
+    //     ...(statusToOrderedTaskIds || {}),
+    //     [newStatus.id]: reorder(
+    //       statusToOrderedTaskIds[newStatus.id] || [],
+    //       source.index,
+    //       destination.index
+    //     ),
+    //   };
 
-      console.log('==============TASKS===============');
-      console.log('prev');
-      console.table(statusToOrderedTaskIds);
-      console.log('new');
-      console.table(reordered);
-      console.log('==================================');
+    //   console.log('==============TASKS===============');
+    //   console.log('prev');
+    //   console.table(statusToOrderedTaskIds);
+    //   console.log('new');
+    //   console.table(reordered);
+    //   console.log('==================================');
 
-      updateProject({ id: projectId, statusToOrderedTaskIds: reordered });
-    }
+    //   updateProject({ id: projectId, statusToOrderedTaskIds: reordered });
+    // }
   }
 
   if (!currentProject) return <>loading...</>;
-
 
   // function getTaskById(id) {
   //   return tasks.find((t) => t.id === id);
@@ -190,6 +191,7 @@ export default function ProjectKanbanPage() {
 
   function getRelevantTasks(statusId) {
     if (!tasks || !currentProject) return [];
+    return tasks?.filter((t) => t.status.id === statusId) || [];
 
     const ordered = currentProject?.statusToOrderedTaskIds?.[statusId];
     if (!ordered) {
@@ -261,7 +263,6 @@ export default function ProjectKanbanPage() {
                 key={status.id}
                 status={status}
                 tasks={getRelevantTasks(status.id)}
-                index={i}
               />
             );
           })}

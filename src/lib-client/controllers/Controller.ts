@@ -120,7 +120,7 @@ export class Controller<TModel> {
     const { changeQueryState } = useChangeQueryState({
       changeUiKey,
       query,
-      changeUiType: changeUiKey as any,
+      changeUiType,
     } as any);
 
     const { resourceId } = useUserStore();
