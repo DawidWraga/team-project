@@ -1,3 +1,34 @@
+
+
+
+* Client side controller for sending query/mutation requests to ApiController.
+* 1. Client side event (view) triggers useQuery or useMutation function call
+* 2. Controller sends requests to ApiController
+* 3. Controller receives response from ApiController
+* 4. Controller provides services to client/view
+
+* Server side controller for interacting with database.
+* 1. Controller sends requests to ApiController
+* 2. ApiController executes prisma query
+* 3. Prisma interacts with database and returns response
+* 4. ApiController returns Prisma response to Controller
+
+
+```mermaid
+sequenceDiagram
+User->>Controller: Triggers event (view)
+Controller->>ApiController: Sends request (query/mutation)
+ApiController->>Prisma: Executes prisma query
+Prisma->>Database: Interacts with database
+Database-->>Prisma: Returns response
+Prisma-->>ApiController: Returns response to ApiController
+ApiController-->>Controller: Returns response to Controller
+Controller-->>User: Provides services to client/view
+
+```
+
+
+
 ## ============= commit messages ==========
 
 feat: add hat wobble

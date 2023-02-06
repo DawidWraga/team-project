@@ -1,4 +1,3 @@
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import {
   Avatar,
   AvatarGroup,
@@ -6,7 +5,6 @@ import {
   Text,
   Button,
   ButtonGroup,
-  Center,
   Divider,
   Flex,
   Spacer,
@@ -15,20 +13,15 @@ import {
   MenuList,
   MenuItem,
   IconButton,
-  Tag,
   Tooltip,
 } from '@chakra-ui/react';
-import { FaClock, FaComments } from 'react-icons/fa';
+import { FaClock } from 'react-icons/fa';
 import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
 
 import { BiDotsVerticalRounded } from 'react-icons/bi';
-import React, { useCallback } from 'react';
-import { Paper } from 'components/Paper';
-import { motion } from 'framer-motion';
 import moment from 'moment';
-import { taskController } from 'lib-client/controllers';
-import { BsClock } from 'react-icons/bs';
 import { DraggableWrapper } from 'components/DragNDrop';
+import { ControllerWrapper } from 'lib-client/controllers/Controller';
 
 const tagToColorMap = {
   design: 'cyan.500',
@@ -38,8 +31,10 @@ const tagToColorMap = {
 export function Task(props) {
   const { task, index } = props;
 
-  const { mutateAsync: deleteTask } = taskController.useMutation('delete');
-  const { mutateAsync: updateTask } = taskController.useMutation('update');
+  // const { mutateAsync: deleteTask } = controller.useMutation({
+  //   query: 'delete',
+  //   model: 'task',
+  // });
 
   // const Assignees = useCallback(() => {
   //   return (
@@ -72,10 +67,14 @@ export function Task(props) {
           <AiFillEdit />
           <Text pl="4px">Edit</Text>
         </MenuItem>
-        <MenuItem onClick={() => deleteTask({ id: task.id })}>
-          <AiFillDelete />
-          <Text pl="4px">Delete</Text>
-        </MenuItem>
+        <ControllerWrapper model="task" query="delete">
+          {({ mutateAsync: deleteTask }) => (
+            <MenuItem onClick={() => deleteTask({ id: task.id })}>
+              <AiFillDelete />
+              <Text pl="4px">Delete</Text>
+            </MenuItem>
+          )}
+        </ControllerWrapper>
       </MenuList>
     </Menu>
   );

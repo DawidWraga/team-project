@@ -10,15 +10,15 @@ import {
 } from 'prisma/zod';
 import { z } from 'zod';
 
-export type IExample = z.infer<typeof ExampleModel>;
-export type ITask = z.infer<typeof TaskModel>;
-export type IUser = z.infer<typeof UserModel>;
-export type IProject = z.infer<typeof ProjectModel>;
+// export type IExample = z.infer<typeof ExampleModel>;
+// export type ITask = z.infer<typeof TaskModel>;
+// export type IUser = z.infer<typeof UserModel>;
+// export type IProject = z.infer<typeof ProjectModel>;
 
-export const exampleController = new Controller<IExample>('example', {});
-export const taskController = new Controller<CompleteTask>('task');
-export const userController = new Controller<CompleteUser>('user');
-export const projectController = new Controller<CompleteProject>('project');
+// export const exampleController = new Controller<IExample>('example', {});
+// export const taskController = new Controller<CompleteTask>('task');
+// export const userController = new Controller<CompleteUser>('user');
+// export const projectController = new Controller<CompleteProject>('project');
 
 // also, return query key from useQuery in case we want to use it for changeUiKey
 // also, change queryKey and changeUiKey to accept objects as well as strings
@@ -36,11 +36,11 @@ export const projectController = new Controller<CompleteProject>('project');
 
 // all configs specified in Controller.ts
 // priority is:
-// 1. function args (and generics)
-// 2. model.query
-// 3. anyModel.query
-// 4. model.anyReadQuery / model.anyWriteQuery
 // 5. anyModel.anyReadQuery / anyModel.anyWriteQuery
+// 4. model.anyReadQuery / model.anyWriteQuery
+// 3. anyModel.query
+// 2. model.query
+// 1. function args (and generics)
 
 //must also specify type of data returned in configs ^^
 

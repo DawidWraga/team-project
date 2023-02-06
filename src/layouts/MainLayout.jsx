@@ -7,18 +7,22 @@ import Header from 'layouts/Header';
 import { LAYOUT_DISABLED_ROUTES } from 'lib-client/constants';
 import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
 import { getLeftOffset } from 'lib-client/stores/LayoutStore';
+import { Loading } from '@saas-ui/react';
 
 export default function MainLayout(props) {
   const { children } = props;
 
   const { topOffset, bottomOffset, sideNavIsOpen } = useLayoutStore();
 
-  const leftOffset = useIsHydrated() && getLeftOffset && getLeftOffset(sideNavIsOpen);
+  const isHydrated = useIsHydrated();
+
+  const leftOffset = isHydrated && getLeftOffset && getLeftOffset(sideNavIsOpen);
 
   const router = useRouter();
 
   // hide layout on specified pages
   if (LAYOUT_DISABLED_ROUTES.includes(router.pathname)) return <>{children}</>;
+  if (!isHydrated) return <Loading />;
 
   return (
     <>

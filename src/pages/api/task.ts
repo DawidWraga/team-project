@@ -1,15 +1,12 @@
 import { Prisma } from '@prisma/client';
-import { ITask } from 'lib-client/controllers';
 import { createApiHandler } from 'lib-server/ApiController';
 import { prisma } from 'lib-server/prisma';
+import { CompleteTask } from 'prisma/zod';
 import { z } from 'zod';
 
-export default createApiHandler<ITask>('task', {
-  findMany: {},
-  default: {},
+export default createApiHandler<CompleteTask>('task', {
   create: {
-    queryFn({ projectId, subTask, assignees, statusId, ...options }: any) {
-      console.log(assignees);
+    queryFn({ projectId, subTask, assignees, statusId, ...options }) {
       return prisma.task.create({
         data: {
           ...options,

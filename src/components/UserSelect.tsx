@@ -10,7 +10,8 @@ import {
   FieldValues,
   Path,
 } from 'react-hook-form';
-import { userController } from 'lib-client/controllers';
+
+import { controller } from 'lib-client/controllers/Controller';
 
 export const userOptionSchema = z.object({
   label: z.string(),
@@ -53,7 +54,9 @@ export function UserSelect({
     data: users,
     isLoading,
     isSuccess,
-  } = userController.useQuery('findMany', {
+  } = controller.useQuery({
+    model: 'user',
+    query: 'findMany',
     staleTime: 60 * 60 * 100000,
     // initialData: userDummyData as any,
     prismaProps: {

@@ -3,12 +3,10 @@ import 'styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { Slide } from 'react-toastify';
 import { Suspense, useState } from 'react';
-import { ChakraProvider } from '@chakra-ui/react';
 import { theme } from 'styles/chakra-theme';
 import 'styles/nprogress.css';
 import NProgress from '../components/nprogress';
 import Head from 'next/head';
-import Loading from 'components/loading';
 import MainLayout from 'layouts/MainLayout';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -17,6 +15,8 @@ import { useAuthGuard } from 'lib-client/hooks/useAuthGuard';
 import { useSyncPageToRoute } from 'lib-client/hooks/useSyncPageToRoute';
 import { SaasProvider } from '@saas-ui/react';
 import NextLink from 'next/link';
+import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
+import { Loading } from '@saas-ui/react';
 
 const Link = (props) => {
   return <NextLink {...props} />;
@@ -26,6 +26,7 @@ function MyApp({ Component, pageProps }) {
   const [queryClient] = useState(() => new QueryClient());
   const { loading } = useAuthGuard();
   useSyncPageToRoute();
+  const isHydrated = useIsHydrated();
 
   return (
     <>
@@ -50,7 +51,7 @@ function MyApp({ Component, pageProps }) {
       />
       <Suspense fallback="loading...">
         <SaasProvider theme={theme} linkComponent={Link}>
-          {loading ? (
+          {loading || !isHydrated ? (
             <Loading />
           ) : (
             <QueryClientProvider client={queryClient}>

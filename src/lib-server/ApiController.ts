@@ -7,11 +7,7 @@ import { mergeDeep } from 'utils/deepMerge';
 import { ZodAnyDef, z } from 'zod';
 
 /**
- * Server side controller for interacting with database.
- * 1. Controller sends requests to ApiController
- * 2. ApiController executes prisma query
- * 3. Prisma interacts with database and returns response
- * 4. ApiController returns Prisma response to Controller
+ * Server side controller. Receives request from controller, executes prisma query, returns prisma result to controller.
  *
  * @param model prisma model which ApiController targets
  * @param customQueryConfigs config objects to customize default behaviour;
@@ -46,9 +42,10 @@ export class ApiController<TModel> {
       if (logDataBeforeQuery) {
         console.log({
           model: this.model,
-          query: this.baseQueryConfigs,
-          options: prismaProps,
-          config,
+          query,
+          prismaProps,
+          queryConfig: config,
+          queryFn,
         });
       }
 
@@ -60,6 +57,16 @@ export class ApiController<TModel> {
       res.status(400).send(getAxiosErrorMessage(e));
     }
   });
+
+  /**
+   *
+   * @param query
+   *
+   * @param options
+   * @return config object for specific query
+   *
+   * @description merges configs to select most specific and fallback to highest possible specificity
+   */
 
   getConfig(query: anyQuery, options?: Record<any, any>): IQueryConfig<TModel> {
     /**
@@ -98,7 +105,7 @@ export class ApiController<TModel> {
   // to access class 'this' eg this.model, must use ARROW FUNCTION =>
 
   whereWrapperQuery = (prismaProps) => {
-    return this.prismaModel.findMany({
+    return (prisma[this.model] as any)[this.currentQuery]({
       where: {
         ...prismaProps,
       },

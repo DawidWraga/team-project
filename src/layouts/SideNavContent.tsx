@@ -4,11 +4,13 @@ import pages from 'config/pages';
 import { getCurrentUser } from 'lib-client/controllers/auth';
 import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
 import { NavItem } from 'layouts/NavItem';
-import { projectController } from 'lib-client/controllers';
+import { controller } from 'lib-client/controllers/Controller';
 import { getDateParams } from 'utils/getDateParams';
 
 const usePagesConfig = () => {
-  const { data: projects } = projectController.useQuery('findMany', {
+  const { data: projects } = controller.useQuery({
+    model: 'project',
+    query: 'findMany',
     prismaProps: {
       select: {
         title: true,

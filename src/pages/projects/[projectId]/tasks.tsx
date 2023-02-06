@@ -2,7 +2,7 @@ import { Box, Button, Flex } from '@chakra-ui/react';
 import { DragDropContext } from 'react-beautiful-dnd';
 
 import { DateSelector } from 'components/DateSelector';
-import { projectController, taskController } from 'lib-client/controllers';
+// import { projectController, taskController } from 'lib-client/controllers';
 import { useUrlData } from 'lib-client/hooks/useUrlData';
 import { useUrlDateToPrismaOptions } from 'lib-client/hooks/useUrlDateToPrismaOptions';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
@@ -10,6 +10,7 @@ import { KanbanCol } from 'views/task/KanbanCol';
 import { useProjectModal } from 'views/task/useProjectModal';
 import { useTaskModal } from 'views/task/useTaskModal';
 import { useEffect, useState } from 'react';
+import { controller } from 'lib-client/controllers/Controller';
 
 export default function ProjectKanbanPage() {
   const { projectId } = useUrlData<{ projectId: number }>('dynamicPath');
@@ -30,14 +31,17 @@ export default function ProjectKanbanPage() {
     },
   };
 
-
-  const { data: currentProject, } = projectController.useQuery('findUnique', {
+  const { data: currentProject } = controller.use({
+    query: 'findUnique',
+    model: 'project',
     prismaProps: projectPrismaProps,
     cacheTime: 60 * 60 * 1000,
     enabled: Boolean(projectId),
   });
 
-  const { mutateAsync: updateProject } = projectController.useMutation('update', {
+  const { mutateAsync: updateProject } = controller.useMutation({
+    model: 'project',
+    query: 'update',
     mode: 'optimistic',
     changeUiKey: ['project', 'findUnique', { prismaProps: projectPrismaProps }] as any,
     changeUiType: 'object',
@@ -58,12 +62,16 @@ export default function ProjectKanbanPage() {
     },
   };
 
-  const { data: tasks } = taskController.useQuery('findMany', {
+  const { data: tasks } = controller.useQuery({
+    model: 'task',
+    query: 'findMany',
     prismaProps: taskPrismaProps,
     enabled: Boolean(projectId),
   });
 
-  const { mutateAsync: updateTask } = taskController.useMutation('update', {
+  const { mutateAsync: updateTask } = controller.use({
+    model: 'task',
+    query: 'update',
     mode: 'optimistic',
     changeUiKey: ['task', 'findMany', { prismaProps: taskPrismaProps }] as any,
     changeUiType: 'array',
@@ -111,11 +119,13 @@ export default function ProjectKanbanPage() {
 
   async function onDragEnd({ draggableId, source, destination }) {
     const isDroppedOutsideList = !destination;
+    if (isDroppedOutsideList) return;
+
     const noChangesMade =
       source.droppableId === destination.droppableId &&
       source.index === destination.index;
 
-    if (isDroppedOutsideList || noChangesMade) return;
+    if (noChangesMade) return;
 
     const task = JSON.parse(draggableId);
     if (task.statusId) delete task.statusId;

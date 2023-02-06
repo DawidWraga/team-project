@@ -7,7 +7,6 @@ import {
   Text,
   Textarea,
 } from '@chakra-ui/react';
-import { projectController, taskController } from 'lib-client/controllers';
 import { ChakraForm, ChakraFormWrapper } from 'lib-client/hooks/useChakraForm';
 import { TaskModel } from 'prisma/zod';
 import { useModalStore } from 'lib-client/stores/ModalStore';
@@ -16,6 +15,7 @@ import { useUrlData } from 'lib-client/hooks/useUrlData';
 import { z } from 'zod';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import { UserSelect, multiUserOptionsSchema } from 'components/UserSelect';
+import { controller } from 'lib-client/controllers/Controller';
 
 const SubtaskSchema = z.object({
   description: z.string(),
@@ -23,7 +23,10 @@ const SubtaskSchema = z.object({
 
 export const useTaskModal = () => {
   const { setContent, onClose } = useModalStore();
-  const { mutateAsync: createTask } = taskController.useMutation('create', {});
+  const { mutateAsync: createTask } = controller.useMutation({
+    model: 'task',
+    query: 'create',
+  });
   const { projectId } = useUrlData<{ projectId: number }>('dynamicPath');
   const projectPrismaProps = {
     where: {
@@ -35,12 +38,18 @@ export const useTaskModal = () => {
     },
   };
 
-  const { data: currentProject } = projectController.useQuery('findUnique', {
+  const { data: currentProject } = controller.use({
+    query: 'findUnique',
+    model: 'project',
     prismaProps: projectPrismaProps,
     enabled: Boolean(projectId),
     cacheTime: 60 * 60 * 1000,
   });
-  const { mutateAsync: updateProject } = projectController.useMutation('update', {});
+
+  const { mutateAsync: updateProject } = controller.use({
+    model: 'project',
+    query: 'update',
+  });
 
   const openTaskModal = () =>
     setContent &&
