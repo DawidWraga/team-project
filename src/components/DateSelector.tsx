@@ -8,7 +8,6 @@ import { useUrlData } from 'lib-client/hooks/useUrlData';
 import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
 import { useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { z } from 'zod';
-import { colors } from 'styles/chakra-theme';
 
 interface IProps {
   saveChangesBeforeRouting?: () => Promise<void>;
@@ -87,9 +86,10 @@ export function DateSelector(props: IProps) {
     isHydrated && router.push({ query });
   };
 
-  const dateUnit = watch('date.value');
+  const dateUnit = watch('date').value;
 
   useEffect(() => {
+    console.log(dateUnit);
     modifyDateAndRoute();
   }, [dateUnit]);
 
@@ -139,18 +139,32 @@ export function DateSelector(props: IProps) {
                           borderRadius: 0,
                           color: 'white',
                           textAlign: 'center',
+                          transition: 'all 0.2s',
                           '&:hover': {
                             cursor: 'pointer',
+                            bgColor: 'blue.900',
                           },
+                          height: '32px',
                         }),
                         valueContainer: (prev) => ({
                           ...prev,
                           bgColor: 'blue.800',
                           textAlign: 'center',
                           borderX: '1px solid lightGray',
-                          my: 1,
+                          mt: 1,
                           justifyContent: 'center',
-                          // px: 'auto',
+                          // height: '90%',
+                          alignItems: 'center',
+                          height: '24px',
+                          transition: 'all 0.2s',
+
+                          '&:hover': {
+                            bgColor: 'blue.900',
+                          },
+
+                          // pb: 3,
+
+                          // px: 'auto'
                           // mx: 'auto',
                           // pl: 3,
                         }),

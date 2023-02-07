@@ -268,7 +268,8 @@ export class Controller {
 
     if (query.includes('find')) {
       type Query = TQuery extends readQuery ? TQuery : never;
-      const useQueryReturn = this.useQuery<Query, TModelName>(options as any);
+      type MultiQuery = Query extends 'findMany' ? 'findMany' : never;
+      const useQueryReturn = this.useQuery<MultiQuery, TModelName>(options as any);
 
       return useQueryReturn as TQuery extends readQuery ? typeof useQueryReturn : never;
     } else {

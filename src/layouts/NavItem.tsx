@@ -52,7 +52,7 @@ export function NavItem(props: IProps) {
       bgColor: !isOpen && 'shade.light',
       cursor: 'pointer',
     },
-    py: '2.5',
+    py: '2',
     px: '1.5',
     mx: '5px',
     rounded: 'md',
@@ -134,7 +134,7 @@ export function NavItem(props: IProps) {
           }}
         >
           <Icon
-            fontSize="xl"
+            fontSize="lg"
             textColor={isActive ? 'white' : 'whiteAlpha.900'}
             // textColor={isActive ? 'brand.main' : 'white'}
             as={routeToIconMap[route]}
@@ -143,7 +143,7 @@ export function NavItem(props: IProps) {
             mr="3"
           />
           <Box>
-            <Text fontSize="1.15rem">{label}</Text>
+            <Text fontSize=".9rem">{label}</Text>
           </Box>
           {route === '/projects' && (
             <IconButton
@@ -219,12 +219,12 @@ export function NavItem(props: IProps) {
                       px="2"
                       // pl="1.5rem"
                       my="1px"
-                      py={2.5}
+                      py={2}
                       // bgColor={sidenavActive ? 'shade.min' : 'shade.light'}
                       _hover={{ bgColor: 'shade.light' }}
                       outline="none"
                     >
-                      <Text fontSize={15}>{page.label}</Text>
+                      <Text fontSize={12}>{page.label}</Text>
                     </Flex>
                   );
                 })}

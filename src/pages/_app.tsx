@@ -49,9 +49,10 @@ function MyApp({ Component, pageProps }) {
         theme="light"
         transition={Slide}
       />
-      <Suspense fallback="loading...">
-        <SaasProvider theme={theme} linkComponent={Link}>
-          {loading || !isHydrated ? (
+      <SaasProvider theme={theme} linkComponent={Link}>
+        <Suspense fallback={<Loading />}>
+          {/* {loading || !isHydrated ? ( */}
+          {loading ? (
             <Loading />
           ) : (
             <QueryClientProvider client={queryClient}>
@@ -64,8 +65,8 @@ function MyApp({ Component, pageProps }) {
               </Hydrate>
             </QueryClientProvider>
           )}
-        </SaasProvider>
-      </Suspense>
+        </Suspense>
+      </SaasProvider>
     </>
   );
 }

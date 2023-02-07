@@ -222,7 +222,7 @@ export default function ProjectKanbanPage() {
 
   return (
     <>
-      <Button
+      {/* <Button
         onClick={() => {
           console.table(tasks);
         }}
@@ -235,7 +235,7 @@ export default function ProjectKanbanPage() {
         }}
       >
         curr proj
-      </Button>
+      </Button> */}
 
       <Box
         display="grid"

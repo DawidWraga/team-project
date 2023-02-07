@@ -1,4 +1,3 @@
-import { projectController } from 'lib-client/controllers';
 import { useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { ProjectModel } from 'prisma/zod';
 import { useModalStore } from 'lib-client/stores/ModalStore';
@@ -12,6 +11,7 @@ import { Project } from '@prisma/client';
 import { MdSave } from 'react-icons/md';
 import { getObjectDifference } from 'utils/getObjectDifference';
 import { MinusIcon } from '@chakra-ui/icons';
+import { controller } from 'lib-client/controllers/Controller';
 
 interface IProps {
   onClose: () => void;
@@ -19,8 +19,14 @@ interface IProps {
 }
 
 const ProjectModalBody = ({ defaultValues, ...props }: IProps) => {
-  const { mutateAsync: createProject } = projectController.useMutation('create');
-  const { mutateAsync: updateProject } = projectController.useMutation('update');
+  const { mutateAsync: createProject } = controller.use({
+    query: 'create',
+    model: 'project',
+  });
+  const { mutateAsync: updateProject } = controller.use({
+    query: 'update',
+    model: 'project',
+  });
 
   const isEditing = Boolean(defaultValues);
 

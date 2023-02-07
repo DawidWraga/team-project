@@ -167,7 +167,7 @@ export function Task(props) {
                   borderColor="grey.50"
                   name={user.fullName}
                   // src={user.userIcon}
-                  loading="eager"
+                  // loading="eager"
                   // loading="lazy"
                 />
               </Tooltip>
