@@ -5,7 +5,8 @@ import { prisma } from 'lib-server/prisma';
 import { PrismaModelNames } from 'lib-server/prisma';
 import { mergeDeep } from 'utils/deepMerge';
 import { ZodAnyDef, z } from 'zod';
-
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from 'pages/api/auth/[...nextauth]';
 /**
  * Server side controller. Receives request from controller, executes prisma query, returns prisma result to controller.
  *
@@ -25,8 +26,15 @@ export class ApiController<TModel> {
   public handler = apiHandler().post(async (req, res) => {
     try {
       const { query, prismaProps }: IRequestData<TModel> = req.body;
-
       this.currentQuery = query;
+
+      const session = await getServerSession(req, res, authOptions);
+
+      if (!session) {
+        res.status(401).json({ message: 'You must be logged in.' });
+        return;
+      }
+
 
       // get handlers for specific query
       const config = this.getConfig(query, prismaProps);
@@ -104,7 +112,7 @@ export class ApiController<TModel> {
   // warning - baseQueryConfigs is object therefore resets 'this' value.
   // to access class 'this' eg this.model, must use ARROW FUNCTION =>
 
-  whereWrapperQuery = (prismaProps) => {
+  whereWrapperQuery = (prismaProps: any) => {
     return (prisma[this.model] as any)[this.currentQuery]({
       where: {
         ...prismaProps,
@@ -214,5 +222,5 @@ interface IQueryConfig<TModel> {
 }
 
 type IPartialQueryConfigs<TModel> = Partial<
-  Record<anyQuery | 'default', Partial<IQueryConfig<TModel>>>
+  Record<anyQuery | 'default' | any, Partial<IQueryConfig<TModel>>>
 >;
