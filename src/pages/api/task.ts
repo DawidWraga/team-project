@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { anyQuery } from 'lib-client/controllers/types/Controller';
 import { createApiHandler } from 'lib-server/ApiController';
 import { prisma } from 'lib-server/prisma';
 import { CompleteTask } from 'prisma/zod';
@@ -40,6 +41,14 @@ export default createApiHandler<CompleteTask>('task', {
       statusToOrderedTaskIds,
       ...data
     }) {
+      // might be able to just use same logic for both if mapping through empty array prouces same outcome
+      let assingeeVal: any = null;
+      if (assignees && assignees.length === 0) {
+        assingeeVal = { set: [] };
+      } else if (assignees && assignees.length > 0) {
+        assingeeVal = { set: [], connect: assignees?.map((user) => ({ id: user.id })) };
+      }
+
       return prisma.task.update({
         where: {
           id,
@@ -49,18 +58,32 @@ export default createApiHandler<CompleteTask>('task', {
           ...(statusToOrderedTaskIds && {
             statusToOrderedTaskIds: statusToOrderedTaskIds as Prisma.JsonObject,
           }),
-          status: {
-            connect: {
-              id: status?.id || statusId,
+          ...(statusId && {
+            status: {
+              connect: {
+                id: status?.id || statusId,
+              },
             },
-          },
-          assignees: {
-            connect: assignees?.map((user) => ({ id: user.id })) || [],
-          },
+          }),
+          ...(assignees && { assignees: assingeeVal }),
           // subTasks: {
           //   create: subTask,
           // },
         },
+      });
+    },
+  },
+  statusToCount: {
+    async queryFn(props: any) {
+      return prisma.task.groupBy({
+        where: {
+          projectId: props.projectId,
+        },
+        by: ['statusId'],
+        _count: {
+          id: true,
+        },
+        // select: { title: true },
       });
     },
   },

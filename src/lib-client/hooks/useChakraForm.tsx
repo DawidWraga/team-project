@@ -105,7 +105,7 @@ interface UseChakraFormProps<TFieldValues extends FieldValues, TContext = any>
   schema: ZodType<TFieldValues>;
   logDataBeforeSubmit?: boolean;
   dynamicSchemaObjectNames?: string[];
-  onChange?: () => void;
+  onChange?: (value: TFieldValues) => void;
 }
 
 export const useChakraForm = <

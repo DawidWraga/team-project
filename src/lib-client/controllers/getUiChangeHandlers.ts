@@ -36,7 +36,6 @@ export function useChangeQueryState(hookProps?: {
     if (changeUiType === 'array' && !item.id) (item as any).id = createItemId();
     // Optimistically update to the new value
 
-    console.log({ item, changeUiType: changeUiType || 'array', changeUiKey, query });
     queryClient.setQueryData(
       changeUiKey!,
       getUiChangeHandler(item, changeUiType || 'array')[query]
@@ -56,23 +55,22 @@ export const getUiChangeHandler = <T extends Record<'id' | any, any>>(
   if (changeUiType === 'array')
     return {
       upsert: (prev: T[] = []) => {
-        const existingIndex = prev.findIndex((it) => it?.id == newItem?.id);
-        const isNew = existingIndex === -1;
+        const prevIndex = prev.findIndex((it) => it?.id == newItem?.id);
+        const prevItem = prev[prevIndex];
+        const isNew = prevIndex === -1;
 
-        if (isNew) return [...prev, newItem];
+        if (isNew) return [...prev, { ...prevItem, ...newItem }];
         else {
           const newArr = [...prev];
-          newArr.splice(existingIndex, 1, newItem);
+          newArr.splice(prevIndex, 1, { ...prevItem, ...newItem });
           return newArr;
         }
       },
       update: (prev: T[] = []) => {
         const result = [...prev];
-        result.splice(
-          result.findIndex((item) => item && item?.id === newItem?.id),
-          1,
-          newItem
-        );
+        const prevIndex = result.findIndex((item) => item && item?.id === newItem?.id);
+        const prevItem = result[prevIndex];
+        result.splice(prevIndex, 1, { ...prevItem, ...newItem });
         return result;
       },
       delete: (prev: T[] = []) => {

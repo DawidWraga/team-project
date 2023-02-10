@@ -16,6 +16,8 @@ import { z } from 'zod';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import { UserSelect, multiUserOptionsSchema } from 'components/UserSelect';
 import { controller } from 'lib-client/controllers/Controller';
+import { DateInput } from 'components/DateInput';
+import { useEffect, useState } from 'react';
 
 const SubtaskSchema = z.object({
   description: z.string(),
@@ -26,7 +28,9 @@ export const useTaskModal = () => {
   const { mutateAsync: createTask } = controller.useMutation({
     model: 'task',
     query: 'create',
+    includeResourceId: false,
   });
+
   const { projectId } = useUrlData<{ projectId: number }>('dynamicPath');
   const projectPrismaProps = {
     where: {
@@ -67,10 +71,18 @@ export const useTaskModal = () => {
           defaultValues={{
             title: 'title1',
             description: 'description1',
-            dueDate: new Date(),
+            // dueDate: new Date(),
           }}
           dynamicSchemaObjectNames={['subTask']}
-          render={({ Form, Input, SubmitBtn, DebugPanel, updateSchema, InputList }) => (
+          render={({
+            Form,
+            Input,
+            SubmitBtn,
+            DebugPanel,
+            updateSchema,
+            InputList,
+            setValue,
+          }) => (
             <Form
               onSubmit={({ assignees, ...data }) => {
                 const firstStatus = currentProject?.statuses[0].id;
@@ -92,6 +104,8 @@ export const useTaskModal = () => {
                   <Textarea {...field} {...(defaults as any)} />
                 )}
               />
+              {/* <DateInput /> */}
+
               <Input name="dueDate" type="date" />
               <Input
                 name="assignees"

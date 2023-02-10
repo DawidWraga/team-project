@@ -11,69 +11,46 @@ import { useProjectModal } from 'views/task/useProjectModal';
 import { useTaskModal } from 'views/task/useTaskModal';
 import { useEffect, useState } from 'react';
 import { controller } from 'lib-client/controllers/Controller';
+import { useCurrentProject } from 'lib-client/hooks/useCurrentProject';
+
+export function useFilteredTasks() {
+  const { projectId } = useUrlData<{ projectId: number }>('dynamicPath');
+
+  return controller.useQuery({
+    model: 'task',
+    query: 'findMany',
+    prismaProps: {
+      where: {
+        dueDate: useUrlDateToPrismaOptions(),
+        project: {
+          id: projectId,
+        },
+      },
+      include: {
+        status: true,
+        assignees: true,
+      },
+    },
+    enabled: Boolean(projectId),
+  });
+}
 
 export default function ProjectKanbanPage() {
-  const { projectId } = useUrlData<{ projectId: number }>('dynamicPath');
   const { startDate, endDate } = useUrlData<{ startDate: string; endDate: string }>(
     'queryParams'
   );
 
-  const { openProjectModal } = useProjectModal();
   const { openTaskModal } = useTaskModal();
 
-  const projectPrismaProps = {
-    where: {
-      id: projectId,
-    },
-    include: {
-      statuses: true,
-      assignees: true,
-    },
-  };
+  const { data: currentProject } = useCurrentProject();
 
-  const { data: currentProject } = controller.use({
-    query: 'findUnique',
-    model: 'project',
-    prismaProps: projectPrismaProps,
-    cacheTime: 60 * 60 * 1000,
-    enabled: Boolean(projectId),
-  });
-
-  const { mutateAsync: updateProject } = controller.useMutation({
-    model: 'project',
-    query: 'update',
-    mode: 'optimistic',
-    changeUiKey: ['project', 'findUnique', { prismaProps: projectPrismaProps }] as any,
-    changeUiType: 'object',
-  });
-
-  // const statusLabels = currentProject?.statuses?.map((s) => s.label);
-
-  const taskPrismaProps = {
-    where: {
-      dueDate: useUrlDateToPrismaOptions(),
-      project: {
-        id: projectId,
-      },
-    },
-    include: {
-      status: true,
-      assignees: true,
-    },
-  };
-
-  const { data: tasks } = controller.useQuery({
-    model: 'task',
-    query: 'findMany',
-    prismaProps: taskPrismaProps,
-    enabled: Boolean(projectId),
-  });
+  const { data: tasks, queryKey } = useFilteredTasks();
 
   const { mutateAsync: updateTask } = controller.use({
     model: 'task',
     query: 'update',
     mode: 'optimistic',
-    changeUiKey: ['task', 'findMany', { prismaProps: taskPrismaProps }] as any,
+    changeUiKey: queryKey,
     changeUiType: 'array',
   });
 
@@ -86,23 +63,9 @@ export default function ProjectKanbanPage() {
       mr={sideNavIsOpen ? leftOffset : 0}
       transition={'margin-right 200ms ease-in-out'}
       color="shade.main"
-      // bg="white"
-      // borderBottom={'1px solid gray'}
     >
       <DateSelector />
       <Flex gap={2}>
-        {/* <Button variant={'solid'} colorScheme={'brand'} onClick={openProjectModal}>
-          new project
-        </Button>
-        <Button
-          colorScheme={'blackAlpha'}
-          variant={'solid'}
-          onClick={() => {
-            openProjectModal({ defaultValues: currentProject });
-          }}
-        >
-          Edit project
-        </Button> */}
         <Button
           colorScheme={'brand'}
           variant={'solid'}

@@ -1,16 +1,13 @@
-import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { toast } from 'react-toastify';
-import { getCurrentUser } from 'lib-client/controllers/auth';
-import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import { MdLogin } from 'react-icons/md';
 import { BrandLogoWithName } from 'components/BrandLogo';
 import { useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { z } from 'zod';
-import { executeSignIn } from 'lib-client/controllers/auth';
 import ExternalFormWrapper from 'layouts/ExternalFormWrapper';
 import { Box, Button, Checkbox, HStack } from '@chakra-ui/react';
+import { signIn } from 'next-auth/react';
+import { Loading } from '@saas-ui/react';
+import { useSession } from 'next-auth/react';
 
 const schema = z.object({
   email: z.string().min(1, { message: 'Required' }),
@@ -21,17 +18,30 @@ interface IProps {}
 export default function AuthPage(props: IProps) {
   const {} = props;
   const router = useRouter();
-
-  // If user is already signed in then change route
-  useEffect(() => {
-    const user = getCurrentUser();
-    if (user) router.replace('/');
-  }, []);
+  const { status } = useSession();
 
   const { Input, Form, SubmitBtn, Heading } = useChakraForm({ schema });
 
-  const onSubmit = async (data) => {
-    return axios.post('/api/auth', data);
+  //redirect users back to dashboard if they are already logged in
+  if (status === 'authenticated') {
+    router.replace('/dashboard');
+    return <Loading variant="fullscreen" />;
+  }
+
+  const onSubmit = async (data: any) => {
+    const res = await signIn('credentials', {
+      email: data.email,
+      password: data.password,
+      callbackUrl: 'http://localhost:3000/dashboard',
+      redirect: false,
+    });
+
+    if (res?.error) throw new Error(res.error);
+    else {
+      setTimeout(() => {
+        router.replace('/dashboard');
+      }, 200);
+    }
   };
 
   return (
@@ -45,23 +55,16 @@ export default function AuthPage(props: IProps) {
         />
       </Box>
 
-      <Heading fontWeight={600} display={{ base: 'none', lg: 'inline-block' }}>
-        Sign into Portal
-      </Heading>
-      <Form
-        onSubmit={onSubmit}
-        onServerSuccess={async (userData) => {
-          executeSignIn(userData);
-          await setTimeoutPromise(150);
+      <Heading
+        fontWeight={600}
+        display={{ base: 'none', lg: 'inline-block' }}
+        onClick={() => {
           router.push('/dashboard');
         }}
-        onServerError={() => {
-          toast.error('Invalid credentials', { position: 'top-center' });
-        }}
-        serverErrorFeedbackType={null}
-        gap="12"
-        pb={{ base: '150px', lg: '50px' }}
       >
+        Sign into Portal
+      </Heading>
+      <Form onSubmit={onSubmit} gap="12" pb={{ base: '150px', lg: '50px' }}>
         <Input name="email" type="email" />
         <Input name="password" type="password" />
         <HStack justify="space-between">

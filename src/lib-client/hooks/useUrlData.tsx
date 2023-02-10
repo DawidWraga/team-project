@@ -1,12 +1,15 @@
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 
-
 const isNumeric = (n: any) => !isNaN(n);
 
 export function useUrlData<T extends { [key: string]: string | number }>(
   type: 'dynamicPath' | 'queryParams' = 'queryParams'
-): T | undefined {
+): T {
+  // if component could load before hydration, T could be undefined.
+  // if showing loading state during hydration inside parent component (eg _app.tsx) then return will be T rather than T | undefined
+  // ): T | undefined {
+
   const router = useRouter();
   const value = useMemo(() => {
     const queryParamsStr = router.asPath.split('?').slice(1).join('');

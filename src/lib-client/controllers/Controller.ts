@@ -70,19 +70,16 @@ export class Controller {
 
     // construct standardised default query key based on query options
     // starting with model name enables predictable key for query invalidation
-    const getQueryKey = () => {
-      const queryKey: any = [model, query];
-      if (prismaProps && Object.keys(prismaProps).length) {
-        // enables automatic refresh when prismaProps change eg filtering
-        queryKey.push({
-          prismaProps,
-        });
-      }
-      return queryKey;
-    };
+    const queryKey: any = [model, query];
+    if (prismaProps && Object.keys(prismaProps).length) {
+      // enables automatic refresh when prismaProps change eg filtering
+      queryKey.push({
+        prismaProps,
+      });
+    }
 
-    return useQuery<TData, AxiosError, TData, any>({
-      queryKey: getQueryKey(),
+    const queryReturn = useQuery<TData, AxiosError, TData, any>({
+      queryKey: queryKey,
       queryFn: ({ queryKey }: any) => {
         return fetcher({
           ...fetcherConfig,
@@ -96,6 +93,8 @@ export class Controller {
       // enabled: isHydrated,
       ...useQueryOptions,
     });
+
+    return { queryKey, ...queryReturn };
   }
 
   /**
@@ -327,6 +326,11 @@ export class Controller {
     task: {
       anyReadQuery: {},
     },
+    /*
+    expense: {
+      create: {},
+    }
+    */
   };
 }
 

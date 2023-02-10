@@ -11,7 +11,7 @@ import {
 import { MdGroupAdd } from 'react-icons/md';
 import { BsPersonCircle } from 'react-icons/bs';
 import { FiLogOut } from 'react-icons/fi';
-import { signOut } from 'lib-client/controllers/auth';
+import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import UserModal from 'views/profile/UserModal';
 import InviteTeamModal from 'components/InviteTeamModal';
@@ -81,8 +81,10 @@ export default function ProfileMenu(...props) {
           <MenuItem
             icon={<FiLogOut fontSize="1.25rem" className="rotate-180" />}
             onClick={() => {
-              signOut();
-              router.replace('/auth');
+              // custom implementation of redirecting to prevent page refresh
+              signOut({ redirect: false, callbackUrl: '/auth' }).then(({ url }) => {
+                router.replace(url);
+              });
             }}
           >
             sign out

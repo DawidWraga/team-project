@@ -4,7 +4,7 @@ import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import { useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { z } from 'zod';
 import ExternalFormWrapper from 'layouts/ExternalFormWrapper';
-import { userController } from 'lib-client/controllers';
+import { controller } from 'lib-client/controllers/Controller';
 
 const defaultUserIcon =
   'https://png.pngtree.com/png-clipart/20210915/ourmid/pngtree-user-avatar-login-interface-abstract-blue-icon-png-image_3917504.jpg';
@@ -59,11 +59,14 @@ const createUserSchema = z
     }
   });
 
-export default function RegisterPage(props) {
+export default function RegisterPage(props: any) {
   const {} = props;
   const router = useRouter();
 
-  const { mutateAsync: createUser } = userController.useMutation('create');
+  const { mutateAsync: createUser } = controller.useMutation({
+    model: 'user',
+    query: 'create',
+  });
 
   const { Input, Form, SubmitBtn, trigger, DebugPanel, Heading } = useChakraForm({
     schema: createUserSchema,

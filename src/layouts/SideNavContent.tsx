@@ -45,7 +45,8 @@ export default function SideNavContent(props) {
   const pages = usePagesConfig();
 
   const relevantPages = pages.filter((page) => {
-    const role = getCurrentUser().role;
+    // const role = getCurrentUser().role;
+    const role = 'emp';
     const route = page.parentLink.route;
 
     if (role === 'emp' && route === '/users') return false;

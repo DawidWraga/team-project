@@ -22,6 +22,8 @@ import { BiDotsVerticalRounded } from 'react-icons/bi';
 import moment from 'moment';
 import { DraggableWrapper } from 'components/DragNDrop';
 import { ControllerWrapper } from 'lib-client/controllers/Controller';
+import { useModals } from '@saas-ui/react';
+import { useTaskDetailsModal } from 'views/task/useTaskDetailsModal';
 
 const tagToColorMap = {
   design: 'cyan.500',
@@ -30,6 +32,10 @@ const tagToColorMap = {
 
 export function Task(props) {
   const { task, index } = props;
+
+  const { openTaskDetailsModal } = useTaskDetailsModal(task);
+
+  const modals = useModals();
 
   // const { mutateAsync: deleteTask } = controller.useMutation({
   //   query: 'delete',
@@ -58,9 +64,13 @@ export function Task(props) {
   // }, []);
 
   const menuIcon = (
-    <Menu placement="left-start" offset={[0, 0]} w="30px">
+    <Menu placement="left-start" offset={[0, 0]}>
       <MenuButton as="div">
-        <IconButton variant="ghost" icon={<BiDotsVerticalRounded />} />
+        <IconButton
+          aria-label="task options button"
+          variant="ghost"
+          icon={<BiDotsVerticalRounded />}
+        />
       </MenuButton>
       <MenuList w="30px">
         <MenuItem>
@@ -124,7 +134,15 @@ export function Task(props) {
         },
       })}
     >
-      <Flex flexDir="column" margin={1} position="relative">
+      <Flex
+        flexDir="column"
+        margin={1}
+        position="relative"
+        onClick={(ev) => {
+          ev.stopPropagation();
+          openTaskDetailsModal();
+        }}
+      >
         <Box position="absolute" right="-3" top="-2">
           {menuIcon}
         </Box>

@@ -1,6 +1,6 @@
 import { Select, AsyncSelect } from 'chakra-react-select';
 import { keepFloatingLabelActive } from 'utils/keepFloatingLabelActive';
-import type { RefAttributes } from 'react';
+import { RefAttributes, useEffect, useRef, useState } from 'react';
 import type { GroupBase, Props as SelectProps, SelectInstance } from 'react-select';
 import { InputProps as ChakraInputProps } from '@chakra-ui/react';
 import { z } from 'zod';
@@ -12,6 +12,14 @@ import {
 } from 'react-hook-form';
 
 import { controller } from 'lib-client/controllers/Controller';
+import { ChakraFormWrapper } from 'lib-client/hooks/useChakraForm';
+import { User } from '@prisma/client';
+import { CompleteUser } from 'prisma/zod';
+import { getObjectDifference } from 'utils/getObjectDifference';
+import { useDebounce } from 'lib-client/hooks/useDebouce';
+import { PrismaModelNames } from 'lib-server/prisma';
+import { ICustomUseMutationOptions } from 'lib-client/controllers/types/Controller';
+import { arrayIsEqual } from 'utils/arrayIsEqual';
 
 export const userOptionSchema = z.object({
   label: z.string(),
@@ -38,6 +46,14 @@ const userDummyData: Option[] = [
     value: 3,
   },
 ];
+
+function formatUserOptions(users: User[] | CompleteUser[] = []) {
+  if (!users || users.length === 0) return [];
+  return users.map((user) => ({
+    label: user.fullName,
+    value: user.id,
+  }));
+}
 
 export function UserSelect({
   defaults,
@@ -67,16 +83,25 @@ export function UserSelect({
     },
   });
 
-  const options = users?.map((user) => ({ label: user.fullName, value: user.id }));
+  const selectRef = useRef<any>(null);
+  const options = formatUserOptions(users);
+  useEffect(() => {
+    if (!field || !field.value || !selectRef.current) return;
+    const keepActive = field?.value && (field?.value as any).length > 0;
+    const ref = selectRef.current.controlRef;
+    keepFloatingLabelActive(ref, keepActive);
+  }, [field?.value]);
 
   return (
     <AsyncSelect<any, IsMulti, Group>
       defaultOptions={isSuccess ? options : userDummyData}
       {...field}
-      onBlur={(ev) => {
-        const keepActive = field.value && (field.value as any).length > 0;
-        keepFloatingLabelActive(ev.target, keepActive);
-      }}
+      ref={selectRef}
+      // onBlur={(ev) => {
+      //   if (!field || !field.value) return;
+      //   const keepActive = field?.value && (field?.value as any).length > 0;
+      //   keepFloatingLabelActive(ev.target, keepActive);
+      // }}
       isMulti
       // _loading={isLoading}
       chakraStyles={{
@@ -84,16 +109,19 @@ export function UserSelect({
           ...prev,
           shadow: defaults?.shadow || '',
           borderColor: defaults?.borderColor || '',
+          minW: '75px',
         }),
         inputContainer: (prev) => ({
           ...prev,
           h: '40px',
           alignItems: 'center',
           justiftContent: 'center',
+          minW: '75px',
         }),
         menu: (prev) => ({
           ...prev,
           zIndex: 9999,
+          minW: '75px',
         }),
       }}
       isLoading={isLoading}
@@ -107,5 +135,66 @@ export function UserSelect({
       }}
       {...selectProps}
     />
+  );
+}
+
+interface IUserSelectFormProps {
+  defaultUsers?: User[];
+  model: PrismaModelNames;
+  updateId: number;
+  modelFieldName: string;
+  useMutationProps?: Partial<ICustomUseMutationOptions<any>>;
+  saveChangesDependancies?: any[];
+}
+
+export function UpdateUserForm(props: IUserSelectFormProps) {
+  const {
+    model,
+    updateId,
+    modelFieldName,
+    defaultUsers,
+    useMutationProps,
+    saveChangesDependancies,
+  } = props;
+
+  const defaultOptions = formatUserOptions(defaultUsers);
+
+  return (
+    <ChakraFormWrapper
+      schema={z.object({
+        users: multiUserOptionsSchema,
+      })}
+      defaultValues={{
+        users: defaultOptions,
+      }}
+    >
+      {({ Form, Input, watch }) => {
+        const users = watch('users');
+        const { mutateAsync } = controller.useMutation({
+          model,
+          query: 'update',
+          ...useMutationProps,
+        });
+
+        const [prevUsers, setPrevUsers] = useState(defaultOptions);
+
+        useEffect(() => {
+          const prevIds = prevUsers?.map((user) => user.value);
+          const newIds = users?.map((user) => user.value);
+          const noDifference = arrayIsEqual(prevIds, newIds);
+
+          if (noDifference) return;
+
+          const formattedUsers = users?.map((user) => ({ id: user.value }));
+          const data = { id: updateId, [modelFieldName]: formattedUsers };
+          mutateAsync(data).then(() => setPrevUsers(users));
+        }, [useDebounce(users, 2000), ...(saveChangesDependancies || [])]);
+        return (
+          <Form>
+            <Input name="users" customInput={(props) => <UserSelect {...props} />} />
+          </Form>
+        );
+      }}
+    </ChakraFormWrapper>
   );
 }
