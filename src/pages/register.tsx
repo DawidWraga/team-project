@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useRouter } from 'next/router';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import { useChakraForm } from 'lib-client/hooks/useChakraForm';
@@ -6,12 +5,9 @@ import { z } from 'zod';
 import ExternalFormWrapper from 'layouts/ExternalFormWrapper';
 import { controller } from 'lib-client/controllers/Controller';
 
-const defaultUserIcon =
-  'https://png.pngtree.com/png-clipart/20210915/ourmid/pngtree-user-avatar-login-interface-abstract-blue-icon-png-image_3917504.jpg';
-
 const createUserSchema = z
   .object({
-    fullName: z.string(),
+    fullName: z.string().min(5),
     email: z
       .string()
       .email()
@@ -70,7 +66,6 @@ export default function RegisterPage(props: any) {
 
   const { Input, Form, SubmitBtn, trigger, DebugPanel, Heading } = useChakraForm({
     schema: createUserSchema,
-    dynamicSchemaObjectNames: [],
   });
 
   return (
