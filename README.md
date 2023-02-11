@@ -1,17 +1,131 @@
-
-
-
 * Client side controller for sending query/mutation requests to ApiController.
 * 1. Client side event (view) triggers useQuery or useMutation function call
 * 2. Controller sends requests to ApiController
 * 3. Controller receives response from ApiController
 * 4. Controller provides services to client/view
-
 * Server side controller for interacting with database.
 * 1. Controller sends requests to ApiController
 * 2. ApiController executes prisma query
 * 3. Prisma interacts with database and returns response
 * 4. ApiController returns Prisma response to Controller
+
+```mermaid
+erDiagram
+  Example {
+    Int id
+    DateTime dateCreated
+    String text  
+  }
+
+
+  Post {
+    Int id
+    DateTime dateCreated
+    DateTime dateUpdated
+    String title
+    String content
+    Boolean solved  
+  }
+
+
+  Comment {
+    Int id
+    String content
+    DateTime createdAt  
+  }
+
+
+  User {
+    Int id
+    String fullName
+    String email
+    String password
+    String userIcon  
+  }
+
+
+  UserRole {
+    Int id
+    String label  
+  }
+
+
+  Task {
+    Int id
+    String title
+    DateTime createdDate
+    DateTime dueDate
+    String description
+    Int kanbanOrderIndex
+    DateTime updatedAt  
+  }
+
+
+  SubTask {
+    Int id
+    String description
+    Boolean completed  
+  }
+
+
+  TaskStatus {
+    Int id
+    String label  
+  }
+
+
+  Project {
+    Int id
+    String title
+    DateTime createdDate
+    DateTime dueDate
+    Json statusToOrderedTaskIds  
+  }
+
+
+  Account {
+    String id
+    String type
+    String provider
+    String providerAccountId
+    String refresh_token
+    String access_token
+    Int expires_at
+    String token_type
+    String scope
+    String id_token
+    String session_state  
+  }
+
+
+  Session {
+    String id
+    String sessionToken
+    DateTime expires  
+  }
+
+
+  VerificationToken {
+    String identifier
+    String token
+    DateTime expires  
+  }
+
+    Post o{--|| User : "author"
+    Comment o{--|| User : "author"
+    Comment o{--|| Post : ""
+    User o{--|| UserRole : ""
+    Task o{--|| TaskStatus : ""
+    Task o{--|| Project : ""
+    Task }|--|{ User : "assignee"
+    Project }|--|{ User : "assignee"
+    SubTask o{--|| Task : ""
+    TaskStatus o{--|| Project : ""
+    Account o{--|| User : ""
+    Session o{--|| User : ""
+
+
+```
 
 
 ```mermaid
@@ -26,8 +140,6 @@ ApiController-->>Controller: Returns response to Controller
 Controller-->>User: Provides services to client/view
 
 ```
-
-
 
 ## ============= commit messages ==========
 
