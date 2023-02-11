@@ -30,11 +30,12 @@ export class ApiController<TModel> {
 
       const session = await getServerSession(req, res, authOptions);
 
-      if (!session) {
+      const isRegistering = query === 'create' && this.model === 'user';
+
+      if (!session && !isRegistering) {
         res.status(401).json({ message: 'You must be logged in.' });
         return;
       }
-
 
       // get handlers for specific query
       const config = this.getConfig(query, prismaProps);
