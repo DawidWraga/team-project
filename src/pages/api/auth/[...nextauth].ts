@@ -2,7 +2,7 @@ import NextAuth from 'next-auth';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from 'lib-server/prisma';
 import Credentials from 'next-auth/providers/credentials';
-import { verify } from 'argon2';
+import { compare } from 'bcrypt';
 import type { NextAuthOptions } from 'next-auth';
 
 export const authOptions: NextAuthOptions = {
@@ -57,13 +57,13 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) return null;
 
-        const isValidPassword = await verify(user.password, credentials.password);
+        const isValidPassword = await compare(credentials.password, user.password);
 
-        console.log({
-          isValidPassword,
-          userPassword: user.password,
-          credentialsPassword: credentials.password,
-        });
+        // console.log({
+        //   isValidPassword,
+        //   userPassword: user.password,
+        //   credentialsPassword: credentials.password,
+        // });
 
         if (!isValidPassword) return null;
 
