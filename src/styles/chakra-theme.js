@@ -29,6 +29,7 @@ const fonts = {
 // 2. Extend the theme to include custom colors, fonts, etc
 export const colors = {
   primary: saasTheme.colors.blue,
+  secondary: saasTheme.colors.blue,
   brand: {
     50: 'hsl(37, 100%, 93%)',
     100: 'hsl(33, 100%, 84%)',
@@ -126,12 +127,9 @@ const Form = defineStyleConfig({
   },
 });
 
-export const theme = extendTheme(
-  {
-    colors,
-    config,
-    fonts,
-    components: { Paper, Form },
-  },
-  saasTheme
-);
+export const theme = extendTheme(saasTheme, {
+  colors,
+  config,
+  fonts,
+  components: { Paper, Form },
+});
