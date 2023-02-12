@@ -7,6 +7,7 @@ import { Task } from '@prisma/client';
 import { useCallback } from 'react';
 import { UserSelect, UpdateUserForm } from 'components/UserSelect';
 import { useFilteredTasks } from 'pages/projects/[projectId]/tasks';
+import moment from 'moment';
 
 export const useTaskDetailsModal = (task: CompleteTask) => {
   const { setContent, onClose, isOpen } = useModalStore();
@@ -32,12 +33,25 @@ export const useTaskDetailsModal = (task: CompleteTask) => {
           onSubmit={updateThisTask('description')}
           type="textarea"
         />
+        <CustomEditable
+          value={moment(task.dueDate).format('YYYY-MM-DD')}
+          // value={task.dueDate}
+          // onSubmit={updateThisTask('dueDate')}
+          type="text"
+          inputProps={{ type: 'date' }}
+          // renderPreview={(v) => {
+          //   console.log('RENDERED PREVIEW ', v);
+          //   return 'testing';
+          // }}
+          previewValue={(v) => moment(v).format('DD-MM-YYYY')}
+        />
         <UpdateUserForm
           defaultUsers={task.assignees as any}
           model="task"
           updateId={task.id}
           modelFieldName="assignees"
-          saveChangesDependancies={[isOpen]}
+          
+          // saveChangesDependancies={[isOpen]}
           // useMutationProps={{ changeUiKey: queryKey, invalidateClientChanges: true }}
         />
       </div>

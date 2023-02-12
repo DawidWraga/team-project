@@ -29,6 +29,7 @@ export function useFilteredTasks() {
       include: {
         status: true,
         assignees: true,
+        subTasks: true,
       },
     },
     enabled: Boolean(projectId),
@@ -41,9 +42,7 @@ export default function ProjectKanbanPage() {
   );
 
   const { openTaskModal } = useTaskModal();
-
   const { data: currentProject } = useCurrentProject();
-
   const { data: tasks, queryKey } = useFilteredTasks();
 
   const { mutateAsync: updateTask } = controller.use({
@@ -52,6 +51,7 @@ export default function ProjectKanbanPage() {
     mode: 'optimistic',
     changeUiKey: queryKey,
     changeUiType: 'array',
+    invalidateClientChanges: true,
   });
 
   const { useSetOptionBar, leftOffset, sideNavIsOpen } = useLayoutStore();

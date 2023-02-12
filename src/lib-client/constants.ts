@@ -12,3 +12,6 @@ export const optionBarHeight = 52;
 export const openSideNavWidth = 250;
 export const closedSideNavWidth = 0;
 export const mobileBottomBarHeight = 0;
+
+// if id is undefinied, replace id numer with -1. This causes prisma to not find existing record and therefore ecreate new record.
+export const UNREACHABLE_ID_NUMBER = -1;

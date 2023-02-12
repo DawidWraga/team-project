@@ -7,60 +7,50 @@ import {
   Text,
   Textarea,
 } from '@chakra-ui/react';
-import { ChakraForm, ChakraFormWrapper } from 'lib-client/hooks/useChakraForm';
+import { ChakraForm } from 'lib-client/hooks/useChakraForm';
 import { TaskModel } from 'prisma/zod';
 import { useModalStore } from 'lib-client/stores/ModalStore';
 import { FormHeading } from 'components/FormHeading';
-import { useUrlData } from 'lib-client/hooks/useUrlData';
 import { z } from 'zod';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import { UserSelect, multiUserOptionsSchema } from 'components/UserSelect';
 import { controller } from 'lib-client/controllers/Controller';
-import { DateInput } from 'components/DateInput';
-import { useEffect, useState } from 'react';
+import { useCurrentProject } from 'lib-client/hooks/useCurrentProject';
+import { Task } from '@prisma/client';
+import { useFilteredTasks } from 'pages/projects/[projectId]/tasks';
+import { Controller } from 'react-hook-form';
 
 const SubtaskSchema = z.object({
   description: z.string(),
+  completed: z.boolean().optional(),
+  id: z.number().optional(),
 });
 
 export const useTaskModal = () => {
   const { setContent, onClose } = useModalStore();
+  const { queryKey } = useFilteredTasks();
+
   const { mutateAsync: createTask } = controller.useMutation({
     model: 'task',
-    query: 'create',
-    includeResourceId: false,
+    query: 'upsert',
+    mode: 'optimistic',
+    changeUiKey: queryKey,
+    invalidateClientChanges: true,
   });
 
-  const { projectId } = useUrlData<{ projectId: number }>('dynamicPath');
-  const projectPrismaProps = {
-    where: {
-      id: projectId,
-    },
-    include: {
-      statuses: true,
-      assignees: true,
-    },
-  };
+  const { data: currentProject } = useCurrentProject();
 
-  const { data: currentProject } = controller.use({
-    query: 'findUnique',
-    model: 'project',
-    prismaProps: projectPrismaProps,
-    enabled: Boolean(projectId),
-    cacheTime: 60 * 60 * 1000,
-  });
-
-  const { mutateAsync: updateProject } = controller.use({
-    model: 'project',
-    query: 'update',
-  });
-
-  const openTaskModal = () =>
+  const openTaskModal = (task?: Partial<Task> & { id: number }) =>
     setContent &&
     setContent({
-      header: <FormHeading>Create new task</FormHeading>,
+      header: (
+        <FormHeading onClick={() => console.log(task)}>
+          {task?.id ? `Edit task` : 'Create new task'}
+        </FormHeading>
+      ),
       body: (
         <ChakraForm
+          logDataBeforeSubmit={true}
           schema={TaskModel.pick({
             title: true,
             description: true,
@@ -71,9 +61,11 @@ export const useTaskModal = () => {
           defaultValues={{
             title: 'title1',
             description: 'description1',
-            // dueDate: new Date(),
+            dueDate: new Date(),
+            assignees: [{ label: 'Dawid Wraga', value: 5 }],
           }}
-          dynamicSchemaObjectNames={['subTask']}
+          updateValues={task}
+          dynamicSchemaNamesToObj={{ subTasks: SubtaskSchema }}
           render={({
             Form,
             Input,
@@ -81,18 +73,26 @@ export const useTaskModal = () => {
             DebugPanel,
             updateSchema,
             InputList,
-            setValue,
+            isEditing,
+            control,
           }) => (
             <Form
               onSubmit={({ assignees, ...data }) => {
-                const firstStatus = currentProject?.statuses[0].id;
+                if (assignees?.length) {
+                  data = {
+                    ...data,
+                    assignees: assignees?.map((d) => ({ id: d.value })),
+                  } as any;
+                }
 
-                createTask({
-                  projectId,
-                  assignees: assignees.map((d) => ({ id: d.value })),
-                  statusId: firstStatus,
-                  ...data,
-                } as any);
+                if (!isEditing) {
+                  data = {
+                    projectId: currentProject.id,
+                    statusId: currentProject.statuses[0].id,
+                    ...data,
+                  } as any;
+                }
+                createTask(data);
               }}
               onServerSuccess={onClose}
             >
@@ -104,8 +104,6 @@ export const useTaskModal = () => {
                   <Textarea {...field} {...(defaults as any)} />
                 )}
               />
-              {/* <DateInput /> */}
-
               <Input name="dueDate" type="date" />
               <Input
                 name="assignees"
@@ -113,9 +111,8 @@ export const useTaskModal = () => {
                   return <UserSelect {...props} />;
                 }}
               />
-
               <InputList
-                name="subTask"
+                name="subTasks"
                 ConditionalWrapper={({ children }) => (
                   <Flex flexDir="column" gap={1}>
                     <Flex alignItems="center" gap={2} mb={2}>
@@ -128,11 +125,25 @@ export const useTaskModal = () => {
                     {children}
                   </Flex>
                 )}
-                inputs={({ description }) => {
+                inputs={({ completed, ...props }, removeAll) => {
                   return (
                     <Flex alignItems="center" gap="1">
+                      <Controller
+                        control={control}
+                        name={completed || ''}
+                        key={completed || ''}
+                        defaultValue={false}
+                        render={({ field: { onChange, value, ref } }) => (
+                          <Checkbox
+                            onChange={onChange}
+                            ref={ref}
+                            isChecked={value}
+                            size="lg"
+                          />
+                        )}
+                      />
                       <Input
-                        name={description}
+                        name={props.description}
                         hideLabel={true}
                         placeholder="add subtask"
                       />
@@ -140,9 +151,7 @@ export const useTaskModal = () => {
                         aria-label="remove subtask"
                         icon={<MinusIcon fontSize="sm" />}
                         size="sm"
-                        onClick={() => {
-                          updateSchema.remove(description);
-                        }}
+                        onClick={removeAll}
                       />
                     </Flex>
                   );
@@ -151,15 +160,14 @@ export const useTaskModal = () => {
               <Button
                 leftIcon={<AddIcon fontSize=".7rem" color="shade.main" opacity="80%" />}
                 onClick={() => {
-                  updateSchema.addObj('subTask', SubtaskSchema);
+                  updateSchema.addObj('subTasks', SubtaskSchema.omit({ id: true }));
                 }}
                 fontWeight={'light'}
                 fontSize="sm"
               >
                 Add Subtask
               </Button>
-
-              <SubmitBtn w="100%">Create task</SubmitBtn>
+              <SubmitBtn label="Task" w="100%" />
             </Form>
           )}
         />

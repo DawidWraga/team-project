@@ -1,21 +1,15 @@
-import { Select, AsyncSelect } from 'chakra-react-select';
+import { AsyncSelect } from 'chakra-react-select';
 import { keepFloatingLabelActive } from 'utils/keepFloatingLabelActive';
 import { RefAttributes, useEffect, useRef, useState } from 'react';
 import type { GroupBase, Props as SelectProps, SelectInstance } from 'react-select';
 import { InputProps as ChakraInputProps } from '@chakra-ui/react';
 import { z } from 'zod';
-import {
-  ControllerFieldState,
-  ControllerRenderProps,
-  FieldValues,
-  Path,
-} from 'react-hook-form';
+import { ControllerFieldState, ControllerRenderProps } from 'react-hook-form';
 
 import { controller } from 'lib-client/controllers/Controller';
 import { ChakraFormWrapper } from 'lib-client/hooks/useChakraForm';
 import { User } from '@prisma/client';
 import { CompleteUser } from 'prisma/zod';
-import { getObjectDifference } from 'utils/getObjectDifference';
 import { useDebounce } from 'lib-client/hooks/useDebouce';
 import { PrismaModelNames } from 'lib-server/prisma';
 import { ICustomUseMutationOptions } from 'lib-client/controllers/types/Controller';
@@ -47,7 +41,7 @@ const userDummyData: Option[] = [
   },
 ];
 
-function formatUserOptions(users: User[] | CompleteUser[] = []) {
+export function formatUserOptions(users: User[] | CompleteUser[] = []) {
   if (!users || users.length === 0) return [];
   return users.map((user) => ({
     label: user.fullName,
@@ -187,11 +181,15 @@ export function UpdateUserForm(props: IUserSelectFormProps) {
 
           const formattedUsers = users?.map((user) => ({ id: user.value }));
           const data = { id: updateId, [modelFieldName]: formattedUsers };
-          mutateAsync(data).then(() => setPrevUsers(users));
+          mutateAsync(data).then(() => setPrevUsers(users as any));
         }, [useDebounce(users, 2000), ...(saveChangesDependancies || [])]);
         return (
           <Form>
-            <Input name="users" customInput={(props) => <UserSelect {...props} />} />
+            <Input
+              hideLabel={true}
+              name="users"
+              customInput={(props) => <UserSelect {...props} />}
+            />
           </Form>
         );
       }}

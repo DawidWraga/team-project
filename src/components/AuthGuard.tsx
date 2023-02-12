@@ -9,7 +9,8 @@ interface IProps {
 export default function AuthGuard(props: IProps) {
   const { children } = props;
   const router = useRouter();
-  const isHydrated = useIsHydrated();
+
+  // const isHydrated = useIsHydrated();
 
   const { status } = useSession();
 

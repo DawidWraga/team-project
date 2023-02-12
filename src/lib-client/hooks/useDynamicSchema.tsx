@@ -8,6 +8,10 @@ interface SchemaIdData {
   index: string;
 }
 
+// export function zodSchemaToObj(schema:AnyZodObject):Record<any,any>{
+
+// }
+
 /**
  *
  * Hook for creating and updating zod schema.
@@ -18,13 +22,21 @@ interface SchemaIdData {
  * @param schema
  * @returns
  */
-export function useDynamicSchema(schema) {
+export function useDynamicSchema(
+  schema,
+  dynamicSchemaNamesToObj: Record<string, AnyZodObject>
+) {
   const [dynamicSchema, setDynamicSchema] = useState(schema);
 
   const updateSchema = {
     set: setDynamicSchema,
-    addObj: (objectName: string, schema: AnyZodObject | Record<any, any>) => {
+    addObj: (objectName: string, schema?: AnyZodObject | Record<any, any>) => {
+      let schemaContainer: any;
       setDynamicSchema((prev: any) => {
+        if (!schema) {
+          schema = dynamicSchemaNamesToObj[objectName];
+        }
+
         let newSchema: Record<any, any> = schema.shape ? schema.shape : schema;
         if (!prev) {
           return schemaObjectToSchemaNames(newSchema, objectName, '0');
@@ -46,9 +58,11 @@ export function useDynamicSchema(schema) {
           index = (maxId + 1).toString();
         }
         newSchema = schemaObjectToSchemaNames(newSchema, objectName, index);
+        schemaContainer = newSchema;
         const extended = prev.extend(newSchema);
         return extended;
       });
+      return schemaContainer;
     },
     remove: (schemaNames: string | string[]) => {
       const names = typeof schemaNames === 'string' ? [schemaNames] : schemaNames;

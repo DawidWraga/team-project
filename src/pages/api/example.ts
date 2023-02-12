@@ -3,4 +3,10 @@ import { prisma } from 'lib-server/prisma';
 
 export default createApiHandler('example', {
   create: {},
+  findMany: {
+    // queryFn(prismaOptions) {
+
+    // }
+    logDataBeforeQuery: true,
+  },
 });

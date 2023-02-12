@@ -106,9 +106,11 @@ export default function HeaderContent(props) {
                       router.push(headerLinkStart + link.route);
                     }
 
-                    if (isActive && link.route.includes('=')) {
-                      router.push(router.asPath.replace(link.route, ''));
-                    }
+                    // if (isActive && link.route.includes('=')) {
+                    //   // console.log(router.asPath);
+                    //   console.log(link.route);
+                    //   // router.push(router.asPath.replace(link.route, ''));
+                    // }
                   }}
                   _hover={{
                     cursor: 'pointer',

@@ -63,6 +63,7 @@ export const getUiChangeHandler = <T extends Record<'id' | any, any>>(
         else {
           const newArr = [...prev];
           newArr.splice(prevIndex, 1, { ...prevItem, ...newItem });
+          console.log({ new: newArr[prevIndex], prevItem, newItem });
           return newArr;
         }
       },
@@ -84,13 +85,6 @@ export const getUiChangeHandler = <T extends Record<'id' | any, any>>(
   if (changeUiType === 'object')
     return {
       update: (prev: Record<any, any>) => {
-        console.log('=============CONTROLLER=============');
-        console.log('prev');
-        console.table(prev.statusToOrderedTaskIds);
-        console.log('new');
-        console.table(newItem);
-        console.log('==================================');
-        console.log('updating (prev,new): ', prev, newItem);
         return {
           ...(prev && prev),
           ...newItem,

@@ -29,17 +29,25 @@ import {
   FormControlProps,
   FormLabelProps,
 } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useState } from 'react';
-import { MdCheck, MdSend } from 'react-icons/md';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { MdCheck, MdSave, MdSaveAlt, MdSend } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import { PasswordInput } from 'components/PasswordInput';
 import { FormHeading } from 'components/FormHeading';
 import {
   formatDynamicSchemaData,
+  getSchemaName,
   groupSchemaNames,
+  parseSchemaName,
+  schemaObjectToSchemaNames,
   useDynamicSchema,
 } from 'lib-client/hooks/useDynamicSchema';
+import { objectMap } from 'utils/objectMap';
+import { formatUserOptions } from 'components/UserSelect';
+import { getObjectDifference } from 'utils/getObjectDifference';
+import dynamic from 'next/dynamic';
+import { FaRegClosedCaptioning } from 'react-icons/fa';
 
 export interface IFieldAndFieldState<TFieldValues extends FieldValues = FieldValues> {
   field: ControllerRenderProps<TFieldValues, Path<TFieldValues>>;
@@ -73,7 +81,7 @@ export interface ICreateInputProps<TFieldValues extends FieldValues = FieldValue
 
 export interface IInputListProps<TFieldValues extends FieldValues = FieldValues> {
   name: string;
-  inputs: (names: Record<any, any>) => JSX.Element;
+  inputs: (names: Record<any, any>, removeAll: () => void) => JSX.Element;
   onChange?: (items: any[]) => any;
   ConditionalWrapper?: (props: { children: React.ReactNode }) => JSX.Element;
 }
@@ -82,7 +90,7 @@ interface UpdateSchema<TFieldValues extends FieldValues> {
   set: React.Dispatch<
     React.SetStateAction<ZodType<TFieldValues, ZodTypeDef, TFieldValues>>
   >;
-  addObj: (key: string, schema: AnyZodObject | Record<any, any>) => Record<any, any>;
+  addObj: (key: string, schema?: AnyZodObject | Record<any, any>) => Record<any, any>;
   remove: (keys: string[]) => void;
 }
 // ========== RETURN TYPE
@@ -92,20 +100,22 @@ interface UseChakraFormReturn<TFieldValues extends FieldValues, TContext = any>
   Input: (props: ICreateInputProps<TFieldValues>) => JSX.Element;
   InputList: (props: IInputListProps<TFieldValues>) => JSX.Element;
   DebugPanel: () => JSX.Element;
-  SubmitBtn: (props: ButtonProps) => JSX.Element;
+  SubmitBtn: (props: ButtonProps & { label?: string }) => JSX.Element;
   Heading: (props: HeadingProps) => JSX.Element;
   isServerSuccess: boolean;
   // setSchema: React.Dispatch<React.SetStateAction<z.ZodObject<TFieldValues>>>;
   dynamicSchema: AnyZodObject;
   updateSchema: UpdateSchema<TFieldValues>;
+  isEditing: boolean;
 }
 
 interface UseChakraFormProps<TFieldValues extends FieldValues, TContext = any>
   extends UseFormProps<TFieldValues, TContext> {
   schema: ZodType<TFieldValues>;
   logDataBeforeSubmit?: boolean;
-  dynamicSchemaObjectNames?: string[];
+  dynamicSchemaNamesToObj?: Record<string, AnyZodObject>;
   onChange?: (value: TFieldValues) => void;
+  updateValues?: TFieldValues & { id: number };
 }
 
 export const useChakraForm = <
@@ -114,24 +124,73 @@ export const useChakraForm = <
 >(
   props: UseChakraFormProps<TFieldValues, TContext>
 ): UseChakraFormReturn<TFieldValues, TContext> => {
-  const {
+  let {
     schema,
     logDataBeforeSubmit,
     onChange,
-    dynamicSchemaObjectNames,
+    dynamicSchemaNamesToObj,
+    updateValues,
+    defaultValues,
     ...otherProps
   } = {
-    dynamicSchemaObjectNames: [],
+    dynamicSchemaNamesToObj: {},
     ...props,
   };
+
   const [isServerSuccess, setIsServerSuccess] = useState(false);
 
-  const [dynamicSchema, updateDynamicSchema] = useDynamicSchema(schema);
+  const [dynamicSchema, updateDynamicSchema] = useDynamicSchema(
+    schema,
+    dynamicSchemaNamesToObj
+  );
+
+  // logic for update form
+  const updateId = updateValues?.id;
+  const isEditing = Boolean(updateId);
+
+  const formattedUpdateValues = useMemo(() => {
+    if (!isEditing) return;
+    let formattedValues = objectMap(updateValues, (v, k) => {
+      if (k === 'user' || k === 'assignees') {
+        return formatUserOptions(v);
+      }
+      if (k.includes('at') || k.includes('date')) {
+        return new Date(v);
+      }
+
+      return v;
+    });
+
+    let filteredValues = dynamicSchema?.parse(formattedValues);
+
+    Object.entries(dynamicSchemaNamesToObj)?.forEach(([name, schema]) => {
+      if (!name || !schema) {
+        // console.log('no name or schema', { name, schema });
+        return;
+      }
+      if (updateValues[name]) {
+        updateValues[name].forEach((item, i) => {
+          updateDynamicSchema.addObj(name);
+
+          const relevantItem = schema.parse(item) as any;
+
+          const newValues = schemaObjectToSchemaNames(relevantItem, name, i);
+          filteredValues = {
+            ...filteredValues,
+            ...newValues,
+          };
+        });
+      }
+    });
+
+    return filteredValues;
+  }, [updateValues]);
 
   // ======== Call default useForm hook
   const useFormReturn: UseFormReturn<TFieldValues, TContext> = useForm<TFieldValues>({
-    ...otherProps,
     resolver: zodResolver(dynamicSchema),
+    defaultValues: isEditing ? formattedUpdateValues : defaultValues,
+    ...otherProps,
   } as UseFormProps<TFieldValues, TContext>);
 
   // =======Subscribe to form state changes.=====
@@ -140,7 +199,7 @@ export const useChakraForm = <
     // If we have a callback function to call on change...
     if (onChange) {
       // Subscribe to form state changes.
-      subscription = useFormReturn.watch(onChange);
+      subscription = useFormReturn.watch(onChange as any);
     }
     // Unsubscribe when the component unmounts.
     return () => subscription?.unsubscribe();
@@ -181,23 +240,58 @@ export const useChakraForm = <
           mx: 'auto',
           '& .chakra-form-control:not(:first-of-type)': {
             mt: 1,
-            // bg,
           },
         }}
         onSubmit={useFormReturn.handleSubmit(async (data) => {
+          // FORMAT DATA FOR UPDATE
+          const schemaNames = Object.keys(dynamicSchemaNamesToObj);
+
+          if (isEditing) {
+            let diffData = getObjectDifference(formattedUpdateValues, data);
+            const noChangesMade = Object.keys(diffData).length < 1;
+            if (noChangesMade) {
+              useFormReturn.setError('server' as any, {
+                message: 'You must change a field before saving.',
+              });
+              return;
+            }
+
+            // ensure ID is passed to backend despite not being changed to enable id to be used in edit queries
+            Object.entries(diffData).forEach(([schemaName, v]) => {
+              const isDynamicSchema =
+                schemaName.includes('&') && schemaName.includes('=');
+
+              if (!isDynamicSchema) return;
+
+              const schemaData = parseSchemaName(schemaName);
+              if (schemaData.objectName === 'id') return;
+
+              const schemaIdName = getSchemaName({ ...schemaData, property: 'id' });
+              const existingId = diffData[schemaIdName];
+
+              if (!existingId) {
+                diffData[schemaIdName] = data[schemaIdName];
+              }
+            });
+
+            data = { ...diffData, id: updateId } as any;
+          }
           try {
             if (logDataBeforeSubmit) {
               console.log('LOG Form submit data: ', data);
             }
 
-            if (dynamicSchemaObjectNames.length) {
-              data = formatDynamicSchemaData(data, dynamicSchemaObjectNames) as any;
+            // FORMAT DATA FOR DYNAMIC SCHEMA
+            if (schemaNames.length) {
+              data = formatDynamicSchemaData(data, schemaNames) as any;
             }
+
             const res = await onSubmit!(data);
             setIsServerSuccess(true);
             if (onServerSuccess) onServerSuccess(res);
             return res;
           } catch (e: any) {
+            console.log(e);
             const message =
               e.response?.data?.cause || 'Something went wrong, please try again later';
 
@@ -216,13 +310,15 @@ export const useChakraForm = <
   }, []);
 
   const SubmitBtn = useCallback(
-    ({ children, sx, leftIcon, ...props }: ButtonProps) => {
+    ({ children, sx, leftIcon, label, ...props }: ButtonProps & { label?: string }) => {
+      const defaultLabel = isEditing ? 'Save Changes' : 'Create ' + label || '';
+      const defaultIcon = isEditing ? <MdSave /> : <MdSend />;
       const { errors } = useFormReturn.formState;
       return (
         <Flex flexDir={'column'} gap={2.5} mt="2">
           <Button
             leftIcon={
-              isServerSuccess ? <MdCheck fontSize="1.5rem" /> : leftIcon || <MdSend />
+              isServerSuccess ? <MdCheck fontSize="1.5rem" /> : leftIcon || defaultIcon
             }
             type="submit"
             textTransform={'capitalize'}
@@ -232,7 +328,7 @@ export const useChakraForm = <
             isLoading={useFormReturn.formState.isSubmitting}
             {...props}
           >
-            {isServerSuccess ? 'Success!' : children || 'submit'}
+            {isServerSuccess ? 'Success!' : children || defaultLabel}
           </Button>
           {errors?.server && (
             <Text color="red.500">{errors?.server?.message as string}</Text>
@@ -259,7 +355,8 @@ export const useChakraForm = <
         labelProps,
       } = props;
 
-      const defaultLabel = name.replace(/([A-Z])/g, ' $1').replace('_', ' ');
+      if (!name) return;
+      const defaultLabel = name?.replace(/([A-Z])/g, ' $1').replace('_', ' ');
 
       label ??= defaultLabel;
       if (type === 'password') hideLabel = true;
@@ -396,13 +493,35 @@ export const useChakraForm = <
         {groupedSchemas.length > 0 && (
           <ConditionalWrapper>
             {groupedSchemas.map((keysObject) => {
+              // identify whether only key is Ids (hide if this is the case)
+              const keysExceptId = Object.entries(keysObject).filter(
+                ([k, v]) => k !== 'id'
+              );
+              const onlyId = keysExceptId.length === 0;
+
+              // remove all relevant schema names, except id (needed for identifying in prisma delete query)
+              const removeAll = useCallback(() => {
+                const ids = Object.entries(keysObject)
+                  .filter(([k, v]) => k !== 'id')
+                  .map(([k, v]) => v);
+
+                updateDynamicSchema.remove(ids);
+              }, []);
+
+              const staticKey = useMemo(
+                () =>
+                  Object.values(keysObject).join('_') + new Date().getUTCMilliseconds(),
+                []
+              );
+
               return (
                 <div
-                  key={
-                    Object.values(keysObject).join('_') + new Date().getUTCMilliseconds()
-                  }
+                  key={staticKey}
+                  style={{
+                    display: onlyId ? 'none' : 'unset',
+                  }}
                 >
-                  {inputs(keysObject)}
+                  {inputs(keysObject, removeAll)}
                 </div>
               );
             })}
@@ -461,6 +580,7 @@ export const useChakraForm = <
     InputList,
     dynamicSchema,
     updateSchema: updateDynamicSchema as any,
+    isEditing,
   };
 };
 

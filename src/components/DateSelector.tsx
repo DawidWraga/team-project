@@ -89,7 +89,6 @@ export function DateSelector(props: IProps) {
   const dateUnit = watch('date').value;
 
   useEffect(() => {
-    console.log(dateUnit);
     modifyDateAndRoute();
   }, [dateUnit]);
 

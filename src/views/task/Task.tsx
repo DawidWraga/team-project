@@ -24,6 +24,7 @@ import { DraggableWrapper } from 'components/DragNDrop';
 import { ControllerWrapper } from 'lib-client/controllers/Controller';
 import { useModals } from '@saas-ui/react';
 import { useTaskDetailsModal } from 'views/task/useTaskDetailsModal';
+import { useTaskModal } from 'views/task/useTaskModal';
 
 const tagToColorMap = {
   design: 'cyan.500',
@@ -33,7 +34,8 @@ const tagToColorMap = {
 export function Task(props) {
   const { task, index } = props;
 
-  const { openTaskDetailsModal } = useTaskDetailsModal(task);
+  // const { openTaskDetailsModal } = useTaskDetailsModal(task);
+  const { openTaskModal } = useTaskModal();
 
   const modals = useModals();
 
@@ -140,7 +142,7 @@ export function Task(props) {
         position="relative"
         onClick={(ev) => {
           ev.stopPropagation();
-          openTaskDetailsModal();
+          openTaskModal(task);
         }}
       >
         <Box position="absolute" right="-3" top="-2">

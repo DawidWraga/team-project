@@ -27,15 +27,16 @@ export class ApiController<TModel> {
     try {
       const { query, prismaProps }: IRequestData<TModel> = req.body;
       this.currentQuery = query;
+      console.log('1', { query, prismaProps });
 
-      const session = await getServerSession(req, res, authOptions);
+      // // ======= auth protected routes =======
+      // const session = await getServerSession(req, res, authOptions);
+      // const isRegistering = query === 'create' && this.model === 'user';
 
-      const isRegistering = query === 'create' && this.model === 'user';
-
-      if (!session && !isRegistering) {
-        res.status(401).json({ message: 'You must be logged in.' });
-        return;
-      }
+      // if (!session && !isRegistering) {
+      //   res.status(401).json({ message: 'You must be logged in.' });
+      //   return;
+      // }
 
       // get handlers for specific query
       const config = this.getConfig(query, prismaProps);
