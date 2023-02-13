@@ -4,7 +4,6 @@ import { apiHandler } from 'lib-server/nc';
 import { prisma } from 'lib-server/prisma';
 import { PrismaModelNames } from 'lib-server/prisma';
 import { mergeDeep } from 'utils/deepMerge';
-import { ZodAnyDef, z } from 'zod';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from 'pages/api/auth/[...nextauth]';
 /**
@@ -27,16 +26,16 @@ export class ApiController<TModel> {
     try {
       const { query, prismaProps }: IRequestData<TModel> = req.body;
       this.currentQuery = query;
-      console.log('1', { query, prismaProps });
+      // console.log('1', { query, prismaProps });
 
-      // // ======= auth protected routes =======
-      // const session = await getServerSession(req, res, authOptions);
-      // const isRegistering = query === 'create' && this.model === 'user';
+      // ======= auth protected routes =======
+      const session = await getServerSession(req, res, authOptions);
+      const isRegistering = query === 'create' && this.model === 'user';
 
-      // if (!session && !isRegistering) {
-      //   res.status(401).json({ message: 'You must be logged in.' });
-      //   return;
-      // }
+      if (!session && !isRegistering) {
+        res.status(401).json({ message: 'You must be logged in.' });
+        return;
+      }
 
       // get handlers for specific query
       const config = this.getConfig(query, prismaProps);
@@ -70,9 +69,6 @@ export class ApiController<TModel> {
 
   /**
    *
-   * @param query
-   *
-   * @param options
    * @return config object for specific query
    *
    * @description merges configs to select most specific and fallback to highest possible specificity
@@ -166,7 +162,6 @@ export class ApiController<TModel> {
 }
 
 function optionsIncludeNonDataValues(options: Record<any, any>) {
-  // non value options may conflict with processPrismaProps
   const nonDataValues = [
     'data',
     'distinct',

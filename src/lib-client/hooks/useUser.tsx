@@ -1,4 +1,4 @@
-import { controller } from 'lib-client/controllers/Controller';
+import { controller } from 'lib-client/controllers';
 import { useSession } from 'next-auth/react';
 
 export function useUser() {

@@ -17,13 +17,11 @@ import {
 } from '@chakra-ui/react';
 import { FaClock } from 'react-icons/fa';
 import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
-
 import { BiDotsVerticalRounded } from 'react-icons/bi';
 import moment from 'moment';
 import { DraggableWrapper } from 'components/DragNDrop';
-import { ControllerWrapper } from 'lib-client/controllers/Controller';
+import { ControllerWrapper } from 'lib-client/controllers/ControllerWrapper';
 import { useModals } from '@saas-ui/react';
-import { useTaskDetailsModal } from 'views/task/useTaskDetailsModal';
 import { useTaskModal } from 'views/task/useTaskModal';
 
 const tagToColorMap = {
@@ -34,7 +32,7 @@ const tagToColorMap = {
 export function Task(props) {
   const { task, index } = props;
 
-  // const { openTaskDetailsModal } = useTaskDetailsModal(task);
+  // const { openTaskDetailsModal: openTaskModal } = useTaskDetailsModal(task);
   const { openTaskModal } = useTaskModal();
 
   const modals = useModals();

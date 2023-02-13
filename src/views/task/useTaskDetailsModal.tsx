@@ -1,6 +1,6 @@
 import { useModalStore } from 'lib-client/stores/ModalStore';
 import { z } from 'zod';
-import { controller } from 'lib-client/controllers/Controller';
+import { controller } from 'lib-client/controllers';
 import { CompleteTask } from 'prisma/zod';
 import { CustomEditable } from 'components/EditableInput';
 import { Task } from '@prisma/client';
@@ -50,7 +50,7 @@ export const useTaskDetailsModal = (task: CompleteTask) => {
           model="task"
           updateId={task.id}
           modelFieldName="assignees"
-          
+
           // saveChangesDependancies={[isOpen]}
           // useMutationProps={{ changeUiKey: queryKey, invalidateClientChanges: true }}
         />

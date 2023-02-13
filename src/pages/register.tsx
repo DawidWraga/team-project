@@ -3,7 +3,7 @@ import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import { useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { z } from 'zod';
 import ExternalFormWrapper from 'layouts/ExternalFormWrapper';
-import { controller } from 'lib-client/controllers/Controller';
+import { controller } from 'lib-client/controllers';
 
 const createUserSchema = z
   .object({

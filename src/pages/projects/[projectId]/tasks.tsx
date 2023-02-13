@@ -10,7 +10,7 @@ import { KanbanCol } from 'views/task/KanbanCol';
 import { useProjectModal } from 'views/task/useProjectModal';
 import { useTaskModal } from 'views/task/useTaskModal';
 import { useEffect, useState } from 'react';
-import { controller } from 'lib-client/controllers/Controller';
+import { controller } from 'lib-client/controllers';
 import { useCurrentProject } from 'lib-client/hooks/useCurrentProject';
 
 export function useFilteredTasks() {

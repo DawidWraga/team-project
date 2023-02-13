@@ -11,7 +11,7 @@ import { Project } from '@prisma/client';
 import { MdSave } from 'react-icons/md';
 import { getObjectDifference } from 'utils/getObjectDifference';
 import { MinusIcon } from '@chakra-ui/icons';
-import { controller } from 'lib-client/controllers/Controller';
+import { controller } from 'lib-client/controllers';
 
 interface IProps {
   onClose: () => void;

@@ -9,10 +9,7 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   useSecureCookies: process.env.NODE_ENV && process.env.NODE_ENV === 'production',
   callbacks: {
-    // redirect(params) {
-    //   console.log('REDIRECT', params);
-    //   return null as any;
-    // },
+
     async session({ session, token, user }) {
       if (token) {
         (session as any).id = token.id;

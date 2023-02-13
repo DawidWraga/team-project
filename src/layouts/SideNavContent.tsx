@@ -1,10 +1,9 @@
 import { Flex } from '@chakra-ui/react';
 import { BrandLogoWithName } from 'components/BrandLogo';
 import pages from 'config/pages';
-import { getCurrentUser } from 'lib-client/controllers/auth';
 import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
 import { NavItem } from 'layouts/NavItem';
-import { controller } from 'lib-client/controllers/Controller';
+import { controller } from 'lib-client/controllers';
 import { getDateParams } from 'utils/getDateParams';
 
 const usePagesConfig = () => {

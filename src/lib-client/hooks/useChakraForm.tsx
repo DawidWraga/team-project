@@ -161,7 +161,7 @@ export const useChakraForm = <
       return v;
     });
 
-    let filteredValues = dynamicSchema?.parse(formattedValues);
+    let filteredValues = dynamicSchema?.safeParse(formattedValues);
 
     Object.entries(dynamicSchemaNamesToObj)?.forEach(([name, schema]) => {
       if (!name || !schema) {

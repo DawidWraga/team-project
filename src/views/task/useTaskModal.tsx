@@ -14,7 +14,7 @@ import { FormHeading } from 'components/FormHeading';
 import { z } from 'zod';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import { UserSelect, multiUserOptionsSchema } from 'components/UserSelect';
-import { controller } from 'lib-client/controllers/Controller';
+import { controller } from 'lib-client/controllers';
 import { useCurrentProject } from 'lib-client/hooks/useCurrentProject';
 import { Task } from '@prisma/client';
 import { useFilteredTasks } from 'pages/projects/[projectId]/tasks';

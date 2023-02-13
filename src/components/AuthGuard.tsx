@@ -1,7 +1,6 @@
 import { useSession } from 'next-auth/react';
 import { Loading } from '@saas-ui/react';
 import { useRouter } from 'next/router';
-import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
 interface IProps {
   children: React.ReactNode;
 }
@@ -9,8 +8,6 @@ interface IProps {
 export default function AuthGuard(props: IProps) {
   const { children } = props;
   const router = useRouter();
-
-  // const isHydrated = useIsHydrated();
 
   const { status } = useSession();
 

@@ -6,7 +6,7 @@ import { InputProps as ChakraInputProps } from '@chakra-ui/react';
 import { z } from 'zod';
 import { ControllerFieldState, ControllerRenderProps } from 'react-hook-form';
 
-import { controller } from 'lib-client/controllers/Controller';
+import { controller } from 'lib-client/controllers';
 import { ChakraFormWrapper } from 'lib-client/hooks/useChakraForm';
 import { User } from '@prisma/client';
 import { CompleteUser } from 'prisma/zod';

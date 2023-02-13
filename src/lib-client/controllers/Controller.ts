@@ -1,32 +1,23 @@
 import { AxiosError, AxiosRequestConfig } from 'axios';
 import { axios } from 'lib-server/axios';
 import { prefetchQuery } from 'lib-client/controllers/prefetchQuery';
-import {
-  UseMutationResult,
-  useMutation,
-  useQuery,
-  useQueryClient,
-  UseQueryResult,
-} from 'react-query';
+import { UseMutationResult, useMutation, useQuery, useQueryClient } from 'react-query';
 import { DeepPartial } from 'react-hook-form/dist/types';
 import { PrismaModelNames } from 'lib-server/prisma';
 import { useUiChangeStore } from 'lib-client/stores/UiChangeStore';
 import { useUserStore } from 'lib-client/stores/UserStore';
 import { mergeDeep } from 'utils/deepMerge';
 import type {
-  IPartialQueryConfigs,
-  IQueryConfig,
   readQuery,
   writeQuery,
   ICustomUseQueryOptions,
   mutationMode,
   ICustomUseMutationOptions,
   anyQuery,
-  PrismaModelNamesToTypes,
   GetPrismaModelType,
-  ModelOptions,
 } from 'lib-client/controllers/types/Controller';
 import { useChangeQueryState } from 'lib-client/controllers/getUiChangeHandlers';
+import { queryConfigs } from 'lib-client/controllers';
 
 /**
  * Client side controller. Handles sending query/mutation requests to ApiController.
@@ -306,53 +297,5 @@ export class Controller {
 
     return mergedConfig;
   }
-  queryConfigs: IPartialQueryConfigs<PrismaModelNamesToTypes> = {
-    anyModel: {
-      anyWriteQuery: {
-        mode: 'server',
-        invalidateClientChanges: false,
-        getChangeUiKey: (config) => [config.model, 'findMany'],
-        logConfig: false,
-      },
-      anyReadQuery: {
-        prismaProps: {},
-        refetchOnMount: false,
-        refetchOnWindowFocus: false,
-        logConfig: false,
-        staleTime: 5 * 60 * 1000, //min*sec*ms,
-      },
-      create: {},
-    },
-    task: {
-      anyReadQuery: {},
-    },
-    /*
-    expense: {
-      create: {},
-    }
-    */
-  };
-}
-
-export const controller = new Controller();
-
-// export function ControllerWrapper (props: )
-
-export function ControllerWrapper<
-  TQuery extends anyQuery = anyQuery,
-  TModelName extends PrismaModelNames = PrismaModelNames,
-  TData = GetPrismaModelType<TModelName>,
-  TOptions = TQuery extends readQuery
-    ? ICustomUseQueryOptions<TData>
-    : ICustomUseMutationOptions<TData>
->({
-  children,
-  ...props
-}: {
-  children: (props: any) => JSX.Element;
-  query: TQuery;
-  model: TModelName;
-} & TOptions) {
-  const controllerReturn = controller.use(props);
-  return children(controllerReturn);
+  queryConfigs = queryConfigs;
 }

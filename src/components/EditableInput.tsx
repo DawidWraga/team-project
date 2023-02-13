@@ -60,7 +60,8 @@ export function CustomEditable(props: IProps) {
 
   return (
     <Editable
-      placeholder={previewValue ? previewValue(currValue) : currValue}
+      // placeholder={previewValue ? previewValue(currValue) : currValue}
+      defaultValue={value}
       isPreviewFocusable={true}
       selectAllOnFocus={false}
       w="100%"

@@ -1,5 +1,5 @@
 import { useUrlData } from 'lib-client/hooks/useUrlData';
-import { controller } from 'lib-client/controllers/Controller';
+import { controller } from 'lib-client/controllers';
 
 export function useCurrentProject() {
   const { projectId } = useUrlData<{ projectId: number }>('dynamicPath');

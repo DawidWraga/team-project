@@ -91,18 +91,5 @@ export type IPartialQueryConfigs<
   [TModelName in ModelOptions]?: IQueryConfig<TModels[TModelName]>;
 };
 
-export type PrismaModelNamesToTypes = {
-  project: CompleteProject;
-  task: CompleteTask;
-  subTask: CompleteSubTask;
-  taskStatus: CompleteTaskStatus;
-  example: Example;
-  user: CompleteUser;
-  userRole: CompleteUserRole;
-  post: CompletePost;
-  comment: CompleteComment;
-  anyModel: any;
-};
-
 export type GetPrismaModelType<TModelName extends PrismaModelNames> =
   PrismaModelNamesToTypes[TModelName];
