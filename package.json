@@ -42,6 +42,7 @@
     "react-hook-form": "^7.38.0",
     "react-icons": "^4.6.0",
     "react-query": "^3.39.2",
+    "react-quill": "^2.0.0",
     "react-toastify": "^9.0.8",
     "react-tracked": "^1.7.10",
     "recharts": "^2.1.16",
