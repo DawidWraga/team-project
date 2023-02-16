@@ -23,6 +23,7 @@ import { DraggableWrapper } from 'components/DragNDrop';
 import { ControllerWrapper } from 'lib-client/controllers/ControllerWrapper';
 import { useModals } from '@saas-ui/react';
 import { useTaskModal } from 'views/task/useTaskModal';
+import { EditSubtasks } from 'views/task/EditSubtasks';
 
 const tagToColorMap = {
   design: 'cyan.500',
@@ -32,82 +33,7 @@ const tagToColorMap = {
 export function Task(props) {
   const { task, index } = props;
 
-  // const { openTaskDetailsModal: openTaskModal } = useTaskDetailsModal(task);
   const { openTaskModal } = useTaskModal();
-
-  const modals = useModals();
-
-  // const { mutateAsync: deleteTask } = controller.useMutation({
-  //   query: 'delete',
-  //   model: 'task',
-  // });
-
-  // const Assignees = useCallback(() => {
-  //   return (
-  //     <AvatarGroup size="xs" max={5} alignContent="left" gap="1">
-  //       {task?.assignees?.map((user) => {
-  //         return (
-  //           <Tooltip key={user.id} label={user.fullName}>
-  //             <Avatar
-  //               size="xs"
-  //               borderColor="grey.50"
-  //               name={user.fullName}
-  //               // src={user.userIcon}
-  //               loading="eager"
-  //               // loading="lazy"
-  //             />
-  //           </Tooltip>
-  //         );
-  //       })}
-  //     </AvatarGroup>
-  //   );
-  // }, []);
-
-  const menuIcon = (
-    <Menu placement="left-start" offset={[0, 0]}>
-      <MenuButton as="div">
-        <IconButton
-          aria-label="task options button"
-          variant="ghost"
-          icon={<BiDotsVerticalRounded />}
-        />
-      </MenuButton>
-      <MenuList w="30px">
-        <MenuItem>
-          <AiFillEdit />
-          <Text pl="4px">Edit</Text>
-        </MenuItem>
-        <ControllerWrapper model="task" query="delete">
-          {({ mutateAsync: deleteTask }) => (
-            <MenuItem onClick={() => deleteTask({ id: task.id })}>
-              <AiFillDelete />
-              <Text pl="4px">Delete</Text>
-            </MenuItem>
-          )}
-        </ControllerWrapper>
-      </MenuList>
-    </Menu>
-  );
-
-  const tags = (
-    <ButtonGroup variant="solid" spacing="2" pt="2" pb="4">
-      {task.tags &&
-        task.tags?.map((tag) => {
-          const color = tagToColorMap[tag];
-          return (
-            <Button
-              bgColor={color}
-              size="sm"
-              borderRadius="full"
-              key={tag}
-              textTransform="uppercase"
-            >
-              {tag}
-            </Button>
-          );
-        })}
-    </ButtonGroup>
-  );
 
   const getTaskWithoutRelations = ({ assignees, ...task }) => ({ ...task });
 
@@ -134,72 +60,75 @@ export function Task(props) {
         },
       })}
     >
-      <Flex
-        flexDir="column"
-        margin={1}
-        position="relative"
-        onClick={(ev) => {
-          ev.stopPropagation();
-          openTaskModal(task);
-        }}
-      >
-        <Box position="absolute" right="-3" top="-2">
-          {menuIcon}
-        </Box>
+      {({ dragHandleProps }) => {
+        return (
+          <>
+            <Flex flexDir="column" margin={1} position="relative">
+              <Flex
+                alignItems="flex-end"
+                justifyContent="flex-end"
+                flexDir={'column-reverse'}
+                py="1.5"
+                px="1"
+                w="40px"
+                ml="auto"
+              >
+                <Box>
+                  <AvatarGroup size="xs" max={5} alignContent="left" gap="1">
+                    {task?.assignees?.map((user) => {
+                      return (
+                        <Tooltip key={user.id} label={user.fullName}>
+                          <Avatar
+                            size="xs"
+                            borderColor="grey.50"
+                            name={user.fullName}
+                            // src={user.userIcon}
+                            // loading="eager"
+                            // loading="lazy"
+                          />
+                        </Tooltip>
+                      );
+                    })}
+                  </AvatarGroup>
+                </Box>
 
-        <Text
-          fontSize={'xl'}
-          textAlign="left"
-          textColor="gray.800"
-          fontWeight="semibold"
-          mb="1"
-        >
-          {task.title} ({task.id})
-        </Text>
-        <Text
-          as={Flex}
-          alignItems="center"
-          fontSize="sm"
-          fontWeight="normal"
-          textColor="gray.600"
-        >
-          <FaClock display="inline" />
-          {moment(task.dueDate).format('DD/MM/YYYY')}
-        </Text>
-        <Text fontSize="sm" fontWeight="normal" textColor="gray.600">
-          {task.description}
-        </Text>
-        <Text fontSize="sm" fontWeight="normal" textColor="gray.600">
-          {task.status.label}
-        </Text>
-      </Flex>
-      <Divider borderColor="gray.400"></Divider>
+                <Text
+                  as={Flex}
+                  alignItems="center"
+                  fontSize="sm"
+                  fontWeight="normal"
+                  textColor="gray.600"
+                  gap={1}
+                  {...dragHandleProps}
+                >
+                  {moment(task.dueDate).format('DD/MM/YYYY')}
+                  <FaClock display="inline" />
+                </Text>
+              </Flex>
 
-      <Flex alignItems="center" py="1.5" px="1">
-        <AvatarGroup size="xs" max={5} alignContent="left" gap="1">
-          {task?.assignees?.map((user) => {
-            return (
-              <Tooltip key={user.id} label={user.fullName}>
-                <Avatar
-                  size="xs"
-                  borderColor="grey.50"
-                  name={user.fullName}
-                  // src={user.userIcon}
-                  // loading="eager"
-                  // loading="lazy"
-                />
-              </Tooltip>
-            );
-          })}
-        </AvatarGroup>
-        <Spacer />
-        {/* <Flex pt="1px" gap="2" alignItems="center">
-              <FaComments size="24px" />
-              <Text>{task.comments}</Text>
-            </Flex> */}
-      </Flex>
+              <Text
+                fontSize={'xl'}
+                textAlign="left"
+                textColor="gray.800"
+                fontWeight="semibold"
+                mb="1"
+                _hover={{ cursor: 'pointer' }}
+                onClick={(ev) => {
+                  ev.stopPropagation();
+                  openTaskModal(task);
+                }}
+              >
+                {task.title}
+              </Text>
 
-      <Spacer />
+              <Text fontSize="sm" fontWeight="normal" textColor="gray.600">
+                {task.description}
+              </Text>
+            </Flex>
+            <EditSubtasks task={task} />
+          </>
+        );
+      }}
     </DraggableWrapper>
   );
 }

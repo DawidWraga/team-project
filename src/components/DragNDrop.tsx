@@ -1,5 +1,9 @@
 import { Box, BoxProps } from '@chakra-ui/react';
-import { Droppable } from 'react-beautiful-dnd';
+import {
+  DraggableProps,
+  DraggableProvidedDragHandleProps,
+  Droppable,
+} from 'react-beautiful-dnd';
 import { Draggable } from 'react-beautiful-dnd';
 
 interface IDroppableProps {
@@ -39,7 +43,9 @@ interface IDraggableProps {
   draggableProps?: Record<any, any>;
   dragContainerProps?: BoxProps | ((provided: any) => BoxProps);
   whileDraggingProps?: BoxProps;
-  children: React.ReactNode;
+  children:
+    | React.ReactNode
+    | ((provided: { dragHandleProps: DraggableProvidedDragHandleProps }) => JSX.Element);
 }
 
 export const DraggableWrapper = (props: IDraggableProps) => {
@@ -48,22 +54,28 @@ export const DraggableWrapper = (props: IDraggableProps) => {
   return (
     <Draggable draggableId={id} index={index} {...draggableProps}>
       {(provided, snapshot) => {
+        const { draggableProps, innerRef, dragHandleProps } = provided;
+
         const dragContainerPropsObject =
           typeof dragContainerProps === 'object'
             ? dragContainerProps
             : dragContainerProps(snapshot);
 
+        const childIsFunction = typeof children === 'function';
+
+        // const ChildComponent = childIsFunction && ;
+
         return (
           <Box
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            //provided.dragHandleProps = logic for "grabbable" part of the element. Default = entire element is draggable. To make draggable part of element more targeted, move ...provided.dragHandleProps to other element
-
+            ref={innerRef}
+            {...draggableProps}
+            // if child is not function, make entire element draggable
+            {...(!childIsFunction && dragHandleProps)}
             style={provided.draggableProps.style}
             {...dragContainerPropsObject}
           >
-            {children}
+            {/* if child is function, call function and pass draggableProps */}
+            {childIsFunction ? children({ dragHandleProps }) : children}
           </Box>
         );
       }}

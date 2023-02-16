@@ -31,7 +31,7 @@ interface IProps<TType extends 'text' | 'textarea' = 'text' | 'textarea'> {
   allSx?: SxProps;
   inputAndPreviewSx?: SxProps;
   // renderPreview: (value: any) => JSX.Element | string;
-  previewValue: (value: any) => string;
+  // previewValue: (value: any) => string;
 }
 
 export function CustomEditable(props: IProps) {
@@ -43,20 +43,21 @@ export function CustomEditable(props: IProps) {
     inputAndPreviewSx,
     value,
     type,
-    previewValue,
+    onSubmit,
+    // previewValue,
     // renderPreview,
   } = props;
 
   type ??= 'text';
 
-  if (inputProps && (inputProps as any)?.type === 'date') {
-    // value = moment;
-  }
+  // if (inputProps && (inputProps as any)?.type === 'date') {
+  //   // value = moment;
+  // }
   const [currValue, setCurrValue] = useState(value || ' ');
 
-  useEffect(() => {
-    console.log(currValue);
-  }, [currValue]);
+  // useEffect(() => {
+  //   console.log(currValue);
+  // }, [currValue]);
 
   return (
     <Editable
@@ -69,8 +70,7 @@ export function CustomEditable(props: IProps) {
       {...editableProps}
       onSubmit={(newValue) => {
         if (newValue === currValue) return;
-
-        // props.onSubmit?.(newValue);
+        onSubmit?.(newValue);
         setCurrValue(newValue);
       }}
       sx={allSx}
@@ -97,7 +97,7 @@ export function CustomEditable(props: IProps) {
       </Tooltip>
       <Input
         // defaultValue={currValue}
-        value={currValue}
+        // value={currValue}
         w="100%"
         py={2}
         px={4}

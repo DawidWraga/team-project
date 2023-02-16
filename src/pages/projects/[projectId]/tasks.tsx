@@ -164,7 +164,7 @@ export default function ProjectKanbanPage() {
 
   function getRelevantTasks(statusId) {
     if (!tasks || !currentProject) return [];
-    return tasks?.filter((t) => t.status.id === statusId) || [];
+    return tasks?.filter((t) => t?.status?.id === statusId) || [];
 
     const ordered = currentProject?.statusToOrderedTaskIds?.[statusId];
     if (!ordered) {
