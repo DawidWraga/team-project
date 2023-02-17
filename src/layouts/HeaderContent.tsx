@@ -53,7 +53,7 @@ export default function HeaderContent(props) {
       )}
       {activeSideNavLink && (
         <Heading
-          fontSize={{ base: '1rem', sm: '1.2rem', lg: '1.35rem' }}
+          fontSize={{ base: '.9rem', sm: '1rem', lg: '1.05rem' }}
           fontWeight={500}
           wordBreak={'keep-all'}
           mr={{ base: 'auto', md: 'unset' }}
@@ -95,9 +95,9 @@ export default function HeaderContent(props) {
                   textTransform={'capitalize'}
                   position="relative"
                   pt={{ base: '0px', md: 'unset' }}
-                  bottom={{ base: '4px', md: '10px' }}
+                  bottom={{ base: '4px', md: '4px' }}
                   textColor={isActive ? 'white' : 'gray.400'}
-                  fontSize={{ base: '1rem', md: '1.35rem' }}
+                  fontSize={{ base: '1.9rem', md: '1.1rem' }}
                   verticalAlign="center"
                   transition="all 300ms"
                   pl={{ base: 1, md: 4, lg: 8 }}

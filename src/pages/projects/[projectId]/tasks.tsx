@@ -4,37 +4,11 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { DateSelector } from 'components/DateSelector';
 // import { projectController, taskController } from 'lib-client/controllers';
 import { useUrlData } from 'lib-client/hooks/useUrlData';
-import { useUrlDateToPrismaOptions } from 'lib-client/hooks/useUrlDateToPrismaOptions';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { KanbanCol } from 'views/task/KanbanCol';
-import { useProjectModal } from 'views/task/useProjectModal';
 import { useTaskModal } from 'views/task/useTaskModal';
-import { useEffect, useState } from 'react';
-import { controller } from 'lib-client/controllers';
 import { useCurrentProject } from 'lib-client/hooks/useCurrentProject';
-
-export function useFilteredTasks() {
-  const { projectId } = useUrlData<{ projectId: number }>('dynamicPath');
-
-  return controller.useQuery({
-    model: 'task',
-    query: 'findMany',
-    prismaProps: {
-      where: {
-        dueDate: useUrlDateToPrismaOptions(),
-        project: {
-          id: projectId,
-        },
-      },
-      include: {
-        status: true,
-        assignees: true,
-        subTasks: true,
-      },
-    },
-    enabled: Boolean(projectId),
-  });
-}
+import { useFilteredTasks, useUpdateTask } from 'lib-client/hooks/useTasks';
 
 export default function ProjectKanbanPage() {
   const { startDate, endDate } = useUrlData<{ startDate: string; endDate: string }>(
@@ -43,16 +17,8 @@ export default function ProjectKanbanPage() {
 
   const { openTaskModal } = useTaskModal();
   const { data: currentProject } = useCurrentProject();
-  const { data: tasks, queryKey } = useFilteredTasks();
-
-  const { mutateAsync: updateTask } = controller.use({
-    model: 'task',
-    query: 'update',
-    mode: 'optimistic',
-    changeUiKey: queryKey,
-    changeUiType: 'array',
-    invalidateClientChanges: true,
-  });
+  const { data: tasks } = useFilteredTasks();
+  const { mutateAsync: updateTask } = useUpdateTask();
 
   const { useSetOptionBar, leftOffset, sideNavIsOpen } = useLayoutStore();
   useSetOptionBar(
@@ -185,21 +151,6 @@ export default function ProjectKanbanPage() {
 
   return (
     <>
-      {/* <Button
-        onClick={() => {
-          console.table(tasks);
-        }}
-      >
-        tasks
-      </Button>
-      <Button
-        onClick={() => {
-          console.table(currentProject.statusToOrderedTaskIds);
-        }}
-      >
-        curr proj
-      </Button> */}
-
       <Box
         display="grid"
         bg="whiteAlpha.700"
@@ -214,23 +165,6 @@ export default function ProjectKanbanPage() {
       >
         <DragDropContext onDragEnd={onDragEnd}>
           {((currentProject as any)?.statuses).map((status, i) => {
-            // let relevantTasks = tasks?.filter((t) => t.status.id === status.id) || [];
-
-            // const ordered = currentProject?.statusToOrderedTaskIds?.[status.id];
-            // if (ordered && relevantTasks.length) {
-            //   const idToTask = {};
-            //   relevantTasks?.forEach((task) => (idToTask[task.id] = task));
-
-            //   // console.log("id to task: ",idToTask)
-
-            //   relevantTasks = ordered.map((taskId) => idToTask[taskId]);
-            // }
-
-            // console.log('============OG');
-            // console.table(relevantTasks);
-            // console.log('============NEW');
-            // console.table();
-
             return (
               <KanbanCol
                 key={status.id}

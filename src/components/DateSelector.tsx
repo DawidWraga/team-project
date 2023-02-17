@@ -86,7 +86,7 @@ export function DateSelector(props: IProps) {
     isHydrated && router.push({ query });
   };
 
-  const dateUnit = watch('date').value;
+  const dateUnit = watch('date')?.value;
 
   useEffect(() => {
     modifyDateAndRoute();

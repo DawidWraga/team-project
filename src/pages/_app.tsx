@@ -11,7 +11,7 @@ import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { MainModal } from 'components/MainModal';
 import { useSyncPageToRoute } from 'lib-client/hooks/useSyncPageToRoute';
-import { ModalsProvider, SaasProvider } from '@saas-ui/react';
+import { EmptyState, ErrorBoundary, ModalsProvider, SaasProvider } from '@saas-ui/react';
 import NextLink from 'next/link';
 import { Loading } from '@saas-ui/react';
 import { SessionProvider } from 'next-auth/react';
@@ -35,23 +35,35 @@ export default function MyApp({ Component, pageProps: { session, ...pageProps } 
       <CustomToastProvider />
 
       <SessionProvider session={session}>
-        <SaasProvider theme={theme} linkComponent={Link}>
-          <ModalsProvider>
-            <Suspense fallback={<Loading />}>
-              <QueryClientProvider client={queryClient}>
-                <Hydrate state={pageProps.dehydratedState}>
-                  <AuthGuard>
-                    <MainLayout>
-                      <Component {...pageProps} />
-                    </MainLayout>
-                  </AuthGuard>
+        <SaasProvider
+          theme={theme}
+          linkComponent={Link}
+          onError={(error) => {
+            console.error(error);
+          }}
+        >
+          <ErrorBoundary
+            errorComponent={
+              <EmptyState title="Thank you for your patience while we fix this small bug." />
+            }
+          >
+            <ModalsProvider>
+              <Suspense fallback={<Loading />}>
+                <QueryClientProvider client={queryClient}>
+                  <Hydrate state={pageProps.dehydratedState}>
+                    <AuthGuard>
+                      <MainLayout>
+                        <Component {...pageProps} />
+                      </MainLayout>
+                    </AuthGuard>
 
-                  <MainModal />
-                  <ReactQueryDevtools initialIsOpen={false} />
-                </Hydrate>
-              </QueryClientProvider>
-            </Suspense>
-          </ModalsProvider>
+                    <MainModal />
+                    <ReactQueryDevtools initialIsOpen={false} />
+                  </Hydrate>
+                </QueryClientProvider>
+              </Suspense>
+            </ModalsProvider>
+          </ErrorBoundary>
         </SaasProvider>
       </SessionProvider>
     </>

@@ -113,10 +113,10 @@ export function NavItem(props: IProps) {
         alignItems="stretch"
         justifyContent={'center'}
         onClick={() => {
-          if (hasSideNavLinks) {
-            setOpenAccordianRoute(route);
-            return;
-          }
+          // if (hasSideNavLinks) {
+          //   setOpenAccordianRoute(route);
+          //   return;
+          // }
 
           router.push(route);
           isMobile() && setSideNavIsOpen(false);
@@ -136,7 +136,6 @@ export function NavItem(props: IProps) {
           <Icon
             fontSize="lg"
             textColor={isActive ? 'white' : 'whiteAlpha.900'}
-            // textColor={isActive ? 'brand.main' : 'white'}
             as={routeToIconMap[route]}
             transition="all 200ms"
             ml="2"
@@ -164,13 +163,24 @@ export function NavItem(props: IProps) {
             />
           )}
           {hasSideNavLinks && (
-            <Icon
-              // px="1px"
-              as={MdKeyboardArrowRight}
+            <IconButton
+              aria-label="expand sidenav item"
               ml={route !== '/projects' ? 'auto' : '1'}
-              transform={isOpen ? 'rotate(-90deg)' : 'rotate(90deg)'}
-              transition="transform .2s"
-            />
+              variant="ghost"
+              colorScheme={'whiteAlpha'}
+              onClick={(ev) => {
+                ev.stopPropagation();
+                setOpenAccordianRoute(route);
+              }}
+            >
+              <Icon
+                // px="1px"
+                as={MdKeyboardArrowRight}
+                transform={isOpen ? 'rotate(-90deg)' : 'rotate(90deg)'}
+                transition="transform .2s"
+                fontSize="1rem"
+              />
+            </IconButton>
           )}
         </Flex>
 

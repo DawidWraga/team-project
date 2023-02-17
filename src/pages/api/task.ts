@@ -45,6 +45,22 @@ export default createApiHandler<Task>('task', {
     }) {
       const formattedAssignees = assignees?.map((user) => ({ id: user.id }));
 
+      const createSubtasks = subTasks.filter((t) => !Boolean(t.id));
+      const editSubtasks = subTasks.filter(
+        (t) => Boolean(t.id) && t.description !== null && t.completed !== null
+      );
+      const deleteSubtaskIds = subTasks
+        ?.filter((t) => t.id && t.description === null && t.completed === null)
+        .map((t) => ({ id: t.id }));
+
+      if (editSubtasks && editSubtasks.length) {
+        Promise.all(
+          editSubtasks.map(async ({ id, taskId, ...data }) => {
+            return await prisma.subTask.update({ where: { id }, data: { ...data } });
+          })
+        );
+      }
+
       return prisma.task.update({
         where: {
           id,
@@ -61,6 +77,16 @@ export default createApiHandler<Task>('task', {
           }),
           ...(assignees?.length && {
             assignees: { set: [], connect: formattedAssignees },
+          }),
+          ...(subTasks?.length && {
+            subTasks: {
+              ...(deleteSubtaskIds?.length && {
+                deleteMany: deleteSubtaskIds,
+              }),
+              ...(createSubtasks?.length && {
+                createMany: { data: createSubtasks },
+              }),
+            },
           }),
         },
       });
@@ -126,16 +152,7 @@ export default createApiHandler<Task>('task', {
               ...(createSubtasks?.length && {
                 createMany: { data: createSubtasks },
               }),
-              // ...(editSubtasks?.length && {
-              //   updateMany:
-              // }),
             },
-            // ...(subTasks?.length && {
-            //   subTasks: {
-            //     createMany: {
-            //       data: subTasks,
-            //     },
-            //   },
           }),
         },
         create: {

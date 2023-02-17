@@ -53,7 +53,7 @@ export default function Header(props) {
           </IconButton>
         )}
         <HeaderContent />
-        <Flex position="fixed" right="2" top={{ base: 4, lg: '3' }} gap="3" zIndex="999">
+        {/* <Flex position="fixed" right="2" top={{ base: 4, lg: '3' }} gap="3" zIndex="999">
           <IconButton
             aria-label="search"
             variant="unstyled"
@@ -79,7 +79,7 @@ export default function Header(props) {
               top="1.5"
             />
           </IconButton>
-        </Flex>
+        </Flex> */}
       </Flex>
       <OptionBar />
     </>

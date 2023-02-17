@@ -88,8 +88,8 @@ model Task {
   projectId Int
   assignees User[]
 
-  status   TaskStatus @relation(fields: [statusId], references: [id])
-  project  Project    @relation(fields: [projectId], references: [id])
+  status   TaskStatus @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  project  Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
   subTasks SubTask[]
 }
 
@@ -97,7 +97,7 @@ model SubTask {
   id          Int     @id @default(autoincrement())
   description String
   completed   Boolean @default(false)
-  task        Task    @relation(fields: [taskId], references: [id])
+  task        Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
   taskId      Int
 }
 
@@ -106,20 +106,19 @@ model TaskStatus {
   label String ///@zod.trim()
 
   tasks     Task[]
-  project   Project @relation(fields: [projectId], references: [id])
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId Int
 }
 
 model Project {
-  id                     Int          @id @default(autoincrement())
-  title                  String
-  createdDate            DateTime     @default(now())
-  dueDate                DateTime
-  statusToOrderedTaskIds Json?
-  statuses               TaskStatus[]
-  assignees              User[]
-  managers               User[]       @relation(name: "ProjectManagers")
-  tasks                  Task[]
+  id          Int          @id @default(autoincrement())
+  title       String
+  createdDate DateTime     @default(now())
+  dueDate     DateTime
+  statuses    TaskStatus[]
+  assignees   User[]
+  managers    User[]       @relation(name: "ProjectManagers")
+  tasks       Task[]
 }
 
 model Account {

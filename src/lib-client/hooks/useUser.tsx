@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import { controller } from 'lib-client/controllers';
 import { useSession } from 'next-auth/react';
 
@@ -20,5 +21,5 @@ export function useUser() {
     enabled: Boolean(session.status === 'authenticated') && Boolean(userEmail),
   });
 
-  return user;
+  return user as User;
 }

@@ -41,6 +41,7 @@ export const MainModal = () => {
       {/* wrapper */}
       <ModalContent
         draggable={true}
+        overflowX="hidden"
         minHeight={{ base: '75vh', lg: '500px' }}
         borderBottomRadius={{ base: '0', md: 'md' }}
         borderTopRadius={{ base: 'xl', md: 'md' }}

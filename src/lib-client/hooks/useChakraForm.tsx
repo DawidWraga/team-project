@@ -30,7 +30,7 @@ import {
   FormLabelProps,
 } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { MdCheck, MdSave, MdSaveAlt, MdSend } from 'react-icons/md';
+import { MdCheck, MdSave, MdSend } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import { PasswordInput } from 'components/PasswordInput';
@@ -46,8 +46,6 @@ import {
 import { objectMap } from 'utils/objectMap';
 import { formatUserOptions } from 'components/UserSelect';
 import { getObjectDifference } from 'utils/getObjectDifference';
-import dynamic from 'next/dynamic';
-import { FaRegClosedCaptioning } from 'react-icons/fa';
 
 export interface IFieldAndFieldState<TFieldValues extends FieldValues = FieldValues> {
   field: ControllerRenderProps<TFieldValues, Path<TFieldValues>>;
@@ -139,7 +137,7 @@ export const useChakraForm = <
 
   const [isServerSuccess, setIsServerSuccess] = useState(false);
 
-  const [dynamicSchema, updateDynamicSchema] = useDynamicSchema(
+  const [dynamicSchema, updateDynamicSchema, useFormFormattedValues] = useDynamicSchema(
     schema,
     dynamicSchemaNamesToObj
   );
@@ -148,48 +146,14 @@ export const useChakraForm = <
   const updateId = updateValues?.id;
   const isEditing = Boolean(updateId);
 
-  const formattedUpdateValues = useMemo(() => {
-    if (!isEditing) return;
-    let formattedValues = objectMap(updateValues, (v, k) => {
-      if (k === 'user' || k === 'assignees') {
-        return formatUserOptions(v);
-      }
-      if (k.includes('at') || k.includes('date')) {
-        return new Date(v);
-      }
 
-      return v;
-    });
-
-    let filteredValues = dynamicSchema?.safeParse(formattedValues).data;
-
-    Object.entries(dynamicSchemaNamesToObj)?.forEach(([name, schema]) => {
-      if (!name || !schema) {
-        return;
-      }
-      
-      if (updateValues[name]) {
-        updateValues[name].forEach((item, i) => {
-          updateDynamicSchema.addObj(name);
-
-          const relevantItem = schema.parse(item) as any;
-
-          const newValues = schemaObjectToSchemaNames(relevantItem, name, i);
-          filteredValues = {
-            ...filteredValues,
-            ...newValues,
-          };
-        });
-      }
-    });
-
-    return filteredValues;
-  }, [updateValues]);
+  const formattedUpdateValues = useFormFormattedValues(updateValues);
+  const formattedDefaultValues = useFormFormattedValues(defaultValues);
 
   // ======== Call default useForm hook
   const useFormReturn: UseFormReturn<TFieldValues, TContext> = useForm<TFieldValues>({
     resolver: zodResolver(dynamicSchema),
-    defaultValues: isEditing ? formattedUpdateValues : defaultValues,
+    defaultValues: isEditing ? formattedUpdateValues : formattedDefaultValues,
     ...otherProps,
   } as UseFormProps<TFieldValues, TContext>);
 

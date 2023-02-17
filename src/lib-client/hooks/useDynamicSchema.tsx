@@ -1,16 +1,13 @@
 import { AnyZodObject } from 'zod';
 import { useState } from 'react';
 import { objectMap } from 'utils/objectMap';
-
+import { useMemo } from 'react';
+import { formatUserOptions } from 'components/UserSelect';
 interface SchemaIdData {
   objectName: string;
   property: string;
   index: string;
 }
-
-// export function zodSchemaToObj(schema:AnyZodObject):Record<any,any>{
-
-// }
 
 /**
  *
@@ -74,7 +71,60 @@ export function useDynamicSchema(
     },
   };
 
-  return [dynamicSchema, updateSchema] as const;
+  function useFormFormattedValues(values: Record<string, any>, dependencies = []) {
+    return useMemo(() => {
+      if (!values || Object.keys(values).length < 1) return;
+      let formattedValues = objectMap(values, (v, k) => {
+        if (k === 'user' || k === 'assignees') {
+          return formatUserOptions(v);
+        }
+
+        if (
+          typeof v !== 'object' &&
+          (k.slice(-2).toLowerCase() === 'at' || k.toLowerCase().includes('date'))
+        ) {
+          return new Date(v);
+        }
+
+        return v;
+      });
+
+      let filteredValues = dynamicSchema?.safeParse(formattedValues);
+      if (filteredValues.error) {
+        console.log(filteredValues);
+      } else filteredValues = filteredValues.data;
+      // .data;
+      // console.log('safe parsed ', dynamicSchema.safeParse(formattedValues));
+
+      // console.log({ filteredValues, formattedValues, values, dynamicSchema });
+
+      Object.entries(dynamicSchemaNamesToObj)?.forEach(([name, schema]) => {
+        if (!name || !schema) {
+          return;
+        }
+
+        if (values[name]) {
+          values[name].forEach((item, i) => {
+            updateSchema.addObj(name);
+
+            const relevantItem = schema.parse(item) as any;
+
+            const newValues = schemaObjectToSchemaNames(relevantItem, name, i);
+            filteredValues = {
+              ...filteredValues,
+              ...newValues,
+            };
+          });
+        }
+      });
+
+      // console.log({ filteredValues, formattedValues, values, dynamicSchema });
+
+      return filteredValues;
+    }, [values, ...dependencies]);
+  }
+
+  return [dynamicSchema, updateSchema, useFormFormattedValues] as const;
 }
 
 export function parseSchemaName(schemaName: string): SchemaIdData {

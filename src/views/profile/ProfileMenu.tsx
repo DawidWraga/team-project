@@ -14,7 +14,10 @@ import { FiLogOut } from 'react-icons/fi';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import UserModal from 'views/profile/UserModal';
-import InviteTeamModal from 'components/InviteTeamModal';
+import { InviteTeamModal } from 'components/InviteTeamModal';
+import { Persona } from '@saas-ui/react';
+import { useUser } from 'lib-client/hooks/useUser';
+import { useInviteModal } from 'lib-client/hooks/useInviteModal';
 
 export default function ProfileMenu(...props) {
   const router = useRouter();
@@ -29,10 +32,13 @@ export default function ProfileMenu(...props) {
     onClose: inviteTeamOnClose,
   } = useDisclosure();
 
+  const user = useUser();
+  const { openInviteModal } = useInviteModal();
+
   return (
     <>
       <UserModal isOpen={userModalIsOpen} onClose={userModalOnClose} />
-      <InviteTeamModal isOpen={inviteTeamIsOpen} onClose={inviteTeamOnClose} />
+      {/* <InviteTeamModal isOpen={inviteTeamIsOpen} onClose={inviteTeamOnClose} /> */}
       <Menu
         // placement={isMobile() ? 'bottom-left' : 'right'}
         colorScheme="blue"
@@ -40,7 +46,6 @@ export default function ProfileMenu(...props) {
         {...props}
       >
         <MenuButton
-          _hover={{ cursor: 'pointer' }}
           position="absolute"
           bottom="0"
           h="70px"
@@ -60,13 +65,17 @@ export default function ProfileMenu(...props) {
           overflow={'visible'}
           mb="2"
         >
-          <Flex gap="2">
-            <Avatar />
-            <Flex flexDir="column" alignItems="start">
-              <Text>Name</Text>
-              <Text>Johnsmith@gmail.com</Text>
-            </Flex>
-          </Flex>
+          {user?.id && (
+            <Persona
+              name={user.fullName}
+              secondaryLabel={user.email}
+              presence="online"
+              justifyContent={'start'}
+              textAlign="start"
+              gap={2}
+              size="sm"
+            />
+          )}
         </MenuButton>
         <MenuList color="gray">
           <MenuItem
@@ -75,7 +84,7 @@ export default function ProfileMenu(...props) {
           >
             View Profile
           </MenuItem>
-          <MenuItem icon={<MdGroupAdd fontSize="1.25rem" />} onClick={inviteTeamOnOpen}>
+          <MenuItem icon={<MdGroupAdd fontSize="1.25rem" />} onClick={openInviteModal}>
             Invite team
           </MenuItem>
           <MenuItem

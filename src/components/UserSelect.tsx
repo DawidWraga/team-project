@@ -43,9 +43,9 @@ const userDummyData: Option[] = [
 
 export function formatUserOptions(users: User[] | CompleteUser[] = []) {
   if (!users || users.length === 0) return [];
-  return users.map((user) => ({
-    label: user.fullName,
-    value: user.id,
+  return users.map((user: any) => ({
+    label: user.label || user.fullName,
+    value: user.value || user.id,
   }));
 }
 

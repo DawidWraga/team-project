@@ -18,10 +18,10 @@ import { UserSelect, multiUserOptionsSchema } from 'components/UserSelect';
 import { controller } from 'lib-client/controllers';
 import { useCurrentProject } from 'lib-client/hooks/useCurrentProject';
 import { Task } from '@prisma/client';
-import { useFilteredTasks } from 'pages/projects/[projectId]/tasks';
+import { useFilteredTasks } from 'lib-client/hooks/useTasks';
 import { Controller } from 'react-hook-form';
 import { MenuButton, Menu, MenuList, MenuItem } from '@chakra-ui/react';
-import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
+import { AiFillDelete } from 'react-icons/ai';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
 import { ControllerWrapper } from 'lib-client/controllers/ControllerWrapper';
 
@@ -38,9 +38,9 @@ export const useTaskModal = () => {
   const { mutateAsync: createTask } = controller.useMutation({
     model: 'task',
     query: 'upsert',
-    mode: 'optimistic',
-    changeUiKey: queryKey,
-    invalidateClientChanges: true,
+    // mode: 'optimistic',
+    // changeUiKey: queryKey,
+    // invalidateClientChanges: true,
   });
 
   const { data: currentProject } = useCurrentProject();
@@ -56,10 +56,6 @@ export const useTaskModal = () => {
           />
         </MenuButton>
         <MenuList w="30px">
-          {/* <MenuItem>
-            <AiFillEdit />
-            <Text pl="4px">Edit</Text>
-          </MenuItem> */}
           <ControllerWrapper model="task" query="delete">
             {({ mutateAsync: deleteTask }) => (
               <MenuItem onClick={() => deleteTask({ id: task.id }).then(() => onClose())}>
