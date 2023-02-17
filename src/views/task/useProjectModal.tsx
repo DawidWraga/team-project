@@ -99,48 +99,11 @@ export const useProjectModal = () => {
               </Flex>
               <InputList
                 name="statuses"
-                inputs={({ label }) => {
+                inputs={({ label }, { RemoveButton }) => {
                   return (
                     <Flex gap={1}>
-                      <Input
-                        name={label}
-                        hideLabel={true}
-                        // customInput={({ defaults, field, fieldState }: any) => {
-                        //   return (
-                        //     <Flex alignItems="center" gap="1">
-                        //       <Input />
-                        //       {/* <CustomEditable
-                        //         editableProps={{
-                        //           ...defaults,
-                        //           ...field,
-                        //           defaultValue: field.value || ' ',
-                        //           placeholder: 'Add new status...',
-                        //           rounded: 'md',
-                        //           shadow: 'sm',
-                        //           position: 'relative',
-                        //         }}
-                        //       /> */}
-                        //       <IconButton
-                        //         aria-label="remove subtask"
-                        //         icon={<MinusIcon fontSize="sm" />}
-                        //         size="sm"
-                        //         onClick={() => {
-                        //           updateSchema.remove(label);
-                        //         }}
-                        //       />
-
-                        //     </Flex>
-                        //   );
-                        // }}
-                      />
-                      <IconButton
-                        aria-label="remove subtask"
-                        icon={<MinusIcon fontSize="sm" />}
-                        size="sm"
-                        onClick={() => {
-                          updateSchema.remove(label);
-                        }}
-                      />
+                      <Input name={label} hideLabel={true} />
+                      <RemoveButton />
                     </Flex>
                   );
                 }}

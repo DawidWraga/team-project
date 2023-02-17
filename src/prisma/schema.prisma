@@ -76,6 +76,12 @@ model UserRole {
   users User[]
 }
 
+model Invitations {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique @db.VarChar(30) ///@zod.email().trim()
+  createdAt DateTime @default(now())
+}
+
 model Task {
   id          Int      @id @default(autoincrement())
   title       String   @db.Text ///@zod.trim()

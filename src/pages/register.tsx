@@ -5,16 +5,15 @@ import { z } from 'zod';
 import ExternalFormWrapper from 'layouts/ExternalFormWrapper';
 import { controller } from 'lib-client/controllers';
 
+export const emailSchema = z
+  .string()
+  .email()
+  .refine((arg) => arg.includes('@make-it-all.co.uk'), 'Only internal emails allowed');
+
 const createUserSchema = z
   .object({
     fullName: z.string().min(5),
-    email: z
-      .string()
-      .email()
-      .refine(
-        (arg) => arg.includes('@make-it-all.co.uk'),
-        'Only internal emails allowed'
-      ),
+    email: emailSchema,
     password: z
       .string()
       .optional()

@@ -165,7 +165,7 @@ export const useTaskModal = () => {
                       {children}
                     </Flex>
                   )}
-                  inputs={({ completed, ...props }, removeAll) => {
+                  inputs={({ completed, ...props }, { removeAll }) => {
                     return (
                       <Flex alignItems="center" gap="1">
                         <Controller

@@ -28,6 +28,8 @@ import {
   FormHelperText,
   FormControlProps,
   FormLabelProps,
+  IconButton,
+  IconButtonProps,
 } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { MdCheck, MdSave, MdSend } from 'react-icons/md';
@@ -46,6 +48,7 @@ import {
 import { objectMap } from 'utils/objectMap';
 import { formatUserOptions } from 'components/UserSelect';
 import { getObjectDifference } from 'utils/getObjectDifference';
+import { MinusIcon } from '@chakra-ui/icons';
 
 export interface IFieldAndFieldState<TFieldValues extends FieldValues = FieldValues> {
   field: ControllerRenderProps<TFieldValues, Path<TFieldValues>>;
@@ -79,7 +82,13 @@ export interface ICreateInputProps<TFieldValues extends FieldValues = FieldValue
 
 export interface IInputListProps<TFieldValues extends FieldValues = FieldValues> {
   name: string;
-  inputs: (names: Record<any, any>, removeAll: () => void) => JSX.Element;
+  inputs: (
+    names: Record<any, any>,
+    utils: {
+      removeAll: () => void;
+      RemoveButton: (props: Omit<IconButtonProps, 'aria-label'>) => JSX.Element;
+    }
+  ) => JSX.Element;
   onChange?: (items: any[]) => any;
   ConditionalWrapper?: (props: { children: React.ReactNode }) => JSX.Element;
 }
@@ -101,7 +110,6 @@ interface UseChakraFormReturn<TFieldValues extends FieldValues, TContext = any>
   SubmitBtn: (props: ButtonProps & { label?: string }) => JSX.Element;
   Heading: (props: HeadingProps) => JSX.Element;
   isServerSuccess: boolean;
-  // setSchema: React.Dispatch<React.SetStateAction<z.ZodObject<TFieldValues>>>;
   dynamicSchema: AnyZodObject;
   updateSchema: UpdateSchema<TFieldValues>;
   isEditing: boolean;
@@ -145,7 +153,6 @@ export const useChakraForm = <
   // logic for update form
   const updateId = updateValues?.id;
   const isEditing = Boolean(updateId);
-
 
   const formattedUpdateValues = useFormFormattedValues(updateValues);
   const formattedDefaultValues = useFormFormattedValues(defaultValues);
@@ -472,6 +479,18 @@ export const useChakraForm = <
                 updateDynamicSchema.remove(ids);
               }, []);
 
+              const RemoveButton = useCallback((props: any) => {
+                return (
+                  <IconButton
+                    aria-label="remove item from input list"
+                    icon={<MinusIcon fontSize="sm" />}
+                    size="sm"
+                    onClick={removeAll}
+                    {...props}
+                  />
+                );
+              }, []);
+
               const staticKey = useMemo(
                 () =>
                   Object.values(keysObject).join('_') + new Date().getUTCMilliseconds(),
@@ -485,7 +504,7 @@ export const useChakraForm = <
                     display: onlyId ? 'none' : 'unset',
                   }}
                 >
-                  {inputs(keysObject, removeAll)}
+                  {inputs(keysObject, { removeAll, RemoveButton })}
                 </div>
               );
             })}
