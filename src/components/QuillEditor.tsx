@@ -3,25 +3,19 @@ import ReactQuill from 'react-quill';
 
 import 'react-quill/dist/quill.snow.css';
 
-export interface EditorContentChanged {
-  html: string;
-  markdown: string;
-}
-
-export interface EditorProps {
-  value?: string;
-  onChange?: (changes: EditorContentChanged) => void;
-}
-
-const TOOLBAR_OPTIONS = [
-  [{ header: [1, 2, 3, false] }],
-  ['bold', 'italic', 'underline', 'strike', 'blockquote', 'link'],
+const toolbar_options = [
+  [{ header: [1, 2, 3, 4, 5, false] }],
+  ['bold', 'italic', 'underline', 'strike'],
+  [{ align: [] }],
   [{ list: 'ordered' }, { list: 'bullet' }],
+  [{ script: 'sub' }, { script: 'super' }],
+  ['blockquote', 'code-block'],
   [{ indent: '-1' }, { indent: '+1' }],
-  ['clean'],
+  ['link'],
+  // ['clean'],
 ];
 
-export default function QuillEditor(props: EditorProps) {
+export default function QuillEditor() {
   const [value, setValue] = useState();
   const reactQuillRef = useRef<ReactQuill>(null);
 
@@ -29,10 +23,10 @@ export default function QuillEditor(props: EditorProps) {
     <ReactQuill
       ref={reactQuillRef}
       theme="snow"
-      placeholder="Start writing..."
+      placeholder="Write here..."
       modules={{
         toolbar: {
-          container: TOOLBAR_OPTIONS,
+          container: toolbar_options,
         },
       }}
       value={value}
