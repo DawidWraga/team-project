@@ -91,13 +91,7 @@ export function UserSelect({
       defaultOptions={isSuccess ? options : userDummyData}
       {...field}
       ref={selectRef}
-      // onBlur={(ev) => {
-      //   if (!field || !field.value) return;
-      //   const keepActive = field?.value && (field?.value as any).length > 0;
-      //   keepFloatingLabelActive(ev.target, keepActive);
-      // }}
       isMulti
-      // _loading={isLoading}
       chakraStyles={{
         container: (prev) => ({
           ...prev,

@@ -12,6 +12,7 @@ import { useProjectModal } from 'views/task/useProjectModal';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { getDateParams } from 'utils/getDateParams';
+import { CustomAvatarGroup } from 'components/CustomAvatarGroup';
 
 interface IProps {}
 
@@ -53,9 +54,7 @@ export default function ProjectsPage(props: IProps) {
               secondary: 'Due ' + moment(p.dueDate).format('MMMM Do YYYY'),
               tertiary: (
                 <>
-                  {p?.assignees?.map((user) => {
-                    return <Avatar name={user.fullName} size="xs" />;
-                  })}
+                  <CustomAvatarGroup users={p.assignees} />
                 </>
               ),
               action: (

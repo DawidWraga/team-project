@@ -1,0 +1,50 @@
+import { multiUserOptionsSchema } from 'components/UserSelect';
+import { controller } from 'lib-client/controllers';
+import { ChakraFormWrapper } from 'lib-client/hooks/useChakraForm';
+import { useUser } from 'lib-client/hooks/useUser';
+import { useRouter } from 'next/router';
+import { DocumentModel } from 'prisma/zod';
+import { TagSelect } from 'views/docs/TagSelect';
+import { z } from 'zod';
+
+interface IProps {}
+
+export default function NewPage(props: IProps) {
+  const {} = props;
+  const router = useRouter();
+
+  const user = useUser();
+
+  const { mutateAsync: createDocument } = controller.useMutation({
+    model: 'document',
+    query: 'create',
+  });
+
+  return (
+    <>
+      <ChakraFormWrapper
+        schema={DocumentModel.pick({ title: true, content: true }).extend({
+          tags: z.array(z.object({ label: z.string(), value: z.number() })),
+        })}
+      >
+        {({ Form, Input, SubmitBtn }) => {
+          return (
+            <Form
+              onSubmit={async (data) => {
+                const content = '<body><h1>hello</h1></body>';
+
+                const doc = await createDocument({ ...data, authorId: user.id, content });
+
+                router.push(`/docs/${doc.id}`);
+              }}
+            >
+              <Input name="title" />
+              <Input name="tags" customInput={(props) => <TagSelect {...props} />} />
+              <SubmitBtn label="document" />
+            </Form>
+          );
+        }}
+      </ChakraFormWrapper>
+    </>
+  );
+}

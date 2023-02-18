@@ -45,6 +45,12 @@ const pages: IPage[] = [
   },
   {
     parentLink: {
+      label: 'Docs',
+      route: '/docs',
+    },
+  },
+  {
+    parentLink: {
       label: 'Projects',
       route: '/projects',
     },
@@ -78,44 +84,7 @@ const pages: IPage[] = [
     //   },
     // ],
   },
-  {
-    parentLink: {
-      label: 'Docs',
-      route: '/docs',
-    },
-    sideNavLinks: [
-      {
-        label: 'Welcome to docs',
-        route: '/docs/welcome',
-        defaultHeaderLink: '',
-      },
-      {
-        label: 'Printing',
-        route: '/docs/printing',
-        defaultHeaderLink: '',
-      },
-      {
-        label: 'Software configs',
-        route: '/docs/software',
-        defaultHeaderLink: '',
-      },
-      {
-        label: 'Resources',
-        route: '/docs/resources',
-        defaultHeaderLink: '',
-      },
-      {
-        label: 'Contacts',
-        route: '/docs/contacts',
-        defaultHeaderLink: '',
-      },
-      {
-        label: 'Our mission',
-        route: '/docs/mission',
-        defaultHeaderLink: '',
-      },
-    ],
-  },
+
   {
     parentLink: {
       label: 'Users',

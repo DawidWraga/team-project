@@ -172,6 +172,8 @@ export function NavItem(props: IProps) {
                 ev.stopPropagation();
                 setOpenAccordianRoute(route);
               }}
+              position="absolute"
+              right="3"
             >
               <Icon
                 // px="1px"

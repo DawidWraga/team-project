@@ -14,6 +14,8 @@ export type PrismaModelNamesToTypes = {
   post: T.CompletePost;
   comment: T.CompleteComment;
   invitation: Prisma.Invitation;
+  document: T.CompleteDocument;
+  tag: T.CompleteTag;
   anyModel: any;
   account: never;
   session: never;
