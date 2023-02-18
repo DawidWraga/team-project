@@ -4,19 +4,48 @@ import { LineChart, getLineChartDummyData } from 'views/charts/LineChart';
 import { PieChart } from 'views/charts/PieChart';
 import { UserStats } from 'views/dashboard/UserStats';
 import { Flex, Heading } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 
-// export const getServerSideProps = async (ctx) => {
-// 	const project = await getProjectData(ctx.query.projectId);
-// 	return {
-// 		props: { project },
-// 	};
-// };
+import { DateSelector } from 'components/DateSelector';
+import { useLayoutStore } from 'lib-client/stores/LayoutStore';
+import { useCurrentProject } from 'lib-client/hooks/useCurrentProject';
+import { useFilteredTasks, useUpdateTask } from 'lib-client/hooks/useTasks';
+import { useUrlData } from 'lib-client/hooks/useUrlData';
 
 export default function ProjectDashboardPage(props) {
   const {} = props;
 
-  // const { isOpen, onLoad } = useDisclosure();
+  const { data: currentProject } = useCurrentProject();
+  const { data: tasks } = useFilteredTasks();
+  const { startDate, endDate } = useUrlData<{ startDate: string; endDate: string }>(
+    'queryParams'
+  );
 
+  const { useSetOptionBar, leftOffset, sideNavIsOpen } = useLayoutStore();
+  useSetOptionBar(
+    <Flex
+      gap={2}
+      justifyContent={'space-between'}
+      w="100%"
+      mr={sideNavIsOpen ? leftOffset : 0}
+      transition={'margin-right 200ms ease-in-out'}
+      color="shade.main"
+    >
+      <DateSelector />
+      <Flex gap={2}>
+        <Button
+          colorScheme={'brand'}
+          variant={'solid'}
+          // onClick={() => {
+          //   openTaskModal();
+          // }}
+        >
+          Add task
+        </Button>
+      </Flex>
+    </Flex>,
+    [currentProject, sideNavIsOpen, [startDate, endDate].join('_')]
+  );
   const lineChartData = getLineChartDummyData();
 
   const pieChartData = [

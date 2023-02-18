@@ -13,14 +13,6 @@ export interface IPage {
   headerLinks?: IRouteData[];
 }
 
-const projectSideNavLinks: IRouteData[] = require('db/projects.json').map((project) => {
-  return {
-    label: project.title,
-    route: `/projects/${project.id}`,
-    defaultHeaderLink: '/dashboard',
-  };
-});
-
 const forumSideNavLinks: IRouteData[] = require('db/topics.json').map((topic) => {
   return {
     label: topic.title,
@@ -57,7 +49,8 @@ const pages: IPage[] = [
     headerLinks: [
       {
         label: 'dashboard',
-        route: '/dashboard',
+        route: '/dashboard' + '?' + getDateParams(),
+        hasOptionBar: true,
       },
       {
         label: 'tasks',
