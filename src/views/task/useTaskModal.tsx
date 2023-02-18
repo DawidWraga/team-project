@@ -95,6 +95,7 @@ export const useTaskModal = () => {
               title: true,
               description: true,
               dueDate: true,
+              manhours: true,
             }).extend({
               assignees: multiUserOptionsSchema,
             })}
@@ -151,6 +152,7 @@ export const useTaskModal = () => {
                     return <UserSelect {...props} />;
                   }}
                 />
+                <Input name="manhours" type="number" />
                 <InputList
                   name="subTasks"
                   ConditionalWrapper={({ children }) => (

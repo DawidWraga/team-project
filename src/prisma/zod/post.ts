@@ -4,8 +4,8 @@ import { CompleteComment, RelatedCommentModel, CompleteUser, RelatedUserModel } 
 
 export const PostModel = z.object({
   id: z.number().int(),
-  dateCreated: z.date(),
-  dateUpdated: z.date().nullish(),
+  createdAt: z.date(),
+  updatedAt: z.date().nullish(),
   title: z.string().min(3),
   content: z.string(),
   solved: z.boolean(),

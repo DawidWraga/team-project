@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Task` ADD COLUMN `manhours` DOUBLE NOT NULL DEFAULT 1;

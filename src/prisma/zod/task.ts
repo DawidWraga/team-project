@@ -11,6 +11,7 @@ export const TaskModel = z.object({
   updatedAt: z.date(),
   statusId: z.number().int(),
   projectId: z.number().int(),
+  manhours: z.number(),
 })
 
 export interface CompleteTask extends z.infer<typeof TaskModel> {

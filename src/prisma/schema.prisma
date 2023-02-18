@@ -24,14 +24,32 @@ model Example {
   text        String ///@zod.min(3)
 }
 
+model Document {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String ///@zod.min(3).trim()
+  content   Bytes
+  tags      Tag[]
+  authors   User[]
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  label String ///@zod.trim()
+  color String ///@zod.trim()
+
+  documents Document[]
+}
+
 model Post {
-  id          Int       @id @default(autoincrement())
-  dateCreated DateTime  @default(now())
-  dateUpdated DateTime? @updatedAt
-  title       String    @db.Text ///@zod.min(3).trim
-  content     String    @db.Text
-  solved      Boolean
-  replies     Comment[]
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  title     String    @db.Text ///@zod.min(3).trim
+  content   String    @db.Text
+  solved    Boolean
+  replies   Comment[]
 
   authorId Int
 
@@ -59,14 +77,15 @@ model User {
 
   roleId Int @default(1)
 
-  role             UserRole  @relation(fields: [roleId], references: [id])
+  role             UserRole   @relation(fields: [roleId], references: [id])
   posts            Post[]
   comments         Comment[]
   tasksAssigned    Task[]
   projectsAssigned Project[]
-  projectsManaged  Project[] @relation(name: "ProjectManagers")
+  projectsManaged  Project[]  @relation(name: "ProjectManagers")
   Account          Account[]
   Session          Session[]
+  Document         Document[]
 }
 
 model UserRole {
@@ -76,9 +95,9 @@ model UserRole {
   users User[]
 }
 
-model Invitations {
+model Invitation {
   id        Int      @id @default(autoincrement())
-  email     String   @unique @db.VarChar(30) ///@zod.email().trim()
+  email     String   @db.VarChar(30) ///@zod.email().trim()
   createdAt DateTime @default(now())
 }
 
@@ -93,6 +112,7 @@ model Task {
   statusId  Int
   projectId Int
   assignees User[]
+  manhours  Float  @default(1)
 
   status   TaskStatus @relation(fields: [statusId], references: [id], onDelete: Cascade)
   project  Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)

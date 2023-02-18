@@ -2,7 +2,6 @@ import { Box, Button, Flex } from '@chakra-ui/react';
 import { DragDropContext } from 'react-beautiful-dnd';
 
 import { DateSelector } from 'components/DateSelector';
-// import { projectController, taskController } from 'lib-client/controllers';
 import { useUrlData } from 'lib-client/hooks/useUrlData';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { KanbanCol } from 'views/task/KanbanCol';
