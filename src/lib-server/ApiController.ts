@@ -32,17 +32,17 @@ export class ApiController<TModel> {
       const session = await getServerSession(req, res, authOptions);
       const isRegistering = query === 'create' && this.model === 'user';
 
-      // if (!session && !isRegistering) {
-      //   res.status(401).json({ message: 'You must be logged in.' });
-      //   return;
-      // }
+      if (!session && !isRegistering) {
+        res.status(401).json({ message: 'You must be logged in.' });
+        return;
+      }
 
       // get handlers for specific query
       const config = this.getConfig(query, prismaProps);
       const { queryFn, guard, logDataBeforeQuery } = config;
 
       // guard clause for validation
-      const errorMessage = guard(req.body);
+      const errorMessage = await guard(req.body);
       if (typeof errorMessage === 'string') {
         throw new Error('Request failed.', { cause: errorMessage });
       }
@@ -156,6 +156,11 @@ export class ApiController<TModel> {
             ...(resourceId && { resource: { connect: { id: resourceId } } }),
           },
         });
+      },
+    },
+    createMany: {
+      queryFn: ({ data, ...rest }) => {
+        return this.prismaModel.createMany({ data: data, skipDuplicates: true, ...rest });
       },
     },
   };

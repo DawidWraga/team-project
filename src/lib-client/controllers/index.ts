@@ -13,7 +13,7 @@ export type PrismaModelNamesToTypes = {
   userRole: T.CompleteUserRole;
   post: T.CompletePost;
   comment: T.CompleteComment;
-  invitations: Prisma.Invitations;
+  invitation: Prisma.Invitation;
   anyModel: any;
   account: never;
   session: never;
