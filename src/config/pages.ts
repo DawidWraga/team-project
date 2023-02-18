@@ -94,13 +94,6 @@ const pages: IPage[] = [
   },
   {
     parentLink: {
-      label: 'DocsNew',
-      route: '/docsnew',
-      hasOptionBar: true,
-    },
-  },
-  {
-    parentLink: {
       label: 'Example',
       route: '/example',
       hasOptionBar: true,
