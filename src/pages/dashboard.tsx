@@ -9,7 +9,6 @@ export default function DashboardPage(props) {
   const {} = props;
 
   const router = useRouter();
-  const data = useSession();
   const user = useUser();
 
   return (

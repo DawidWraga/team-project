@@ -58,7 +58,6 @@ const pages: IPage[] = [
         hasOptionBar: true,
       },
     ],
-    // sideNavLinks: projectSideNavLinks,
   },
   {
     parentLink: {

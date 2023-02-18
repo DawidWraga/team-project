@@ -1,21 +1,20 @@
-import { randomNum } from 'utils/randomNum';
-import { Paper } from 'components/Paper';
-import { LineChart, getLineChartDummyData } from 'views/charts/LineChart';
-import { PieChart } from 'views/charts/PieChart';
-import { UserStats } from 'views/dashboard/UserStats';
-import { Flex, Heading } from '@chakra-ui/react';
-import { Button } from '@chakra-ui/react';
-
+import { Flex, Heading, Text } from '@chakra-ui/react';
 import { DateSelector } from 'components/DateSelector';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { useCurrentProject } from 'lib-client/hooks/useCurrentProject';
-import { useFilteredTasks, useUpdateTask } from 'lib-client/hooks/useTasks';
+import { useFilteredTasks } from 'lib-client/hooks/useTasks';
 import { useUrlData } from 'lib-client/hooks/useUrlData';
+import { Loader } from '@saas-ui/react';
+import {
+  getProjectStatuses,
+  getTasksByAssignee,
+  getTasksByStatus,
+} from 'utils/dashboardUtils';
 
 export default function ProjectDashboardPage(props) {
   const {} = props;
 
-  const { data: currentProject } = useCurrentProject();
+  const { data: currentProject, isLoading } = useCurrentProject();
   const { data: tasks } = useFilteredTasks();
   const { startDate, endDate } = useUrlData<{ startDate: string; endDate: string }>(
     'queryParams'
@@ -32,69 +31,102 @@ export default function ProjectDashboardPage(props) {
       color="shade.main"
     >
       <DateSelector />
-      <Flex gap={2}>
-        <Button
-          colorScheme={'brand'}
-          variant={'solid'}
-          // onClick={() => {
-          //   openTaskModal();
-          // }}
-        >
-          Add task
-        </Button>
-      </Flex>
     </Flex>,
     [currentProject, sideNavIsOpen, [startDate, endDate].join('_')]
   );
-  const lineChartData = getLineChartDummyData();
 
-  const pieChartData = [
-    {
-      name: 'not started',
-      value: randomNum(2, 10),
-    },
-    {
-      name: 'in progress',
-      value: randomNum(2, 10),
-    },
-    {
-      name: 'review',
-      value: randomNum(2, 10),
-    },
-    {
-      name: 'done',
-      value: randomNum(2, 10),
-    },
-  ];
+  if (isLoading) return <Loader />;
+  if (!currentProject?.id) return <>no project</>;
+  if (!tasks?.length) return <>no tasks</>;
+
+  // ========================================================
+
+  const { startStatus, endStatus } = getProjectStatuses(currentProject);
+  const tasksInStartStatus = getTasksByStatus(tasks, startStatus.id);
+  const tasksInEndStatus = getTasksByStatus(tasks, endStatus.id);
+
+  console.log({ startStatus, endStatus, tasksInStartStatus, tasksInEndStatus });
+
+  const assigneesTasks = getTasksByAssignee(tasks, 5);
+  console.log('🔷 >> ProjectDashboardPage >> assigneesTasks', assigneesTasks);
 
   return (
-    <div>
-      <Flex flexDir="column" w="100%" h="calc(100vh - 60px)" p="10" gap="3">
-        <Paper
-          h="100%"
-          p="2"
-          flexDir="column"
-          justifyContent={'center'}
-          alignItems="center"
-          variant="elevated"
-        >
-          <Heading size="lg">Tasks this month</Heading>
-          <LineChart data={lineChartData} />
-        </Paper>
-        <Flex h="100%" flexDir={{ base: 'column', md: 'row-reverse' }} gap="2">
-          <Paper
-            variant="elevated"
-            justifyContent="center"
-            alignItems="center"
-            w={{ base: '100%', md: '50%' }}
-            // minW="300px"
-            h="100%"
-          >
-            <PieChart pieChartData={pieChartData} />
-          </Paper>
-          <UserStats />
-        </Flex>
+    <Flex flexDir="column" gap={1}>
+      <Flex flexDir="column">
+        <Heading size="lg">Tasks statuses overall </Heading>
+
+        <Text>start status: {tasksInStartStatus.length}</Text>
+        <Text>inbetween status: {}</Text>
+        <Text>end status: {}</Text>
       </Flex>
-    </div>
+      <Flex flexDir="column">
+        <Heading size="lg">Tasks statuses FOR john smith (id = 5) </Heading>
+
+        <Text>
+          start status: {getTasksByStatus(assigneesTasks, startStatus.id).length}
+        </Text>
+        <Text>inbetween status: {}</Text>
+        <Text>end status: {getTasksByStatus(assigneesTasks, endStatus.id).length}</Text>
+      </Flex>
+    </Flex>
   );
 }
+
+// ========================================================
+
+// import { randomNum } from 'utils/randomNum';
+// import { Paper } from 'components/Paper';
+// import { LineChart, getLineChartDummyData } from 'views/charts/LineChart';
+// import { PieChart } from 'views/charts/PieChart';
+// import { UserStats } from 'views/dashboard/UserStats';
+
+// const pieChartData = [
+//   {
+//     name: 'not started',
+//     value: randomNum(2, 10),
+//   },
+//   {
+//     name: 'in progress',
+//     value: randomNum(2, 10),
+//   },
+//   {
+//     name: 'review',
+//     value: randomNum(2, 10),
+//   },
+//   {
+//     name: 'done',
+//     value: randomNum(2, 10),
+//   },
+// ];
+// const lineChartData = getLineChartDummyData();
+
+// return (
+//   <div>
+//     <Flex flexDir="column" w="100%" h="calc(100vh - 60px)" p="10" gap="3">
+//       <Paper
+//         h="100%"
+//         p="2"
+//         flexDir="column"
+//         justifyContent={'center'}
+//         alignItems="center"
+//         variant="elevated"
+//       >
+//         <Heading size="lg">Tasks this month</Heading>
+//         <LineChart data={lineChartData} />
+//       </Paper>
+//       <Flex h="100%" flexDir={{ base: 'column', md: 'row-reverse' }} gap="2">
+//         <Paper
+//           variant="elevated"
+//           justifyContent="center"
+//           alignItems="center"
+//           w={{ base: '100%', md: '50%' }}
+//           // minW="300px"
+//           h="100%"
+//         >
+//           <PieChart pieChartData={pieChartData} />
+//         </Paper>
+//         <UserStats />
+//       </Flex>
+//     </Flex>
+//   </div>
+// );

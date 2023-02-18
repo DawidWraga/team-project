@@ -1,10 +1,7 @@
-import { Prisma, Task } from '@prisma/client';
+import { Task } from '@prisma/client';
 import { UNREACHABLE_ID_NUMBER } from 'lib-client/constants';
-import { anyQuery } from 'lib-client/controllers/types/Controller';
 import { createApiHandler } from 'lib-server/ApiController';
 import { prisma } from 'lib-server/prisma';
-import { CompleteTask } from 'prisma/zod';
-import { z } from 'zod';
 
 export default createApiHandler<Task>('task', {
   create: {
@@ -154,6 +151,7 @@ export default createApiHandler<Task>('task', {
               }),
             },
           }),
+          ...rest,
         },
         create: {
           title: title || '',
@@ -179,6 +177,7 @@ export default createApiHandler<Task>('task', {
               }),
             },
           }),
+          ...rest,
         },
       });
     },

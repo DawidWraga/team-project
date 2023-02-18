@@ -1,5 +1,6 @@
 import { useUrlData } from 'lib-client/hooks/useUrlData';
 import { controller } from 'lib-client/controllers';
+import { CompleteProject } from 'prisma/zod';
 
 export function useCurrentProject() {
   const { projectId } = useUrlData<{ projectId: number }>('dynamicPath');
@@ -13,7 +14,7 @@ export function useCurrentProject() {
     },
   };
 
-  return controller.use({
+  return controller.useQuery({
     query: 'findUnique',
     model: 'project',
     prismaProps: projectPrismaProps,

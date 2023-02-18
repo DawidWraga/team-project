@@ -104,6 +104,7 @@ export const useTaskModal = () => {
               description: 'description1',
               dueDate: new Date(),
               assignees: [{ label: 'Dawid Wraga', value: 5 }],
+              manhours: 1,
             }}
             updateValues={task}
             dynamicSchemaNamesToObj={{ subTasks: SubtaskSchema }}
