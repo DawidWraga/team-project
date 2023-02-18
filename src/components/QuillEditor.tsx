@@ -11,7 +11,7 @@ const toolbar_options = [
   [{ script: 'sub' }, { script: 'super' }],
   ['blockquote', 'code-block'],
   [{ indent: '-1' }, { indent: '+1' }],
-  ['link'],
+  ['link', 'image'],
   // ['clean'],
 ];
 
