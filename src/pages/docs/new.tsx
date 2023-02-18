@@ -1,9 +1,11 @@
+import { QuillEditor } from 'components/QuillEditor';
 import { multiUserOptionsSchema } from 'components/UserSelect';
 import { controller } from 'lib-client/controllers';
 import { ChakraFormWrapper } from 'lib-client/hooks/useChakraForm';
 import { useUser } from 'lib-client/hooks/useUser';
 import { useRouter } from 'next/router';
 import { DocumentModel } from 'prisma/zod';
+import { useState } from 'react';
 import { TagSelect } from 'views/docs/TagSelect';
 import { z } from 'zod';
 
@@ -20,6 +22,8 @@ export default function NewPage(props: IProps) {
     query: 'create',
   });
 
+  const [content, setContent] = useState('');
+
   return (
     <>
       <ChakraFormWrapper
@@ -31,8 +35,6 @@ export default function NewPage(props: IProps) {
           return (
             <Form
               onSubmit={async (data) => {
-                const content = '<body><h1>hello</h1></body>';
-
                 const doc = await createDocument({ ...data, authorId: user.id, content });
 
                 router.push(`/docs/${doc.id}`);
@@ -40,6 +42,12 @@ export default function NewPage(props: IProps) {
             >
               <Input name="title" />
               <Input name="tags" customInput={(props) => <TagSelect {...props} />} />
+              <QuillEditor
+                quillProps={{
+                  value: content,
+                  onChange: (value) => setContent(value),
+                }}
+              />
               <SubmitBtn label="document" />
             </Form>
           );

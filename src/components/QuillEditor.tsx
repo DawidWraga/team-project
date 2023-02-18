@@ -1,5 +1,7 @@
+import { Loader } from '@saas-ui/react';
+import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
 import { useRef, useState } from 'react';
-import ReactQuill from 'react-quill';
+import ReactQuill, { ReactQuillProps } from 'react-quill';
 
 import 'react-quill/dist/quill.snow.css';
 
@@ -15,9 +17,16 @@ const toolbar_options = [
   // ['clean'],
 ];
 
-export default function QuillEditor() {
-  const [value, setValue] = useState();
+interface IProps {
+  quillProps?: ReactQuillProps;
+}
+
+export function QuillEditor(props: IProps) {
+  const { quillProps } = props;
   const reactQuillRef = useRef<ReactQuill>(null);
+
+  const isHydrated = useIsHydrated();
+  if (!isHydrated) return <Loader />;
 
   return (
     <ReactQuill
@@ -29,7 +38,7 @@ export default function QuillEditor() {
           container: toolbar_options,
         },
       }}
-      value={value}
+      {...quillProps}
     />
   );
 }

@@ -23,4 +23,20 @@ export default createApiHandler<Document>('document', {
       });
     },
   },
+  findUnique: {
+    queryFn: async ({ id }) => {
+      const doc = await prisma.document.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          authors: true,
+          tags: true,
+        },
+      });
+
+      (doc as any).content = doc.content.toString('utf8');
+      return doc;
+    },
+  },
 });

@@ -1,31 +1,23 @@
 import { controller } from 'lib-client/controllers';
 import { useUrlData } from 'lib-client/hooks/useUrlData';
-import {
-  Avatar,
-  Button,
-  Flex,
-  Heading,
-  IconButton,
-  Spacer,
-  Text,
-} from '@chakra-ui/react';
-
+import { Button, Flex, Heading, IconButton, Spacer, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { Paper } from 'components/Paper';
 import { PageWrapper } from 'layouts/PageWrapper';
-import markdownStyles from 'styles/markdownStyles.module.css';
 import moment from 'moment/moment';
 import { MdArrowLeft, MdShare } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import { Loader, EmptyState } from '@saas-ui/react';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import { CustomAvatarGroup } from 'components/CustomAvatarGroup';
+import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
 
 interface IProps {}
 
 export default function SingleDocumentPage(props: IProps) {
   const {} = props;
 
+  const isHydrated = useIsHydrated();
   const router = useRouter();
   const { id: docId } = useUrlData('dynamicPath');
 
@@ -33,19 +25,14 @@ export default function SingleDocumentPage(props: IProps) {
     model: 'document',
     query: 'findUnique',
     prismaProps: {
-      where: {
-        id: docId,
-      },
-      include: {
-        authors: true,
-        tags: true,
-      },
+      id: docId,
     },
     enabled: Boolean(docId),
   });
 
   if (isLoading) return <Loader />;
-  if (!doc?.id) return <EmptyDocState />;
+
+  if ((isHydrated && !docId) || !doc.id) return <EmptyDocState />;
 
   return (
     <>
@@ -93,8 +80,9 @@ export default function SingleDocumentPage(props: IProps) {
             <Text>{moment(doc.date).format('DD/MM/YYYY')}</Text>
           </Flex>
           <div
-            className={markdownStyles['markdown']}
-            dangerouslySetInnerHTML={{ __html: doc.content }}
+            dangerouslySetInnerHTML={{
+              __html: doc.content,
+            }}
           ></div>
         </Paper>
       </PageWrapper>
@@ -130,3 +118,41 @@ const EmptyDocState = () => {
     />
   );
 };
+
+/**
+ * credit: https://gist.github.com/chrisveness/bcb00eb717e6382c5608
+ *
+ * Decodes utf-8 encoded string back into multi-byte Unicode characters.
+ *
+ * Can be achieved JavaScript by decodeURIComponent(escape(str)),
+ * but this approach may be useful in other languages.
+ *
+ * @param   {string} utf8String - UTF-8 string to be decoded back to Unicode.
+ * @returns {string} Decoded Unicode string.
+ */
+function utf8Decode(utf8String) {
+  if (typeof utf8String != 'string')
+    throw new TypeError('parameter ‘utf8String’ is not a string');
+  // note: decode 3-byte chars first as decoded 2-byte strings could appear to be 3-byte char!
+  const unicodeString = utf8String
+    .replace(
+      /[\u00e0-\u00ef][\u0080-\u00bf][\u0080-\u00bf]/g, // 3-byte chars
+      function (c) {
+        // (note parentheses for precedence)
+        var cc =
+          ((c.charCodeAt(0) & 0x0f) << 12) |
+          ((c.charCodeAt(1) & 0x3f) << 6) |
+          (c.charCodeAt(2) & 0x3f);
+        return String.fromCharCode(cc);
+      }
+    )
+    .replace(
+      /[\u00c0-\u00df][\u0080-\u00bf]/g, // 2-byte chars
+      function (c) {
+        // (note parentheses for precedence)
+        var cc = ((c.charCodeAt(0) & 0x1f) << 6) | (c.charCodeAt(1) & 0x3f);
+        return String.fromCharCode(cc);
+      }
+    );
+  return unicodeString;
+}
