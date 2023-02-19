@@ -11,6 +11,7 @@ import {
   getTasksByStatus,
 } from 'utils/dashboardUtils';
 import { ToggleManhours } from 'views/dashboard/ToggleManhours';
+import { CustomEmptyState } from 'components/CustomEmptyState';
 
 export default function ProjectDashboardPage(props) {
   const {} = props;
@@ -31,8 +32,8 @@ export default function ProjectDashboardPage(props) {
   );
 
   if (isLoading) return <Loader />;
-  if (!currentProject?.id) return <>no project</>;
-  if (!tasks?.length) return <>no tasks</>;
+  if (!currentProject?.id) return <CustomEmptyState title={'Project not found'} />;
+  if (!tasks?.length) return <CustomEmptyState title={'No tasks found'} />;
 
   // ========================================================
 
