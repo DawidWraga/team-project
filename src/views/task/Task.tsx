@@ -25,6 +25,7 @@ const tagToColorMap = {
   develop: 'purple.300',
 };
 
+// use memo to optimise performance (only re-render when certain props change)
 export const Task = memo(
   (props: any) => {
     const { task, index } = props;
@@ -36,6 +37,7 @@ export const Task = memo(
     const WrappedTask = useCallback(() => {
       return (
         <DraggableWrapper
+          // assign ID to stringified task object to pass task data to drag container (task data is needed in "onDragEnd" function)
           id={JSON.stringify(getTaskWithoutRelations(task))}
           index={index}
           dragContainerProps={({ isDragging }) => ({
@@ -78,6 +80,7 @@ export const Task = memo(
                   bgColor="gray.100"
                   roundedLeft="lg"
                   border="1px solid rgba(0,0,0,0.08)"
+                  // enables whole task card to be dragged by clicking this element (see DraggableWrapper component)
                   {...dragHandleProps}
                 >
                   <VscGrabber />
@@ -193,6 +196,7 @@ function TaskDivider(props: { subTasks?: [] }) {
   }
   const { subTasks } = props;
 
+  // WIDTH VALUE CALCUALTIONS
   const subtaskCount = subTasks?.length;
   const completedSubtaskCount = subTasks?.filter(
     (subtask: any) => subtask.completed
@@ -200,8 +204,8 @@ function TaskDivider(props: { subTasks?: [] }) {
   const incompleteSubtaskCount = subtaskCount - completedSubtaskCount;
 
   const widthValues = {
-    complete: (completedSubtaskCount / subtaskCount) * 100 + '%',
-    incomplete: (incompleteSubtaskCount / subtaskCount) * 100 + '%',
+    complete: Math.floor((completedSubtaskCount / subtaskCount) * 100) + '%',
+    incomplete: Math.floor((incompleteSubtaskCount / subtaskCount) * 100) + '%',
   };
 
   return (
