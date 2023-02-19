@@ -45,8 +45,9 @@ export default function OptionBar(props: IProps) {
           alignItems="center"
           px={[2, 3, 4, 5]}
           pr={sideNavIsOpen ? leftOffset : 0}
-          overflowY="hidden"
-          overflowX="auto"
+          // warning: enabling x scroll causes date select menu to be hidden
+          // overflowY="visible"
+          // overflowX="auto"
           color="shade.main"
         >
           {optionBar}

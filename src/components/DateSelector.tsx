@@ -94,7 +94,7 @@ export function DateSelector(props: IProps) {
 
   return (
     <>
-      <Flex gap={4} alignItems="center">
+      <Flex gap={4} alignItems="center" overflow="unset">
         <ButtonWithArrows
           containerProps={{
             sx: { w: 165, minW: '120px' },
@@ -144,6 +144,7 @@ export function DateSelector(props: IProps) {
                             bgColor: 'blue.900',
                           },
                           height: '32px',
+                          zIndex: 9999999,
                         }),
                         valueContainer: (prev) => ({
                           ...prev,
