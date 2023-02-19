@@ -20,17 +20,18 @@ export default function ProjectKanbanPage() {
   );
 
   const { onlyMe } = useFilterStore();
-  const { id } = useUser();
+  const user = useUser();
 
   const { openTaskModal } = useTaskModal();
   const { data: currentProject } = useCurrentProject();
   const { data: tasks } = useFilteredTasks({
     // if only me, filter tasks by user id
-    ...(onlyMe && {
-      select: (tasks) => {
-        return getTasksByAssignee(tasks, id);
-      },
-    }),
+    ...(onlyMe &&
+      user?.id && {
+        select: (tasks) => {
+          return getTasksByAssignee(tasks, user?.id);
+        },
+      }),
   });
   const { mutateAsync: updateTask } = useUpdateTask();
 

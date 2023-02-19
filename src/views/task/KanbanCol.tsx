@@ -11,8 +11,6 @@ const statusToColorMap = {
   done: 'green.400',
 };
 
-// import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-
 interface IProps {
   tasks: ITask[];
   status: {
@@ -31,13 +29,10 @@ export function KanbanCol(props: IProps) {
     <Flex
       m={4}
       flexDir="column"
-      // gap="1"
-      // minW="300px"
-      // minH={'max(70vh,500px)'}
       minH="calc(100vh - 250px)"
       border="1px solid"
-      borderColor={'blackAlpha.100'}
-      // w="100%"
+      borderColor={'blackAlpha.200'}
+      rounded="sm"
     >
       <Paper
         w="1/3"
@@ -48,6 +43,8 @@ export function KanbanCol(props: IProps) {
         // bg="#eeeced45"
         mx="0.5px"
         borderColor={statusToColorMap[status.label]}
+        alignItems="center"
+        justifyContent={'space-between'}
       >
         <Text
           pl="0"
@@ -62,9 +59,16 @@ export function KanbanCol(props: IProps) {
         >
           {status.label}
         </Text>
-        <Tag variant="outline" border="cyan.200" borderRadius="full" textColor={'black'}>
+        <Flex
+          border="1px solid lightGray"
+          borderRadius="full"
+          textColor={'black'}
+          minW="1.63rem"
+          justifyContent={'center'}
+          alignItems="center"
+        >
           {tasks?.length || 0}
-        </Tag>
+        </Flex>
       </Paper>
       <DroppableWrapper
         id={JSON.stringify(status)}
