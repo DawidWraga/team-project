@@ -18,35 +18,30 @@ import { DateSelector } from 'components/DateSelector';
 // import { projectController, taskController } from 'lib-client/controllers';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { CustomAvatarGroup } from 'components/CustomAvatarGroup';
+import RoleGuard from 'components/RoleGuard';
 
 export default function DocsPage(props) {
   const {} = props;
   const router = useRouter();
 
-  const { useSetOptionBar, leftOffset, sideNavIsOpen } = useLayoutStore();
+  const { useSetOptionBar } = useLayoutStore();
   useSetOptionBar(
-    <Flex
-      gap={2}
-      justifyContent={'space-between'}
-      w="100%"
-      mr={sideNavIsOpen ? leftOffset : 0}
-      transition={'margin-right 200ms ease-in-out'}
-      color="shade.main"
-    >
+    <Flex gap={2} justifyContent={'space-between'} w="100%">
       <Flex gap={2}>
-        <Button
-          colorScheme={'brand'}
-          variant={'solid'}
-          onClick={() => {
-            router.push('/docs/new');
-            // openTaskModal();
-          }}
-        >
-          Add Document
-        </Button>
+        <RoleGuard allowed={['admin', 'manager']}>
+          <Button
+            colorScheme={'brand'}
+            variant={'solid'}
+            onClick={() => {
+              router.push('/docs/new');
+              // openTaskModal();
+            }}
+          >
+            Add Document
+          </Button>
+        </RoleGuard>
       </Flex>
-    </Flex>,
-    [sideNavIsOpen]
+    </Flex>
   );
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -60,8 +55,8 @@ export default function DocsPage(props) {
         tags: true,
       },
     },
-    select: (d) =>
-      d.filter((p) => p.title.toLowerCase().includes(searchTerm.toLowerCase())),
+    select: (docs) =>
+      docs.filter((doc) => doc.title.toLowerCase().includes(searchTerm.toLowerCase())),
   });
 
   const { openProjectModal } = useProjectModal();
@@ -80,8 +75,7 @@ export default function DocsPage(props) {
 
               return {
                 onClick: () => router.push(`/docs/${doc.id}`),
-                href: '#' + doc.id,
-                key: doc.id,
+                id: doc.id,
                 icon: (
                   <CustomAvatarGroup users={doc.authors} avatarGroupProps={{ max: 1 }} />
                 ),

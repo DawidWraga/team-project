@@ -7,10 +7,7 @@ import { HiDocumentText } from 'react-icons/hi';
 import { FaTasks } from 'react-icons/fa';
 import { MdForum, MdKeyboardArrowRight, MdPeopleAlt } from 'react-icons/md';
 import { RiDashboardFill } from 'react-icons/ri';
-import { useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { AddIcon } from '@chakra-ui/icons';
-import { useProjectModal } from 'views/task/useProjectModal';
 
 const routeToIconMap = {
   '/forums': MdForum,
@@ -29,7 +26,6 @@ export function NavItem(props: IProps) {
 
   const { page } = props;
   const { route, label } = page.parentLink;
-  const { openProjectModal } = useProjectModal();
 
   const hasSideNavLinks = page?.sideNavLinks?.length;
 
@@ -41,7 +37,6 @@ export function NavItem(props: IProps) {
     activeSideNavLink,
     setActiveSideNavLink,
   } = useLayoutStore();
-  // const { activeSideNavLink } = useActiveSideNavLink();
 
   const isOpen = hasSideNavLinks && openAccordianRoute.includes(route);
 
@@ -66,44 +61,6 @@ export function NavItem(props: IProps) {
     textColor: isActive ? 'white' : 'whiteAlpha.900',
   });
 
-  const Divider = useCallback(() => {
-    return (
-      <>
-        {isOpen && (
-          <Box
-            key={`${route}-underline`}
-            as={motion.div}
-            position="relative"
-            top="2"
-            initial={{
-              width: 0,
-              left: '50%',
-              opacity: 1,
-              // transition: { duration: 0.2, ease: 'linear' },
-            }}
-            animate={{
-              width: 'calc(100% - 16px)',
-              left: '5%',
-              opacity: 1,
-              transition: { duration: 0.15, ease: 'linear' },
-            }}
-            exit={{
-              opacity: 0,
-              width: '5%',
-              left: '50%',
-              transition: { duration: 2, ease: 'linear' },
-            }}
-            // transition={'all 0.2'}
-            // width={isOpen ? '200px' : '0px'}
-            h="1px"
-            bgColor={'white'}
-            // transition="all 0.4s"
-          />
-        )}
-      </>
-    );
-  }, [isOpen]);
-
   return (
     <>
       <Flex
@@ -113,15 +70,9 @@ export function NavItem(props: IProps) {
         alignItems="stretch"
         justifyContent={'center'}
         onClick={() => {
-          // if (hasSideNavLinks) {
-          //   setOpenAccordianRoute(route);
-          //   return;
-          // }
-
           router.push(route);
           isMobile() && setSideNavIsOpen(false);
         }}
-        // alignItems="center"
         {...linkStyling(isActive && !isOpen)}
       >
         <Flex
@@ -144,24 +95,8 @@ export function NavItem(props: IProps) {
           <Box>
             <Text fontSize=".9rem">{label}</Text>
           </Box>
-          {route === '/projects' && (
-            <IconButton
-              data-add-project
-              variant="link"
-              colorScheme={'whiteAlpha'}
-              aria-label="add project"
-              icon={<AddIcon />}
-              ml="auto"
-              opacity={0}
-              _peerActive={{
-                opacity: 1,
-              }}
-              onClick={(ev) => {
-                ev.stopPropagation();
-                openProjectModal({});
-              }}
-            />
-          )}
+
+          {/*=================== open accordian button ===========   */}
           {hasSideNavLinks && (
             <IconButton
               aria-label="expand sidenav item"
@@ -186,7 +121,8 @@ export function NavItem(props: IProps) {
           )}
         </Flex>
 
-        <Divider />
+        {/* ==================== accordian children ============== */}
+        <Divider isOpen={isOpen} route={route} />
         <AnimatePresence>
           {hasSideNavLinks && isOpen && (
             <Box
@@ -248,3 +184,40 @@ export function NavItem(props: IProps) {
     </>
   );
 }
+const Divider = ({ isOpen, route, ...props }: { isOpen: boolean; route: string }) => {
+  return (
+    <>
+      {isOpen && (
+        <Box
+          key={`${route}-underline`}
+          as={motion.div}
+          position="relative"
+          top="2"
+          initial={{
+            width: 0,
+            left: '50%',
+            opacity: 1,
+            // transition: { duration: 0.2, ease: 'linear' },
+          }}
+          animate={{
+            width: 'calc(100% - 16px)',
+            left: '5%',
+            opacity: 1,
+            transition: { duration: 0.15, ease: 'linear' },
+          }}
+          exit={{
+            opacity: 0,
+            width: '5%',
+            left: '50%',
+            transition: { duration: 2, ease: 'linear' },
+          }}
+          // transition={'all 0.2'}
+          // width={isOpen ? '200px' : '0px'}
+          h="1px"
+          bgColor={'white'}
+          // transition="all 0.4s"
+        />
+      )}
+    </>
+  );
+};

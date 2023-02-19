@@ -1,7 +1,7 @@
-import { IconButton, Text, Box } from '@chakra-ui/react';
+import { IconButton, Text, Box, Flex, Button } from '@chakra-ui/react';
 import { controller } from 'lib-client/controllers';
 import { MenuButton, Menu, MenuList, MenuItem } from '@chakra-ui/react';
-import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
+import { AiFillDelete } from 'react-icons/ai';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
 import { ControllerWrapper } from 'lib-client/controllers/ControllerWrapper';
 import { Avatar } from '@chakra-ui/react';
@@ -13,12 +13,39 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { getDateParams } from 'utils/getDateParams';
 import { CustomAvatarGroup } from 'components/CustomAvatarGroup';
+import { useUser } from 'lib-client/hooks/useUser';
+import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 
 interface IProps {}
 
 export default function ProjectsPage(props: IProps) {
   const {} = props;
   const router = useRouter();
+
+  const user = useUser();
+  const { openProjectModal } = useProjectModal();
+
+  const { useSetOptionBar } = useLayoutStore();
+  useSetOptionBar(
+    user.isEmp ? (
+      <></>
+    ) : (
+      <Flex w="100%">
+        <Button
+          aria-label="add project"
+          ml="auto"
+          colorScheme={'brand'}
+          onClick={(ev) => {
+            ev.stopPropagation();
+            openProjectModal({});
+          }}
+        >
+          add project
+        </Button>
+      </Flex>
+    ),
+    []
+  );
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -35,8 +62,6 @@ export default function ProjectsPage(props: IProps) {
       d.filter((p) => p.title.toLowerCase().includes(searchTerm.toLowerCase())),
   });
 
-  const { openProjectModal } = useProjectModal();
-
   return (
     <Box p={1}>
       <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
@@ -47,8 +72,7 @@ export default function ProjectsPage(props: IProps) {
           <List
             items={projects.map((p) => ({
               onClick: () => router.push(`/projects/${p.id}/tasks?${getDateParams()}`),
-              href: '#' + p.id,
-              key: p.id,
+              id: p.id,
               icon: <Avatar size="sm" name={p.title} />,
               primary: p.title,
               secondary: 'Due ' + moment(p.dueDate).format('MMMM Do YYYY'),

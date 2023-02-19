@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { User, UserRole } from '@prisma/client';
 import { controller } from 'lib-client/controllers';
 import { useSession } from 'next-auth/react';
 
@@ -21,5 +21,18 @@ export function useUser() {
     enabled: Boolean(session.status === 'authenticated') && Boolean(userEmail),
   });
 
-  return user as User;
+  const roleBooleans = {
+    isAdmin: user?.role?.label === 'admin',
+    isManager: user?.role?.label === 'manager',
+    isEmp: user?.role?.label === 'emp',
+  };
+
+  return { ...user, ...roleBooleans } as UserWithRoles;
 }
+
+type UserWithRoles = User & {
+  role: UserRole;
+  isAdmin: boolean;
+  isManager: boolean;
+  isEmp: boolean;
+};
