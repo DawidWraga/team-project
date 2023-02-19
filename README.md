@@ -161,26 +161,27 @@ chore: (updating grunt tasks etc; no production code change)
 
 ============= File structue ============
 
-- assets
-  - styles (theme & styles)
-  - compontents (UI components - not layout or page specific)
-  - (optional) vanilla TS code (non framework)
-- views (page specific components & hooks)
-  - layouts (layout components)
-- pages
-  - api (node.js service handlers backend)
-- lib-client (decoupled front-end logic)
-  - controllers (query & mutations)
-  - stores (front-end state management)
-  - hooks (custom hooks)
-  - constants
-- lib-server (decoupled back-end logic)
-  - api-controllers
-  - constants
-- prisma (rename to model?)
-  - schema.prisma = model definitions
-  - zod = zod schemas generated from prisma models
-  - migrations = SQL syntax
-- utils (small helper functions)
-- config
-  - pages.ts = page layout data
+
+├── assets
+│   ├── styles (theme & styles)
+│   ├── components (UI components - not layout or page specific)
+│   └── (optional) vanilla TS code (non framework)
+├── views
+│   ├── layouts (layout components)
+│   └── pages
+├── lib-client
+│   ├── controllers (query & mutations)
+│   ├── stores (front-end state management)
+│   ├── hooks (custom hooks)
+│   └── constants
+├── lib-server
+│   ├── api-controllers
+│   └── constants
+├── prisma
+│   ├── schema.prisma = model definitions
+│   ├── zod = zod schemas generated from prisma models
+│   └── migrations = SQL syntax
+├── utils
+└── config
+    └── pages.ts = page layout data
+
