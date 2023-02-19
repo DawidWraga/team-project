@@ -32,8 +32,6 @@ export default createApiHandler<CompleteUser>('user', {
       }
     },
     async queryFn({ password, ...prismaOptions }) {
-      return {} as any;
-
       const hashedPassword = await hash(password, 10);
       return prisma.user.create({
         data: {

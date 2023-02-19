@@ -1,10 +1,8 @@
-import { Flex, Spacer, Tag, TagLabel, Text } from '@chakra-ui/react';
+import { Flex, Tag, Text } from '@chakra-ui/react';
 import { Paper } from 'components/Paper';
-import { Task, getListStyle } from 'views/task/Task';
-import { MdAddCircle } from 'react-icons/md';
-import { ITask } from 'lib-client/controllers';
-import { Droppable } from 'react-beautiful-dnd';
+import { Task } from 'views/task/Task';
 import { DroppableWrapper } from 'components/DragNDrop';
+import { Task as ITask } from '@prisma/client';
 
 const statusToColorMap = {
   todo: 'red.500',

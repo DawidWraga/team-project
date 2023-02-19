@@ -3,6 +3,11 @@ import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
 import { useRef, useState } from 'react';
 import ReactQuill, { ReactQuillProps } from 'react-quill';
 
+// const PageNavItem = dynamic(() => import('layouts/PageNavItem'), {
+//   ssr: false,
+// });
+
+
 import 'react-quill/dist/quill.snow.css';
 
 const toolbar_options = [
