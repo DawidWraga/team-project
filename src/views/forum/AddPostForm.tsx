@@ -2,7 +2,7 @@
 // import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { HiPlus as Plus } from 'react-icons/hi';
-import topics from 'db/topics';
+import topics from 'db/topics.json';
 
 import {
   Button,
@@ -29,19 +29,20 @@ import {
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import { getCurrentUser } from 'lib-client/controllers/auth';
 import { useRouter } from 'next/router';
 import { setTimeoutPromise } from 'utils/setTimeoutPromise';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
+import { useUser } from 'lib-client/hooks/useUser';
 
-function PostForm() {
+function PostForm(props) {
   const router = useRouter();
+  const user = useUser();
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
     try {
       const newData = {
         ...data,
-        name: getCurrentUser().fullName,
+        name: user.fullName,
       };
       const res = await axios.post('/api/addForumPost', newData);
       toast.success('Post Created');
@@ -107,19 +108,19 @@ function TopicForm(props) {
       router.push(redirectRoute);
       await setTimeoutPromise(1000);
 
-      setActivePage((page) => {
-        if (page.parentLink.route !== '/forums') return page;
+      // setActivePage((page) => {
+      //   if (page.parentLink.route !== '/forums') return page;
 
-        const updatedPage = {
-          ...page,
-          sideNavLinks: [
-            ...page.sideNavLinks,
-            { label: data.title, route: redirectRoute },
-          ],
-        };
+      //   const updatedPage = {
+      //     ...page,
+      //     sideNavLinks: [
+      //       ...page.sideNavLinks,
+      //       { label: data.title, route: redirectRoute },
+      //     ],
+      //   };
 
-        return updatedPage;
-      });
+      //   return updatedPage;
+      // });
       props.onClose();
     } catch (e) {
       console.error(e);
@@ -146,7 +147,7 @@ function TopicForm(props) {
 }
 
 export function AddPostForm() {
-  const { isOpen, onOpen, onClose, onPost } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   // const { register, handleSubmit } = useForm();
   // const onSubmit = (data) => toast.success(JSON.stringify(data));
@@ -167,6 +168,7 @@ export function AddPostForm() {
   return (
     <>
       <IconButton
+        aria-label="add post"
         onClick={onOpen}
         colorScheme={'brand'}
         icon={<Plus />}

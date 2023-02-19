@@ -30,6 +30,7 @@ export function Topic(props) {
       </Flex>
       <Flex>
         <IconButton
+          aria-label="Go to topic"
           icon={<ArrowRight />}
           rounded={'lg'}
           colorScheme={'brand'}

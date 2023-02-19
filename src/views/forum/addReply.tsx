@@ -9,18 +9,20 @@ import {
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { getCurrentUser } from 'lib-client/controllers/auth';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
+import { useUser } from 'lib-client/hooks/useUser';
 
 export function AddReply(props) {
   const { register, handleSubmit } = useForm();
   const router = useRouter();
   const { id } = router.query;
+
+  const user = useUser();
   const onSubmit = async (data) => {
     try {
-      const newData = { name: getCurrentUser().fullName, ...data, postId: id };
+      const newData = { name: user.fullName, ...data, postId: id };
       const res = await axios.post('/api/addReply', newData);
       toast.success('reply has been posted');
       props.setReplyActive(false);
@@ -44,7 +46,7 @@ export function AddReply(props) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl isRequired>
           <FormLabel>
-            Comment as: <i>{getCurrentUser().fullName ?? 'John Smith'}</i>
+            Comment as: <i>{user.fullName ?? 'John Smith'}</i>
           </FormLabel>
         </FormControl>
         <Box position={'relative'}>
