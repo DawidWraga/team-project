@@ -47,6 +47,11 @@ export default function HeaderContent(props) {
           ml={{ base: 'auto', md: 'unset' }}
           mr={{ base: '4px', md: 'unset' }}
           // minW={{ base: 'unset', lg: '100px' }}
+          as="a"
+          _hover={{ cursor: 'pointer' }}
+          onClick={() => {
+            router.push(activePage.parentLink.route);
+          }}
         >
           {activePage?.parentLink?.label}
         </Heading>
@@ -85,6 +90,14 @@ export default function HeaderContent(props) {
             pl="8px"
           >
             {activePage.headerLinks.map((link) => {
+              const isProjectPageRoot =
+                activePage.parentLink.route === '/projects' &&
+                !router.pathname.includes('[projectId]');
+
+              if (isProjectPageRoot) {
+                return;
+              }
+
               const isActive = router.asPath.includes(link.route.split('?')[0]);
 
               return (
@@ -97,7 +110,7 @@ export default function HeaderContent(props) {
                   pt={{ base: '0px', md: 'unset' }}
                   bottom={{ base: '4px', md: '4px' }}
                   textColor={isActive ? 'white' : 'gray.400'}
-                  fontSize={{ base: '1.9rem', md: '1.1rem' }}
+                  fontSize={{ base: '1rem', md: '1.1rem' }}
                   verticalAlign="center"
                   transition="all 300ms"
                   pl={{ base: 1, md: 4, lg: 8 }}

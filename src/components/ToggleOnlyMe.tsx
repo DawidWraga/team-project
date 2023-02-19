@@ -1,9 +1,11 @@
-import { Flex, Switch, Text } from '@chakra-ui/react';
+import { Flex, FlexProps, Switch, Text } from '@chakra-ui/react';
 import { useFilterStore } from 'lib-client/stores/FilterStore';
 
-interface IProps {}
+interface IProps {
+  containerProps?: FlexProps;
+}
 export function ToggleOnlyMe(props: IProps) {
-  const {} = props;
+  const { containerProps } = props;
 
   const { onlyMe, toggleOnlyMe } = useFilterStore();
 
@@ -15,8 +17,9 @@ export function ToggleOnlyMe(props: IProps) {
       rounded="xl"
       py={1}
       px={1.5}
+      {...containerProps}
     >
-      <Text wordBreak={'keep-all'}>Only me:</Text>
+      <Text whiteSpace="nowrap">Only me:</Text>
       <Switch size="md" isChecked={onlyMe} onChange={toggleOnlyMe} />
     </Flex>
   );

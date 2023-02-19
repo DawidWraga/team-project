@@ -1,6 +1,10 @@
 import { Box, Button, Flex } from '@chakra-ui/react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { DateSelector } from 'components/DateSelector';
+import {
+  DateFilterDisplay,
+  DateSelector,
+  GotoTodayButton,
+} from 'components/DateSelector';
 import { useUrlData } from 'lib-client/hooks/useUrlData';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { KanbanCol } from 'views/task/KanbanCol';
@@ -13,6 +17,7 @@ import { ToggleOnlyMe } from 'components/ToggleOnlyMe';
 import { useFilterStore } from 'lib-client/stores/FilterStore';
 import { getTasksByAssignee } from 'utils/dashboardUtils';
 import { useUser } from 'lib-client/hooks/useUser';
+import { FilterMenuButton } from 'components/FilterMenu';
 
 export default function ProjectKanbanPage() {
   const { startDate, endDate } = useUrlData<{ startDate: string; endDate: string }>(
@@ -37,19 +42,46 @@ export default function ProjectKanbanPage() {
 
   const { useSetOptionBar } = useLayoutStore();
   useSetOptionBar(
-    <Flex gap={2} justifyContent={'space-between'} w="100%">
-      <DateSelector />
+    <Flex gap={2} justifyContent={'space-between'} alignItems="center" w="100%">
+      <Flex>
+        <DateSelector
+          buttonDesktopOnly={true}
+          dateDisplayProps={{ showTodayButton: true }}
+        />
+      </Flex>
+
       <Flex gap={2} alignItems="center">
-        <ToggleOnlyMe />
+        <ToggleOnlyMe
+          containerProps={{ sx: { display: { base: 'none', md: 'flex' } } }}
+        />
         <Button
           colorScheme={'brand'}
           variant={'solid'}
           onClick={() => {
             openTaskModal();
           }}
+          sx={{
+            position: { base: 'fixed', md: 'static' },
+            bottom: { base: 2 },
+            right: { base: 2 },
+          }}
         >
           Add task
         </Button>
+        <FilterMenuButton
+          iconButtonProps={{ sx: { mr: 2 } }}
+          content={
+            <Flex gap={4} flexDir="column">
+              <ToggleOnlyMe
+                containerProps={{ justifyContent: 'space-between', w: '80%', mx: 'auto' }}
+              />
+              <Flex gap={2} flexDir="column" justifyContent="center" alignItems="center">
+                <DateSelector textDesktopOnly={true} />
+                <DateFilterDisplay containerProps={{ justifyContent: 'center' }} />
+              </Flex>
+            </Flex>
+          }
+        />
       </Flex>
     </Flex>,
     [currentProject, [startDate, endDate].join('_')]

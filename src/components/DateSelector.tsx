@@ -1,50 +1,32 @@
 import { ButtonWithArrows } from 'components/ButtonWithArrows';
 import { useRouter } from 'next/router';
-import { Box, Select as ChackraSelect, Flex, Text } from '@chakra-ui/react';
-import { Select } from 'chakra-react-select';
+import { Box, Flex, Text, BoxProps, Tooltip, IconButton } from '@chakra-ui/react';
+import { Select, SxProps } from 'chakra-react-select';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useUrlData } from 'lib-client/hooks/useUrlData';
 import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
 import { useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { z } from 'zod';
+import { GrPowerReset } from 'react-icons/gr';
 
 interface IProps {
   saveChangesBeforeRouting?: () => Promise<void>;
+  desktopOnly?: boolean;
+  buttonDesktopOnly?: boolean;
+  textDesktopOnly?: boolean;
+  dateDisplayProps?: IDateFilterDisplayProps;
 }
 
-const unitToFormat = {
-  year: 'YYYY',
-  month: 'MMMM',
-  day: 'MMM DD',
-  week: 'MMM DD',
-};
-
-const formatOrdinalNum = (n) => {
-  const s = ['th', 'st', 'nd', 'rd'];
-  const v = n % 100;
-  return n + (s[(v - 20) % 10] || s[v] || s[0]);
-};
-
-export const formatDate = (date, unit = 'month') => {
-  let dateString = moment(date, 'MM/DD/YYYY').format(unitToFormat[unit]);
-
-  if (unit === 'week')
-    dateString +=
-      ' - ' + moment(date, 'MM/DD/YYYY').add(1, 'week').format(unitToFormat[unit]);
-
-  if (unit === 'day') {
-    dateString =
-      dateString.slice(0, -2) + formatOrdinalNum(dateString.slice(-2, dateString.length));
-  }
-  return dateString.toString();
-};
-
 export function DateSelector(props: IProps) {
-  const { saveChangesBeforeRouting } = props;
+  const {
+    saveChangesBeforeRouting,
+    desktopOnly,
+    buttonDesktopOnly,
+    textDesktopOnly,
+    dateDisplayProps: { containerProps: dateDisplayContainerProps, ...dateDisplayProps },
+  } = { dateDisplayProps: {}, ...props } as IProps;
   const router = useRouter();
-  const { startDate, endDate } = useUrlData('queryParams') as any;
-
   const isHydrated = useIsHydrated();
 
   const { Input, getValues, watch } = useChakraForm<{
@@ -94,10 +76,18 @@ export function DateSelector(props: IProps) {
 
   return (
     <>
-      <Flex gap={4} alignItems="center" overflow="unset">
+      <Flex
+        gap={4}
+        alignItems="center"
+        sx={{ display: desktopOnly ? { base: 'none', md: 'flex' } : 'flex' }}
+      >
         <ButtonWithArrows
           containerProps={{
-            sx: { w: 165, minW: '120px' },
+            sx: {
+              w: 165,
+              minW: '128px',
+              display: buttonDesktopOnly ? { base: 'none', md: 'flex' } : 'flex',
+            },
           }}
           leftProps={{
             onClick: () => modifyDateAndRoute('prev'),
@@ -145,6 +135,8 @@ export function DateSelector(props: IProps) {
                           },
                           height: '32px',
                           zIndex: 9999999,
+                          overflowX: 'visible',
+                          overflowY: 'visible',
                         }),
                         valueContainer: (prev) => ({
                           ...prev,
@@ -214,44 +206,141 @@ export function DateSelector(props: IProps) {
             </>
           }
         />
-        <Box bgColor="whiteAlpha.600" px="3" py="1" rounded="md">
-          <Text
-            fontWeight={'semibold'}
-            fontSize={{ base: '0.8rem', md: '.9rem', lg: '1.1rem' }}
-            textTransform={'uppercase'}
-          >
-            {moment(startDate).format('DD MMMM yyyy ')}
-            {dateUnit !== 'day' && (
-              <>
-                <Box as="span" pr="2px" mx="10px">
-                  -
-                </Box>
-                {moment(endDate).format('DD MMMM yyyy ')}
-              </>
-            )}
-          </Text>
-        </Box>
+        <DateFilterDisplay
+          containerProps={{
+            ...dateDisplayContainerProps,
+            sx: {
+              ...(textDesktopOnly && { display: { base: 'none', md: 'flex' } }),
+              ...dateDisplayContainerProps?.sx,
+            },
+          }}
+          {...dateDisplayProps}
+        />
       </Flex>
     </>
   );
 }
-{
-  /* overlay description text over dropdown */
+
+interface IDateFilterDisplayProps {
+  containerProps?: BoxProps;
+  desktopOnly?: boolean;
+  showTodayButton?: boolean;
 }
-{
-  /* <Box
-            position="absolute"
-            w="100%"
-            h="100%"
-            top={'25%'}
-            left={0}
-            zIndex={1000}
-            textColor="white"
-            pointerEvents={'none'}
-            _hover={{ cursor: 'pointer' }}
-            borderRadius="0px !important"
-            fontWeight={500}
-          >
-            {selectedDateString}
-          </Box> */
+
+export function DateFilterDisplay(props: IDateFilterDisplayProps) {
+  const { containerProps, showTodayButton } = props;
+  const { startDate, endDate } = useUrlData('queryParams') as any;
+
+  const textStyles: SxProps = {
+    fontWeight: 600,
+    fontSize: { base: '0.8rem', sm: '0.85rem', md: '.9rem', lg: '1.1rem' },
+    textTransform: 'uppercase',
+    whiteSpace: 'nowrap',
+  };
+
+  const startAndEndAreEqual = moment(startDate).isSame(endDate, 'day');
+  return (
+    <Flex gap={1} alignItems="center">
+      {showTodayButton && <GotoTodayButton />}
+      <Flex
+        bgColor="whiteAlpha.600"
+        px="3"
+        py="1"
+        rounded="md"
+        flexWrap="wrap"
+        alignItems="center"
+        justifyContent={'start'}
+        {...containerProps}
+      >
+        <Text sx={textStyles}>{moment(startDate).format('DD MMMM yyyy ')}</Text>
+        {!startAndEndAreEqual && (
+          <Text sx={textStyles}>
+            <Box
+              as="span"
+              pr="2px"
+              mx={{ base: '2px', md: '10px' }}
+              // display={{ base: 'none', xs: 'inline-block' }}
+            >
+              -
+            </Box>
+            {moment(endDate).format('DD MMMM yyyy ')}
+          </Text>
+        )}
+      </Flex>
+    </Flex>
+  );
 }
+
+export function GotoTodayButton(props) {
+  const {} = props;
+  const urlQuery = useUrlData<{ startDate: string; endDate: string }>('queryParams');
+
+  const isHydrated = useIsHydrated();
+  const router = useRouter();
+
+  const { startDate, endDate } = useMemo(() => {
+    const unit = getDateDiffUnits(urlQuery?.startDate, urlQuery?.endDate);
+    return { startDate: moment().startOf(unit), endDate: moment().endOf(unit) };
+  }, [urlQuery.endDate, urlQuery.startDate]);
+
+  const isEqual = moment(startDate).isSame(moment(urlQuery.startDate), 'day');
+
+  function handleDateChange() {
+    if (isEqual) return;
+    const query = {
+      ...router.query,
+      startDate: startDate.format('MM-DD-YYYY'),
+      endDate: endDate.format('MM-DD-YYYY'),
+    };
+    isHydrated && router.push({ query });
+  }
+
+  return (
+    <Tooltip label={isEqual ? 'already at current date' : 'go to today'}>
+      <IconButton
+        aria-label="go to today"
+        size="sm"
+        onClick={handleDateChange}
+        isDisabled={isEqual}
+      >
+        <GrPowerReset />
+      </IconButton>
+    </Tooltip>
+  );
+}
+
+function getDateDiffUnits(dateA: string, dateB: string) {
+  const daysDistance = Math.abs(moment(dateA).diff(moment(dateB), 'days'));
+
+  if (daysDistance <= 1) return 'day';
+  if (daysDistance <= 8) return 'week';
+  if (daysDistance <= 32) return 'month';
+  return 'year';
+}
+
+const unitToFormat = {
+  year: 'YYYY',
+  month: 'MMMM',
+  day: 'MMM DD',
+  week: 'MMM DD',
+};
+
+const formatOrdinalNum = (n) => {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+};
+
+export const formatDate = (date, unit = 'month') => {
+  let dateString = moment(date, 'MM/DD/YYYY').format(unitToFormat[unit]);
+
+  if (unit === 'week')
+    dateString +=
+      ' - ' + moment(date, 'MM/DD/YYYY').add(1, 'week').format(unitToFormat[unit]);
+
+  if (unit === 'day') {
+    dateString =
+      dateString.slice(0, -2) + formatOrdinalNum(dateString.slice(-2, dateString.length));
+  }
+  return dateString.toString();
+};
