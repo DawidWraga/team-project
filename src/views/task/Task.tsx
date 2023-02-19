@@ -182,7 +182,7 @@ Task.displayName = 'Task';
 
 function getManhourTagColor(manhours: number) {
   if (manhours < 5) {
-    return 'green.200';
+    return 'green.300';
   } else if (manhours < 10) {
     return 'yellow.200';
   } else {
@@ -225,7 +225,14 @@ function TaskDivider(props: { subTasks?: [] }) {
           completedSubtaskCount > 1 ? 's' : ''
         } remaining (${widthValues.complete})`}
       >
-        <Box bgColor="success" w={widthValues.complete} h="100%" display="inline-block" />
+        <Box
+          bgColor="green.500"
+          opacity={0.8}
+          w={widthValues.complete}
+          h="100%"
+          display="inline-block"
+          rounded="2xl"
+        />
       </Tooltip>
       <Tooltip
         label={`${incompleteSubtaskCount} subtask${
@@ -233,10 +240,11 @@ function TaskDivider(props: { subTasks?: [] }) {
         } completed (${widthValues.incomplete})`}
       >
         <Box
-          bgColor="gray.300"
+          bgColor="green.100"
           w={widthValues.incomplete}
           h="100%"
           display="inline-block"
+          roundedRight={'2xl'}
         />
       </Tooltip>
     </Box>

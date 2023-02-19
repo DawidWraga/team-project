@@ -18,7 +18,6 @@ import { UserSelect, multiUserOptionsSchema } from 'components/UserSelect';
 import { controller } from 'lib-client/controllers';
 import { useCurrentProject } from 'lib-client/hooks/useCurrentProject';
 import { Task } from '@prisma/client';
-import { useFilteredTasks } from 'lib-client/hooks/useTasks';
 import { Controller } from 'react-hook-form';
 import { MenuButton, Menu, MenuList, MenuItem } from '@chakra-ui/react';
 import { AiFillDelete } from 'react-icons/ai';
@@ -34,14 +33,10 @@ const SubtaskSchema = z.object({
 
 export const useTaskModal = () => {
   const { setContent, onClose } = useModalStore();
-  const { queryKey } = useFilteredTasks();
 
   const { mutateAsync: createTask } = controller.useMutation({
     model: 'task',
     query: 'upsert',
-    // mode: 'optimistic',
-    // changeUiKey: queryKey,
-    // invalidateClientChanges: true,
   });
 
   const { data: currentProject } = useCurrentProject();
@@ -93,7 +88,6 @@ export const useTaskModal = () => {
         ),
         body: (
           <ChakraForm
-            logDataBeforeSubmit={true}
             schema={TaskModel.pick({
               title: true,
               description: true,
@@ -129,15 +123,12 @@ export const useTaskModal = () => {
             }) => (
               <Form
                 onSubmit={({ assignees, status, ...data }) => {
-                  console.log('HERE 1');
                   if (assignees?.length) {
                     data = {
                       ...data,
                       assignees: assignees?.map((d) => ({ id: d.value })),
                     } as any;
                   }
-
-                  console.log('HERE 2');
 
                   if (!isEditing) {
                     data = {
@@ -147,18 +138,13 @@ export const useTaskModal = () => {
                     } as any;
                   }
 
-                  console.log('HERE 3');
-
-                  if (isEditing) {
+                  if (isEditing && status?.value) {
                     data = {
                       ...data,
-                      statusId: status.value,
+                      ...(status.value && { statusId: status.value }),
                     } as any;
                   }
 
-                  console.log('HERE 4');
-
-                  console.log(data);
                   createTask(data);
                 }}
                 onServerSuccess={onClose}

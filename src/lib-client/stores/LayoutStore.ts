@@ -62,12 +62,14 @@ export const useLayoutStore = createStore<ILayoutStore>('Layout', (set, get) => 
 
   // ======== option bar ========
   optionBar: undefined,
-  setOptionBar: (content: React.ReactNode) =>
+  setOptionBar: (content: React.ReactNode) => {
+    if (!content) return;
     set({
       optionBar: content,
       optionBarIsOpen: true,
       topOffset: { base: headerHeight + optionBarHeight + 'px' },
-    }),
+    });
+  },
   useSetOptionBar(content: React.ReactNode, dependencies: any[] = []) {
     useEffect(() => {
       get().setOptionBar(content);

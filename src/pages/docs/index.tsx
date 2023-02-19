@@ -11,29 +11,32 @@ import { Button, Flex } from '@chakra-ui/react';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { CustomAvatarGroup } from 'components/CustomAvatarGroup';
 import { RoleGuard } from 'components/RoleGuard';
+import { useUser } from 'lib-client/hooks/useUser';
 
 export default function DocsPage(props) {
   const {} = props;
   const router = useRouter();
+  const user = useUser();
 
   const { useSetOptionBar } = useLayoutStore();
   useSetOptionBar(
-    <Flex gap={2} justifyContent={'space-between'} w="100%">
-      <Flex gap={2}>
-        <RoleGuard allowed={['admin', 'manager']}>
-          <Button
-            colorScheme={'brand'}
-            variant={'solid'}
-            onClick={() => {
-              router.push('/docs/new');
-              // openTaskModal();
-            }}
-          >
-            Add Document
-          </Button>
-        </RoleGuard>
+    !user.isEmp && (
+      <Flex gap={2} justifyContent={'space-between'} w="100%">
+        <Flex gap={2}>
+          <RoleGuard allowed={['admin', 'manager']}>
+            <Button
+              colorScheme={'brand'}
+              variant={'solid'}
+              onClick={() => {
+                router.push('/docs/new');
+              }}
+            >
+              Add Document
+            </Button>
+          </RoleGuard>
+        </Flex>
       </Flex>
-    </Flex>
+    )
   );
 
   const [searchTerm, setSearchTerm] = useState('');

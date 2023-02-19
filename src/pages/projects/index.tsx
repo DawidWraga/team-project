@@ -10,7 +10,7 @@ import moment from 'moment';
 import { MdEdit } from 'react-icons/md';
 import { useProjectModal } from 'views/task/useProjectModal';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getDateParams } from 'utils/getDateParams';
 import { CustomAvatarGroup } from 'components/CustomAvatarGroup';
 import { useUser } from 'lib-client/hooks/useUser';
@@ -24,11 +24,9 @@ export default function ProjectsPage(props: IProps) {
   const user = useUser();
   const { openProjectModal } = useProjectModal();
 
-  const { useSetOptionBar } = useLayoutStore();
+  const { useSetOptionBar, closeOptionBar } = useLayoutStore();
   useSetOptionBar(
-    user.isEmp ? (
-      <></>
-    ) : (
+    user.isEmp ? null : (
       <Flex w="100%" px={2}>
         <Button
           aria-label="add project"
