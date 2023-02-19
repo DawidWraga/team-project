@@ -1,12 +1,13 @@
 import { Loader } from '@saas-ui/react';
 import { useIsHydrated } from 'lib-client/hooks/useIsHydrated';
+import dynamic from 'next/dynamic';
 import { useRef, useState } from 'react';
-import ReactQuill, { ReactQuillProps } from 'react-quill';
+import { ReactQuillProps } from 'react-quill';
 
-// const PageNavItem = dynamic(() => import('layouts/PageNavItem'), {
-//   ssr: false,
-// });
-
+const ReactQuill = dynamic(() => import('react-quill'), {
+  ssr: false,
+  loading: () => <Loader />,
+}) as any;
 
 import 'react-quill/dist/quill.snow.css';
 
@@ -28,14 +29,14 @@ interface IProps {
 
 export function QuillEditor(props: IProps) {
   const { quillProps } = props;
-  const reactQuillRef = useRef<ReactQuill>(null);
+  const reactQuillRef = useRef<any>(null);
 
   const isHydrated = useIsHydrated();
   if (!isHydrated) return <Loader />;
 
   return (
     <ReactQuill
-      ref={reactQuillRef}
+      ref={reactQuillRef as any}
       theme="snow"
       placeholder="Write here..."
       modules={{

@@ -22,7 +22,7 @@ export default function DocsPage(props) {
   useSetOptionBar(
     !user.isEmp && (
       <Flex gap={2} justifyContent={'space-between'} w="100%">
-        <Flex gap={2}>
+        <Flex gap={2} ml="auto">
           <RoleGuard allowed={['admin', 'manager']}>
             <Button
               colorScheme={'brand'}

@@ -190,8 +190,10 @@ export const useChakraForm = <
       onServerSuccess,
       onServerError,
       serverErrorFeedbackType = 'text',
-      ..._props
+      sx,
+      ...restProps
     } = props;
+    console.log(sx);
     if (!onSubmit) onSubmit = (data) => console.table(data);
     return (
       <Box
@@ -212,6 +214,7 @@ export const useChakraForm = <
           '& .chakra-form-control:not(:first-of-type)': {
             mt: 1,
           },
+          ...sx,
         }}
         onSubmit={useFormReturn.handleSubmit(async (data) => {
           // FORMAT DATA FOR UPDATE
@@ -272,7 +275,7 @@ export const useChakraForm = <
             if (onServerError) onServerError(message);
           }
         })}
-        {..._props}
+        {...restProps}
       >
         {children}
       </Box>

@@ -42,7 +42,7 @@ export default function ProjectKanbanPage() {
 
   const { useSetOptionBar } = useLayoutStore();
   useSetOptionBar(
-    <Flex gap={2} justifyContent={'space-between'} alignItems="center" w="100%">
+    <Flex gap={2} justifyContent={'space-between'} alignItems="center" w="100%" pr={2}>
       <Flex>
         <DateSelector
           buttonDesktopOnly={true}

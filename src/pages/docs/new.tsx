@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react';
 import { QuillEditor } from 'components/QuillEditor';
 import { multiUserOptionsSchema } from 'components/UserSelect';
 import { controller } from 'lib-client/controllers';
@@ -25,7 +26,7 @@ export default function NewPage(props: IProps) {
   const [content, setContent] = useState('');
 
   return (
-    <>
+    <Box my="2">
       <ChakraFormWrapper
         schema={DocumentModel.pick({ title: true, content: true }).extend({
           tags: z.array(z.object({ label: z.string(), value: z.number() })),
@@ -39,6 +40,11 @@ export default function NewPage(props: IProps) {
 
                 router.push(`/docs/${doc.id}`);
               }}
+              // w="clamp(300px, 100vw, 800px)"
+              // width="750px !important"
+              // maxW="unset"
+              // sx={{ w: 'clamp(300px, 100vw, 800px)' }}
+              sx={{ w: '1000px' }}
             >
               <Input name="title" />
               <Input name="tags" customInput={(props) => <TagSelect {...props} />} />
@@ -53,6 +59,6 @@ export default function NewPage(props: IProps) {
           );
         }}
       </ChakraFormWrapper>
-    </>
+    </Box>
   );
 }

@@ -34,9 +34,9 @@ export default function OptionBar(props: IProps) {
           animate="open"
           exit="closed"
           position="fixed"
-          left={leftOffset}
+          ml={leftOffset}
           transition="left 150ms ease-in-out, padding-right 150ms ease-in-out"
-          w="100%"
+          w="99.5%"
           h={optionBarHeight + 'px'}
           borderBottom={'1px solid'}
           borderBottomColor={'blackAlpha.200'}
