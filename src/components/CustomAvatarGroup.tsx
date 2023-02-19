@@ -25,14 +25,14 @@ export function CustomAvatarGroup(props: IProps) {
         {users?.map((user) => {
           return (
             <Tooltip key={user.id} label={user.fullName} {...tooltipProps}>
-              <Box>
+              <span>
                 <Avatar
                   size="xs"
                   borderColor="grey.50"
                   name={user.fullName}
                   {...avatarProps}
                 />
-              </Box>
+              </span>
             </Tooltip>
           );
         })}
