@@ -12,7 +12,13 @@ import {
 } from 'utils/dashboardUtils';
 import { ToggleManhours } from 'views/dashboard/ToggleManhours';
 import { CustomEmptyState } from 'components/CustomEmptyState';
-
+import {
+  Card,
+  Text as TremorText,
+  Metric,
+  Flex as TremorFlex,
+  ProgressBar,
+} from '@tremor/react';
 export default function ProjectDashboardPage(props) {
   const {} = props;
 
@@ -64,6 +70,16 @@ export default function ProjectDashboardPage(props) {
         <Text>inbetween status: {}</Text>
         <Text>end status: {getTasksByStatus(assigneesTasks, endStatus.id).length}</Text>
       </Flex>
+
+      <Card maxWidth="max-w-sm">
+        <TremorText>Sales</TremorText>
+        <Metric>$ 71,465</Metric>
+        <TremorFlex marginTop="mt-4">
+          <TremorText>32% of annual target</TremorText>
+          <TremorText>$ 225,000</TremorText>
+        </TremorFlex>
+        <ProgressBar percentageValue={32} marginTop="mt-2" />
+      </Card>
     </Flex>
   );
 }

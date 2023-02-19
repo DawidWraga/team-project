@@ -17,6 +17,7 @@ import { Loading } from '@saas-ui/react';
 import { SessionProvider } from 'next-auth/react';
 import { CustomToastProvider } from 'components/CustomToastProvider';
 import AuthGuard from 'components/AuthGuard';
+import '@tremor/react/dist/esm/tremor.css';
 
 export default function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
   const [queryClient] = useState(() => new QueryClient());
