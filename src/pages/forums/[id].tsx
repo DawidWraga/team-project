@@ -1,7 +1,7 @@
 import { Reply } from 'views/forum/Reply';
 import { useState } from 'react';
 import { Avatar, Box, Flex, Text, Button } from '@chakra-ui/react';
-import { AddReply } from 'views/forum/AddReply';
+import { AddReply } from 'views/forum/addReply';
 import { Paper } from 'components/Paper';
 import { PageWrapper } from 'layouts/PageWrapper';
 import { AnimatePresence } from 'framer-motion';

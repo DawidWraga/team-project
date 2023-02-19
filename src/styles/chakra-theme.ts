@@ -1,7 +1,7 @@
 // 1. Import the extendTheme function
 import { defineStyleConfig, extendTheme } from '@chakra-ui/react';
 import '@fontsource/roboto';
-import '@fontsource/Inter';
+import '@fontsource/inter';
 import '@fontsource/open-sans';
 
 import { theme as saasTheme } from '@saas-ui/react';
