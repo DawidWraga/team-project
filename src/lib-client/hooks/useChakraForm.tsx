@@ -262,9 +262,8 @@ export const useChakraForm = <
             if (onServerSuccess) onServerSuccess(res);
             return res;
           } catch (e: any) {
-            console.log(e);
             const message =
-              e.response?.data?.cause || 'Something went wrong, please try again later';
+              e.response?.data?.cause || 'Something went wrong, please try again later.';
 
             const type = serverErrorFeedbackType;
 

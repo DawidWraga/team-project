@@ -20,7 +20,9 @@ export default function AuthPage(props: IProps) {
   const router = useRouter();
   const { status } = useSession();
 
-  const { Input, Form, SubmitBtn, Heading } = useChakraForm({ schema });
+  const { Input, Form, SubmitBtn, Heading, setError, DebugPanel } = useChakraForm({
+    schema,
+  });
 
   //redirect users back to dashboard if they are already logged in
   if (status === 'authenticated') {
@@ -36,8 +38,17 @@ export default function AuthPage(props: IProps) {
       redirect: false,
     });
 
-    if (res?.error) throw new Error(res.error);
-    else {
+    if (res?.error) {
+      let message = 'Something went wrong, please try again later.';
+      if (res.error === 'CredentialsSignin')
+        message = 'Invalid credentials, please try again.';
+
+      setError('server' as any, {
+        message,
+      });
+
+      throw new Error(message);
+    } else {
       setTimeout(() => {
         router.replace('/dashboard');
       }, 200);
@@ -64,7 +75,12 @@ export default function AuthPage(props: IProps) {
       >
         Sign into Portal
       </Heading>
-      <Form onSubmit={onSubmit} gap="12" pb={{ base: '150px', lg: '50px' }}>
+      <Form
+        serverErrorFeedbackType={null}
+        onSubmit={onSubmit}
+        gap="12"
+        pb={{ base: '150px', lg: '50px' }}
+      >
         <Input name="email" type="email" />
         <Input name="password" type="password" />
         <HStack justify="space-between">
@@ -76,6 +92,7 @@ export default function AuthPage(props: IProps) {
         <SubmitBtn leftIcon={<MdLogin />} fontSize="1.2rem">
           Sign in
         </SubmitBtn>
+        <DebugPanel />
       </Form>
     </ExternalFormWrapper>
   );
