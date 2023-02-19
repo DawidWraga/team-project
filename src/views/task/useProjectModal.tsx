@@ -32,7 +32,7 @@ export const useProjectModal = () => {
     model: 'project',
   });
 
-  const openProjectModal = (project?: Partial<Project> & { id: number }) => {
+  const openProjectModal = (project?: Partial<Project> & { id?: number }) => {
     console.log('project', project);
     const isEditing = Boolean(project.id);
 

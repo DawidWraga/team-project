@@ -121,7 +121,7 @@ interface UseChakraFormProps<TFieldValues extends FieldValues, TContext = any>
   logDataBeforeSubmit?: boolean;
   dynamicSchemaNamesToObj?: Record<string, AnyZodObject>;
   onChange?: (value: TFieldValues) => void;
-  updateValues?: TFieldValues & { id: number };
+  updateValues?: TFieldValues & { id?: number };
 }
 
 export const useChakraForm = <
@@ -457,7 +457,7 @@ export const useChakraForm = <
     const groupedSchemas = groupSchemaNames(relevantSchemas);
     useEffect(() => {
       onChange && onChange(groupedSchemas);
-    }, groupedSchemas);
+    }, [groupedSchemas]);
 
     return (
       <>

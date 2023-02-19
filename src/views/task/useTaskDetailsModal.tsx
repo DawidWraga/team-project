@@ -6,8 +6,8 @@ import { CustomEditable } from 'components/EditableInput';
 import { Task } from '@prisma/client';
 import { useCallback } from 'react';
 import { UserSelect, UpdateUserForm } from 'components/UserSelect';
-import { useFilteredTasks } from 'pages/projects/[projectId]/tasks';
 import moment from 'moment';
+import { useFilteredTasks } from 'lib-client/hooks/useTasks';
 
 export const useTaskDetailsModal = (task: CompleteTask) => {
   const { setContent, onClose, isOpen } = useModalStore();
@@ -33,7 +33,7 @@ export const useTaskDetailsModal = (task: CompleteTask) => {
           onSubmit={updateThisTask('description')}
           type="textarea"
         />
-        <CustomEditable
+        {/* <CustomEditable
           value={moment(task.dueDate).format('YYYY-MM-DD')}
           // value={task.dueDate}
           // onSubmit={updateThisTask('dueDate')}
@@ -44,7 +44,7 @@ export const useTaskDetailsModal = (task: CompleteTask) => {
           //   return 'testing';
           // }}
           previewValue={(v) => moment(v).format('DD-MM-YYYY')}
-        />
+        /> */}
         <UpdateUserForm
           defaultUsers={task.assignees as any}
           model="task"

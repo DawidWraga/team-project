@@ -175,6 +175,8 @@ export const Task = memo(
   }
 );
 
+Task.displayName = 'Task';
+
 function getManhourTagColor(manhours: number) {
   if (manhours < 5) {
     return 'green.200';

@@ -1,4 +1,4 @@
-import { anyQuery } from 'lib-client/controllers/createController';
+import { anyQuery } from 'lib-client/controllers/types/Controller';
 import { getAxiosErrorMessage } from 'lib-server/axios';
 import { apiHandler } from 'lib-server/nc';
 import { prisma, PrismaModelNames } from 'lib-server/prisma';

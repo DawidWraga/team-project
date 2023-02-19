@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { ControllerFieldState, ControllerRenderProps } from 'react-hook-form';
 
 import { controller } from 'lib-client/controllers';
-import { ChakraFormWrapper } from 'lib-client/hooks/useChakraForm';
+import { ChakraFormWrapper, useChakraForm } from 'lib-client/hooks/useChakraForm';
 import { User } from '@prisma/client';
 import { CompleteUser } from 'prisma/zod';
 import { useDebounce } from 'lib-client/hooks/useDebouce';
@@ -80,7 +80,7 @@ export function UserSelect({
   const selectRef = useRef<any>(null);
   const options = formatUserOptions(users);
   useEffect(() => {
-    if (!field || !field.value || !selectRef.current) return;
+    if (!field?.value || !selectRef.current) return;
     const keepActive = field?.value && (field?.value as any).length > 0;
     const ref = selectRef.current.controlRef;
     keepFloatingLabelActive(ref, keepActive);
@@ -146,47 +146,44 @@ export function UpdateUserForm(props: IUserSelectFormProps) {
   } = props;
 
   const defaultOptions = formatUserOptions(defaultUsers);
+  const { Form, Input, watch } = useChakraForm({
+    schema: z.object({
+      users: multiUserOptionsSchema,
+    }),
+    defaultValues: {
+      users: defaultOptions,
+    },
+  });
+
+  const users = watch('users');
+  const { mutateAsync } = controller.useMutation({
+    model,
+    query: 'update',
+    ...useMutationProps,
+  });
+
+  const [prevUsers, setPrevUsers] = useState(defaultOptions);
+  const debouncedUsers = useDebounce(users, 2000);
+
+  useEffect(() => {
+    const prevIds = prevUsers?.map((user) => user.value);
+    const newIds = users?.map((user) => user.value);
+    const noDifference = arrayIsEqual(prevIds, newIds);
+
+    if (noDifference) return;
+
+    const formattedUsers = users?.map((user) => ({ id: user.value }));
+    const data = { id: updateId, [modelFieldName]: formattedUsers };
+    mutateAsync(data).then(() => setPrevUsers(users as any));
+  }, [debouncedUsers, mutateAsync, prevUsers, ...(saveChangesDependancies || [])]);
 
   return (
-    <ChakraFormWrapper
-      schema={z.object({
-        users: multiUserOptionsSchema,
-      })}
-      defaultValues={{
-        users: defaultOptions,
-      }}
-    >
-      {({ Form, Input, watch }) => {
-        const users = watch('users');
-        const { mutateAsync } = controller.useMutation({
-          model,
-          query: 'update',
-          ...useMutationProps,
-        });
-
-        const [prevUsers, setPrevUsers] = useState(defaultOptions);
-
-        useEffect(() => {
-          const prevIds = prevUsers?.map((user) => user.value);
-          const newIds = users?.map((user) => user.value);
-          const noDifference = arrayIsEqual(prevIds, newIds);
-
-          if (noDifference) return;
-
-          const formattedUsers = users?.map((user) => ({ id: user.value }));
-          const data = { id: updateId, [modelFieldName]: formattedUsers };
-          mutateAsync(data).then(() => setPrevUsers(users as any));
-        }, [useDebounce(users, 2000), ...(saveChangesDependancies || [])]);
-        return (
-          <Form>
-            <Input
-              hideLabel={true}
-              name="users"
-              customInput={(props) => <UserSelect {...props} />}
-            />
-          </Form>
-        );
-      }}
-    </ChakraFormWrapper>
+    <Form>
+      <Input
+        hideLabel={true}
+        name="users"
+        customInput={(props) => <UserSelect {...props} />}
+      />
+    </Form>
   );
 }

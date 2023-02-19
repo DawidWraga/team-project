@@ -27,6 +27,8 @@ export const DateInput = forwardRef((props: DateInputProps, ref) => {
   );
 });
 
+DateInput.displayName = 'DateInput';
+
 function getParsedDate(dateStr: string) {}
 
 // past attempt - got it to work when convered types and imoprtned from @saas-ui/date-picker

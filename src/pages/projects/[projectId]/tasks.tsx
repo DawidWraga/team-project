@@ -121,11 +121,7 @@ export default function ProjectKanbanPage() {
   //   return tasks.filter((t) => t.status.id === statusId);
   // }
 
-  // function getOrderedTasksByStatusId(statusId) {
-  //   const ordered = currentProject?.statusToOrderedTaskIds?.[statusId];
-  //   if (!ordered) return getAllTasksByStatusId(statusId);
-  //   return ordered.map((id) => getTaskById(id));
-  // }
+
 
   function getRelevantTasks(statusId) {
     if (!tasks || !currentProject) return [];
