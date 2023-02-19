@@ -7,9 +7,7 @@ import type { NextAuthOptions } from 'next-auth';
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
-  useSecureCookies: process.env.NODE_ENV && process.env.NODE_ENV === 'production',
   callbacks: {
-
     async session({ session, token, user }) {
       if (token) {
         (session as any).id = token.id;
@@ -43,7 +41,7 @@ export const authOptions: NextAuthOptions = {
       authorize: async (credentials, request) => {
         if (!credentials) return null;
 
-        //        console.log('AUTHENTICATING ', credentials, request);
+        console.log('AUTHENTICATING ', credentials, request);
 
         const user = await prisma.user.findUnique({
           where: {
@@ -73,7 +71,7 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  // secret: process.env.SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
   },
