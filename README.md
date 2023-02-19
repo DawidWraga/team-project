@@ -160,30 +160,26 @@ test: (adding missing tests, refactoring tests; no production code change)
 chore: (updating grunt tasks etc; no production code change)
 
 ============= File structue ============
-<ul>
-<li>assets
-<li>styles (theme & styles)</li>
-<li>compontents (UI components - not layout or page specific)</li>
-<li>(optional) vanilla TS code (non framework)</li>
-</li>
-    views (page specific components & hooks)
-        layouts (layout components)
-    pages
-        api (node.js service handlers backend)
-    lib-client (decoupled front-end logic)
-        controllers (query & mutations)
-        stores (front-end state management)
-        hooks (custom hooks)
-        constants
-    lib-server (decoupled back-end logic)
-        api-controllers
-        constants
-    prisma (rename to model?)
-        schema.prisma = model definitions
-        zod = zod schemas generated from prisma models
-        migrations = SQL syntax
-    utils (small helper functions)
-    config
-        pages.ts = page layout data
-        
-</ul>
+- assets
+  - styles (theme & styles)
+  - compontents (UI components - not layout or page specific)
+  - (optional) vanilla TS code (non framework)
+- views (page specific components & hooks)
+  - layouts (layout components)
+- pages
+  - api (node.js service handlers backend)
+- lib-client (decoupled front-end logic)
+  - controllers (query & mutations)
+  - stores (front-end state management)
+  - hooks (custom hooks)
+  - constants
+- lib-server (decoupled back-end logic)
+  - api-controllers
+  - constants
+- prisma (rename to model?)
+  - schema.prisma = model definitions
+  - zod = zod schemas generated from prisma models
+  - migrations = SQL syntax
+- utils (small helper functions)
+- config
+- pages.ts = page layout data
