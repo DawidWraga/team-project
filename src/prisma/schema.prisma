@@ -7,16 +7,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-generator zod {
-  provider              = "zod-prisma"
-  output                = "./zod"
-  imports               = "./zod/helpers"
-  modelCase             = "PascalCase"
-  modelSuffix           = "Model"
-  relationModel         = true
-  useDecimalJs          = true
-  prismaJsonNullability = true
-}
+// generator zod {
+//   provider              = "zod-prisma"
+//   output                = "./zod"
+//   imports               = "./zod/helpers"
+//   modelCase             = "PascalCase"
+//   modelSuffix           = "Model"
+//   relationModel         = true
+//   useDecimalJs          = true
+//   prismaJsonNullability = true
+// }
 
 model Example {
   id          Int      @id @default(autoincrement())
