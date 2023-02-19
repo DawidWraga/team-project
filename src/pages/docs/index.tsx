@@ -5,7 +5,6 @@ import { BiDotsVerticalRounded } from 'react-icons/bi';
 import { List, Loading, SearchInput } from '@saas-ui/react';
 import moment from 'moment';
 import { MdEdit } from 'react-icons/md';
-import { useProjectModal } from 'views/task/useProjectModal';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Button, Flex } from '@chakra-ui/react';
@@ -51,8 +50,6 @@ export default function DocsPage(props) {
     select: (docs) =>
       docs.filter((doc) => doc.title.toLowerCase().includes(searchTerm.toLowerCase())),
   });
-
-  const { openProjectModal } = useProjectModal();
 
   return (
     <Box p={1}>

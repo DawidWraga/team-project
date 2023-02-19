@@ -6,14 +6,14 @@ type userRole = 'admin' | 'manager' | 'emp';
 interface IProps {
   children: React.ReactNode;
   allowed: userRole[] | userRole;
-  fallback?: React.ReactFragment | JSX.Element;
+  fallback?: JSX.Element | null;
 }
 
 const defaultProps: Partial<IProps> = {
-  fallback: <></>,
+  fallback: null,
 };
 
-export function RoleGuard(props: IProps): React.ReactFragment | JSX.Element {
+export function RoleGuard(props: IProps): null | JSX.Element {
   const { children, allowed, fallback } = { ...defaultProps, ...props };
 
   const user = useUser();
