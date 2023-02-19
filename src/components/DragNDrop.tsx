@@ -37,19 +37,23 @@ export const DroppableWrapper = (props: IDroppableProps) => {
   );
 };
 
-interface IDraggableProps {
+interface IDraggableProps<T> {
   id: string;
   index: number;
   draggableProps?: Record<any, any>;
   dragContainerProps?: BoxProps | ((provided: any) => BoxProps);
   whileDraggingProps?: BoxProps;
+  passState?: T;
   children:
     | React.ReactNode
-    | ((provided: { dragHandleProps: DraggableProvidedDragHandleProps }) => JSX.Element);
+    | ((
+        provided: { dragHandleProps: DraggableProvidedDragHandleProps },
+        state: T
+      ) => JSX.Element);
 }
 
-export const DraggableWrapper = (props: IDraggableProps) => {
-  const { id, index, draggableProps, dragContainerProps, children } = props;
+export const DraggableWrapper = <T extends unknown>(props: IDraggableProps<T>) => {
+  const { id, index, draggableProps, dragContainerProps, children, passState } = props;
 
   return (
     <Draggable draggableId={id} index={index} {...draggableProps}>
@@ -75,7 +79,7 @@ export const DraggableWrapper = (props: IDraggableProps) => {
             {...dragContainerPropsObject}
           >
             {/* if child is function, call function and pass draggableProps */}
-            {childIsFunction ? children({ dragHandleProps }) : children}
+            {childIsFunction ? children({ dragHandleProps }, passState) : children}
           </Box>
         );
       }}

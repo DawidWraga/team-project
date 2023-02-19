@@ -55,7 +55,7 @@ export function Post(props) {
           </Tag>
         </Flex>
       </Flex>
-      <Box align="center">
+      <Box>
         <AvatarGroup size={'sm'} max={2}>
           <Avatar src={usericon} />
           <Avatar src={usericon} />

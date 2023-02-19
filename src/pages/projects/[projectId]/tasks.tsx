@@ -100,21 +100,25 @@ export default function ProjectKanbanPage() {
 
     if (noChangesMade) return;
 
-    // create new task from parsed data
-    const task = JSON.parse(draggableId);
-    if (task.statusId) delete task.statusId;
-    const prevStatus = JSON.parse(source.droppableId);
-    const newStatus = JSON.parse(destination.droppableId);
+    // get task
+    const taskId = Number(draggableId);
+    const task = tasks.find((t) => t.id === taskId);
+    if (task?.statusId) delete task.statusId;
 
-    const isStatusChange = prevStatus.id !== newStatus.id;
+    // get status ids
+    const prevStatusId = Number(source.droppableId);
+    const newStatusId = Number(destination.droppableId);
 
-    // update task status in database
+    // if changed, update status
+    const isStatusChange = prevStatusId !== newStatusId;
     if (isStatusChange) {
+      const newStatus = currentProject.statuses.find((s) => s.id === newStatusId);
       const newTask = {
         ...task,
         status: newStatus,
       };
 
+      // update task status in database
       updateTask(newTask);
     }
   }

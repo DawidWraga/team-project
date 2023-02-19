@@ -71,7 +71,7 @@ export function KanbanCol(props: IProps) {
         </Flex>
       </Paper>
       <DroppableWrapper
-        id={JSON.stringify(status)}
+        id={status.id.toString()}
         dropContainerProps={({ isDraggingOver }) => ({
           // background: isDraggingOver ? 'lightblue' : '#eeeced99',
           // boxShadow: isDraggingOver ? 'darklg' : 'sm',

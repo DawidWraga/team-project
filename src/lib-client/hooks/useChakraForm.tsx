@@ -49,6 +49,7 @@ import { objectMap } from 'utils/objectMap';
 import { formatUserOptions } from 'components/UserSelect';
 import { getObjectDifference } from 'utils/getObjectDifference';
 import { MinusIcon } from '@chakra-ui/icons';
+import { isDevEnv } from 'utils/isDevEnv';
 
 export interface IFieldAndFieldState<TFieldValues extends FieldValues = FieldValues> {
   field: ControllerRenderProps<TFieldValues, Path<TFieldValues>>;
@@ -193,7 +194,6 @@ export const useChakraForm = <
       sx,
       ...restProps
     } = props;
-    console.log(sx);
     if (!onSubmit) onSubmit = (data) => console.table(data);
     return (
       <Box
@@ -517,6 +517,7 @@ export const useChakraForm = <
   };
 
   const DebugPanel = () => {
+    if (!isDevEnv) return null;
     return (
       <ButtonGroup
         gap="1"

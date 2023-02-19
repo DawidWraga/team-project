@@ -35,7 +35,7 @@ export default function MyApp({ Component, pageProps: { session, ...pageProps } 
       <NProgress />
       <CustomToastProvider />
 
-      <SessionProvider session={session}>
+      <SessionProvider session={session} basePath="/api/auth">
         <SaasProvider
           theme={theme}
           linkComponent={Link}

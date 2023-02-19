@@ -1,32 +1,36 @@
 import { AddIcon } from '@chakra-ui/icons';
-import { Button, Flex, Text, Checkbox } from '@chakra-ui/react';
+import { Button, Flex, Checkbox } from '@chakra-ui/react';
 import { SubTask, Task } from '@prisma/client';
 import { CustomEditable } from 'components/EditableInput';
-import { randomUUID } from 'crypto';
 import { useUpdateTask } from 'lib-client/hooks/useTasks';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { arrayIsEqual } from 'utils/arrayIsEqual';
+import { Box, Tooltip } from '@chakra-ui/react';
 
 interface IProps {
-  task: Task & { subTasks?: SubTask[] };
+  subTasks?: Partial<SubTask[]>;
+  taskId?: number;
 }
 
 function EditSubtasksUnwrapped(props: IProps) {
-  const { task } = props;
+  const { subTasks: originalSubtasks, taskId } = props;
   const { mutateAsync: updateTask } = useUpdateTask();
 
-  const [subTasks, setSubTasks] = useState<Partial<SubTask>[]>(task?.subTasks || []);
+  const [subTasks, setSubTasks] = useState<Partial<SubTask>[]>(originalSubtasks || []);
+
+  // if the original subtasks change, update the local state
+  useEffect(() => {
+    setSubTasks(originalSubtasks || []);
+  }, [originalSubtasks]);
 
   return (
     <>
+      <TaskDivider subTasks={subTasks} />
       {subTasks?.length > 0 && (
         <Flex flexDir="column">
           {subTasks.map((subTask) => {
             return (
-              <Flex
-                key={subTask.id || new Date().getMilliseconds() + subTask.description}
-                gap={1}
-              >
+              <Flex key={JSON.stringify(subTask)} gap={1}>
                 <Checkbox
                   isChecked={subTask.completed}
                   size="lg"
@@ -36,7 +40,7 @@ function EditSubtasksUnwrapped(props: IProps) {
                     newSubtasks[index].completed = !newSubtasks[index].completed;
 
                     updateTask({
-                      id: task.id,
+                      id: taskId,
                       subTasks: newSubtasks,
                     });
                   }}
@@ -51,7 +55,7 @@ function EditSubtasksUnwrapped(props: IProps) {
                     newSubtasks[index].description = data;
 
                     updateTask({
-                      id: task.id,
+                      id: taskId,
                       subTasks: newSubtasks,
                     });
                   }}
@@ -83,7 +87,6 @@ function EditSubtasksUnwrapped(props: IProps) {
           variant="unstyled"
           size="xs"
           onClick={() => {
-            console.log('clicked');
             setSubTasks((prev) => [...prev, { description: '', completed: false }]);
           }}
         >
@@ -96,7 +99,67 @@ function EditSubtasksUnwrapped(props: IProps) {
 
 // momoize the component to prevent rerenders
 export const EditSubtasks = memo(EditSubtasksUnwrapped, (prev, curr) => {
-  const equal = arrayIsEqual(prev.task.subTasks, curr.task.subTasks);
-  // console.log('subtask memo', { equal });
+  const equal = arrayIsEqual(prev.subTasks, curr.subTasks);
   return equal;
 });
+
+export function TaskDivider(props: { subTasks: any }) {
+  if (!props?.subTasks || props?.subTasks?.length === 0) {
+    return <></>;
+  }
+  const { subTasks } = props;
+
+  // WIDTH VALUE CALCUALTIONS
+  const subtaskCount = subTasks?.length;
+  const completedSubtaskCount = subTasks?.filter(
+    (subtask: any) => subtask.completed
+  ).length;
+  const incompleteSubtaskCount = subtaskCount - completedSubtaskCount;
+
+  const widthValues = {
+    complete: Math.floor((completedSubtaskCount / subtaskCount) * 100) + '%',
+    incomplete: Math.floor((incompleteSubtaskCount / subtaskCount) * 100) + '%',
+  };
+
+  return (
+    <Box
+      w="100%"
+      h={2}
+      mb={4}
+      rounded="md"
+      sx={{
+        '& > *': {
+          transition: 'all 200ms ease-in-out',
+        },
+      }}
+    >
+      <Tooltip
+        label={`${completedSubtaskCount} subtask${
+          completedSubtaskCount > 1 ? 's' : ''
+        } remaining (${widthValues.complete})`}
+      >
+        <Box
+          bgColor="green.500"
+          opacity={0.8}
+          w={widthValues.complete}
+          h="100%"
+          display="inline-block"
+          rounded="2xl"
+        />
+      </Tooltip>
+      <Tooltip
+        label={`${incompleteSubtaskCount} subtask${
+          incompleteSubtaskCount > 1 ? 's' : ''
+        } completed (${widthValues.incomplete})`}
+      >
+        <Box
+          bgColor="green.100"
+          w={widthValues.incomplete}
+          h="100%"
+          display="inline-block"
+          roundedRight={'2xl'}
+        />
+      </Tooltip>
+    </Box>
+  );
+}
