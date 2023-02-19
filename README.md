@@ -160,7 +160,6 @@ test: (adding missing tests, refactoring tests; no production code change)
 chore: (updating grunt tasks etc; no production code change)
 
 ============= File structue ============
-
 - assets
   - styles (theme & styles)
   - compontents (UI components - not layout or page specific)
@@ -183,4 +182,4 @@ chore: (updating grunt tasks etc; no production code change)
   - migrations = SQL syntax
 - utils (small helper functions)
 - config
-  - pages.ts = page layout data
+- pages.ts = page layout data
