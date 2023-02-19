@@ -21,7 +21,6 @@ interface IProps {}
 export default function ProjectsPage(props: IProps) {
   const {} = props;
   const router = useRouter();
-
   const user = useUser();
   const { openProjectModal } = useProjectModal();
 
@@ -30,7 +29,7 @@ export default function ProjectsPage(props: IProps) {
     user.isEmp ? (
       <></>
     ) : (
-      <Flex w="100%">
+      <Flex w="100%" px={2}>
         <Button
           aria-label="add project"
           ml="auto"

@@ -106,6 +106,8 @@ export default createApiHandler<Task>('task', {
         ...rest
       } = data;
 
+      console.log('TESTING, assingees ', assignees);
+
       const formattedAssignees = assignees?.map((user) => ({ id: user.id }));
       const deleteSubtaskIds = subTasks
         ?.filter((t) => t.id && t.description === null && t.completed === null)

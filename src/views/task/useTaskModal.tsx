@@ -24,6 +24,7 @@ import { MenuButton, Menu, MenuList, MenuItem } from '@chakra-ui/react';
 import { AiFillDelete } from 'react-icons/ai';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
 import { ControllerWrapper } from 'lib-client/controllers/ControllerWrapper';
+import { formatStatusOption, optionSchema, StatusSelect } from 'views/task/StatusSelect';
 
 const SubtaskSchema = z.object({
   description: z.string(),
@@ -68,6 +69,8 @@ export const useTaskModal = () => {
       </Menu>
     );
 
+    const isEditing = Boolean(task?.id);
+
     return (
       setContent &&
       setContent({
@@ -98,6 +101,9 @@ export const useTaskModal = () => {
               manhours: true,
             }).extend({
               assignees: multiUserOptionsSchema,
+              ...(isEditing && {
+                status: optionSchema,
+              }),
             })}
             defaultValues={{
               title: 'title1',
@@ -105,6 +111,9 @@ export const useTaskModal = () => {
               dueDate: new Date(),
               assignees: [{ label: 'Dawid Wraga', value: 5 }],
               manhours: 1,
+              ...(isEditing && {
+                status: formatStatusOption(currentProject.statuses[0]),
+              }),
             }}
             updateValues={task}
             dynamicSchemaNamesToObj={{ subTasks: SubtaskSchema }}
@@ -119,13 +128,16 @@ export const useTaskModal = () => {
               control,
             }) => (
               <Form
-                onSubmit={({ assignees, ...data }) => {
+                onSubmit={({ assignees, status, ...data }) => {
+                  console.log('HERE 1');
                   if (assignees?.length) {
                     data = {
                       ...data,
                       assignees: assignees?.map((d) => ({ id: d.value })),
                     } as any;
                   }
+
+                  console.log('HERE 2');
 
                   if (!isEditing) {
                     data = {
@@ -134,6 +146,19 @@ export const useTaskModal = () => {
                       ...data,
                     } as any;
                   }
+
+                  console.log('HERE 3');
+
+                  if (isEditing) {
+                    data = {
+                      ...data,
+                      statusId: status.value,
+                    } as any;
+                  }
+
+                  console.log('HERE 4');
+
+                  console.log(data);
                   createTask(data);
                 }}
                 onServerSuccess={onClose}
@@ -154,6 +179,14 @@ export const useTaskModal = () => {
                   }}
                 />
                 <Input name="manhours" type="number" />
+                {isEditing && (
+                  <Input
+                    name="status"
+                    customInput={(props) => {
+                      return <StatusSelect {...props} />;
+                    }}
+                  />
+                )}
                 <InputList
                   name="subTasks"
                   ConditionalWrapper={({ children }) => (

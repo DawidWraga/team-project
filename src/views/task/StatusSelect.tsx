@@ -5,31 +5,30 @@ import type { GroupBase, Props as SelectProps, SelectInstance } from 'react-sele
 import { InputProps as ChakraInputProps } from '@chakra-ui/react';
 import { z } from 'zod';
 import { ControllerFieldState, ControllerRenderProps } from 'react-hook-form';
+import { useCurrentProject } from 'lib-client/hooks/useCurrentProject';
 
-import { controller } from 'lib-client/controllers';
-import { User } from '@prisma/client';
-import { CompleteUser } from 'prisma/zod';
-
-export const tagOptionSchema = z.object({
+export const optionSchema = z.object({
   label: z.string(),
   value: z.number(),
 });
 
-export const multiTagOptionsSchema = tagOptionSchema.array().min(1);
-
-type Option = z.infer<typeof tagOptionSchema>;
-type IsMulti = true;
+type Option = z.infer<typeof optionSchema>;
+type IsMulti = false;
 type Group = GroupBase<Option>;
 
-export function formatTagOptions(tags: User[] | CompleteUser[] = []) {
-  if (!tags || tags.length === 0) return [];
-  return tags.map((tag: any) => ({
-    label: tag.label || tag.fullName,
-    value: tag.value || tag.id,
-  }));
+export function formatStatusOptions(options: any[]) {
+  if (!options || options.length === 0) return [];
+  return options.map(formatStatusOption);
 }
 
-export function TagSelect({
+export function formatStatusOption(option: any) {
+  return {
+    label: option.label,
+    value: option.value || option.id,
+  };
+}
+
+export function StatusSelect({
   defaults,
   field,
   fieldState,
@@ -40,21 +39,13 @@ export function TagSelect({
     field: ControllerRenderProps<any, any>;
     fieldState?: ControllerFieldState;
   }) {
-  const {
-    data: tags,
-    isLoading,
-    isSuccess,
-  } = controller.useQuery({
-    model: 'tag',
-    query: 'findMany',
-    staleTime: 60 * 60 * 100000,
-  });
+  const { data: project, isLoading, isSuccess } = useCurrentProject();
 
   const selectRef = useRef<any>(null);
-  const options = formatTagOptions(tags);
+  const options = project?.id && formatStatusOptions(project?.statuses);
   useEffect(() => {
     if (!field || !field.value || !selectRef.current) return;
-    const keepActive = field?.value && (field?.value as any).length > 0;
+    const keepActive = field?.value;
     const ref = selectRef.current.controlRef;
     keepFloatingLabelActive(ref, keepActive);
   }, [field?.value]);
@@ -62,10 +53,8 @@ export function TagSelect({
   return (
     <AsyncSelect<any, IsMulti, Group>
       defaultOptions={options}
-      // defaultOptions={isSuccess ? options : userDummyData}
       {...field}
       ref={selectRef}
-      isMulti
       placeholder="select"
       chakraStyles={{
         container: (prev) => ({
@@ -76,13 +65,11 @@ export function TagSelect({
         }),
         inputContainer: (prev) => ({
           ...prev,
-          // h: '40px',
           alignItems: 'center',
           justiftContent: 'center',
 
           minW: '75px',
         }),
-
         menu: (prev) => ({
           ...prev,
           zIndex: 9999,

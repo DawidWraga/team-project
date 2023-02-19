@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { objectMap } from 'utils/objectMap';
 import { useMemo } from 'react';
 import { formatUserOptions } from 'components/UserSelect';
+import { formatStatusOption, formatStatusOptions } from 'views/task/StatusSelect';
 interface SchemaIdData {
   objectName: string;
   property: string;
@@ -79,6 +80,9 @@ export function useDynamicSchema(
           return formatUserOptions(v);
         }
 
+        if (k === 'status') {
+          return Array.isArray(v) ? formatStatusOptions(v) : formatStatusOption(v);
+        }
         if (
           typeof v !== 'object' &&
           (k.slice(-2).toLowerCase() === 'at' || k.toLowerCase().includes('date'))
@@ -89,6 +93,7 @@ export function useDynamicSchema(
         return v;
       });
 
+      // console.log({ values, formattedValues });
       let filteredValues = dynamicSchema?.safeParse(formattedValues);
       if (filteredValues.error) {
         console.log(filteredValues);
@@ -126,6 +131,7 @@ export function useDynamicSchema(
 
   return [dynamicSchema, updateSchema, useFormFormattedValues] as const;
 }
+// ================== UTILS ==================
 
 export function parseSchemaName(schemaName: string): SchemaIdData {
   const props = schemaName.split('&');
