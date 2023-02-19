@@ -1,24 +1,17 @@
 import { IconButton, Text, Box, Tag } from '@chakra-ui/react';
 import { controller } from 'lib-client/controllers';
 import { MenuButton, Menu, MenuList, MenuItem } from '@chakra-ui/react';
-import { AiFillDelete } from 'react-icons/ai';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
-import { ControllerWrapper } from 'lib-client/controllers/ControllerWrapper';
-import { Avatar } from '@chakra-ui/react';
 import { List, Loading, SearchInput } from '@saas-ui/react';
 import moment from 'moment';
 import { MdEdit } from 'react-icons/md';
 import { useProjectModal } from 'views/task/useProjectModal';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { getDateParams } from 'utils/getDateParams';
 import { Button, Flex } from '@chakra-ui/react';
-
-import { DateSelector } from 'components/DateSelector';
-// import { projectController, taskController } from 'lib-client/controllers';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { CustomAvatarGroup } from 'components/CustomAvatarGroup';
-import RoleGuard from 'components/RoleGuard';
+import { RoleGuard } from 'components/RoleGuard';
 
 export default function DocsPage(props) {
   const {} = props;
