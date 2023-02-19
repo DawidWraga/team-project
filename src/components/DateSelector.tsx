@@ -97,7 +97,7 @@ export function DateSelector(props: IProps) {
       <Flex gap={4} alignItems="center">
         <ButtonWithArrows
           containerProps={{
-            sx: { w: 165 },
+            sx: { w: 165, minW: '120px' },
           }}
           leftProps={{
             onClick: () => modifyDateAndRoute('prev'),
@@ -214,7 +214,11 @@ export function DateSelector(props: IProps) {
           }
         />
         <Box bgColor="whiteAlpha.600" px="3" py="1" rounded="md">
-          <Text fontWeight={'semibold'} fontSize={'1.1rem'} textTransform={'uppercase'}>
+          <Text
+            fontWeight={'semibold'}
+            fontSize={{ base: '0.8rem', md: '.9rem', lg: '1.1rem' }}
+            textTransform={'uppercase'}
+          >
             {moment(startDate).format('DD MMMM yyyy ')}
             {dateUnit !== 'day' && (
               <>

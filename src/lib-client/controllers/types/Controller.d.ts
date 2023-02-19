@@ -61,7 +61,6 @@ export interface ICustomUseMutationOptions<
   changeUiKey?: string | string[];
   getChangeUiKey?: (config: any) => string | string[];
   changeUiType?: 'array' | 'object' | 'reorder';
-  includeResourceId?: boolean;
   logConfig?: boolean;
   logMutationFnData?: boolean;
   model: PrismaModelNames;

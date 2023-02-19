@@ -1,6 +1,5 @@
 import { Box, Button, Flex } from '@chakra-ui/react';
 import { DragDropContext } from 'react-beautiful-dnd';
-
 import { DateSelector } from 'components/DateSelector';
 import { useUrlData } from 'lib-client/hooks/useUrlData';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
@@ -10,29 +9,37 @@ import { useCurrentProject } from 'lib-client/hooks/useCurrentProject';
 import { useFilteredTasks, useUpdateTask } from 'lib-client/hooks/useTasks';
 import { Loader } from '@saas-ui/react';
 import { headerHeight, optionBarHeight } from 'lib-client/constants';
+import { ToggleOnlyMe } from 'components/ToggleOnlyMe';
+import { useFilterStore } from 'lib-client/stores/FilterStore';
+import { getTasksByAssignee } from 'utils/dashboardUtils';
+import { useUser } from 'lib-client/hooks/useUser';
 
 export default function ProjectKanbanPage() {
   const { startDate, endDate } = useUrlData<{ startDate: string; endDate: string }>(
     'queryParams'
   );
 
+  const { onlyMe } = useFilterStore();
+  const { id } = useUser();
+
   const { openTaskModal } = useTaskModal();
   const { data: currentProject } = useCurrentProject();
-  const { data: tasks } = useFilteredTasks();
+  const { data: tasks } = useFilteredTasks({
+    // if only me, filter tasks by user id
+    ...(onlyMe && {
+      select: (tasks) => {
+        return getTasksByAssignee(tasks, id);
+      },
+    }),
+  });
   const { mutateAsync: updateTask } = useUpdateTask();
 
-  const { useSetOptionBar, leftOffset, sideNavIsOpen } = useLayoutStore();
+  const { useSetOptionBar } = useLayoutStore();
   useSetOptionBar(
-    <Flex
-      gap={2}
-      justifyContent={'space-between'}
-      w="100%"
-      mr={sideNavIsOpen ? leftOffset : 0}
-      transition={'margin-right 200ms ease-in-out'}
-      color="shade.main"
-    >
+    <Flex gap={2} justifyContent={'space-between'} w="100%">
       <DateSelector />
-      <Flex gap={2}>
+      <Flex gap={2} alignItems="center">
+        <ToggleOnlyMe />
         <Button
           colorScheme={'brand'}
           variant={'solid'}
@@ -44,7 +51,7 @@ export default function ProjectKanbanPage() {
         </Button>
       </Flex>
     </Flex>,
-    [currentProject, sideNavIsOpen, [startDate, endDate].join('_')]
+    [currentProject, [startDate, endDate].join('_')]
   );
 
   if (!currentProject) return <Loader />;
@@ -103,7 +110,7 @@ export default function ProjectKanbanPage() {
               <KanbanCol
                 key={status.id}
                 status={status}
-                tasks={getTasksByStatusId(status.id)}
+                tasks={getTasksByStatusId(status.id) as any}
               />
             );
           })}

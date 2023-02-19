@@ -5,7 +5,6 @@ import { UseMutationResult, useMutation, useQuery, useQueryClient } from 'react-
 import { DeepPartial } from 'react-hook-form/dist/types';
 import { PrismaModelNames } from 'lib-server/prisma';
 import { useUiChangeStore } from 'lib-client/stores/UiChangeStore';
-import { useUserStore } from 'lib-client/stores/UserStore';
 import { mergeDeep } from 'utils/deepMerge';
 import type {
   readQuery,
@@ -43,9 +42,8 @@ export class Controller {
   public useQuery<
     TQuery extends readQuery,
     TModelName extends PrismaModelNames,
-    TData = TQuery extends 'findMany'
-      ? GetPrismaModelType<TModelName>[]
-      : GetPrismaModelType<TModelName>
+    TModelType = GetPrismaModelType<TModelName>,
+    TData = TQuery extends 'findMany' ? TModelType[] : TModelType
   >(
     options: Omit<ICustomUseQueryOptions<TData>, 'model' | 'query'> & {
       query: TQuery;
@@ -114,7 +112,6 @@ export class Controller {
       mode,
       changeUiKey,
       invalidateClientChanges,
-      includeResourceId,
       logConfig,
       logMutationFnData,
       changeUiType,
@@ -135,8 +132,6 @@ export class Controller {
       changeUiType,
     } as any);
 
-    const { resourceId } = useUserStore();
-
     // create query funtion for Api controller
     const queryApiController = (prismaProps: any) =>
       fetcher({
@@ -144,9 +139,6 @@ export class Controller {
           query,
           prismaProps: {
             ...prismaProps,
-            ...(includeResourceId && {
-              resourceId,
-            }),
           },
         },
       });

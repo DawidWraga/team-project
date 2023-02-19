@@ -10,6 +10,7 @@ import {
   getTasksByAssignee,
   getTasksByStatus,
 } from 'utils/dashboardUtils';
+import { ToggleManhours } from 'views/dashboard/ToggleManhours';
 
 export default function ProjectDashboardPage(props) {
   const {} = props;
@@ -20,19 +21,13 @@ export default function ProjectDashboardPage(props) {
     'queryParams'
   );
 
-  const { useSetOptionBar, leftOffset, sideNavIsOpen } = useLayoutStore();
+  const { useSetOptionBar } = useLayoutStore();
   useSetOptionBar(
-    <Flex
-      gap={2}
-      justifyContent={'space-between'}
-      w="100%"
-      mr={sideNavIsOpen ? leftOffset : 0}
-      transition={'margin-right 200ms ease-in-out'}
-      color="shade.main"
-    >
+    <Flex gap={2} justifyContent={'space-between'} w="100%">
       <DateSelector />
+      <ToggleManhours />
     </Flex>,
-    [currentProject, sideNavIsOpen, [startDate, endDate].join('_')]
+    [currentProject, [startDate, endDate].join('_')]
   );
 
   if (isLoading) return <Loader />;

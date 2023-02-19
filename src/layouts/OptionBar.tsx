@@ -7,7 +7,7 @@ interface IProps {}
 
 export default function OptionBar(props: IProps) {
   const {} = props;
-  const { optionBarIsOpen, optionBar, leftOffset, topOffset } = useLayoutStore();
+  const { optionBarIsOpen, optionBar, leftOffset, sideNavIsOpen } = useLayoutStore();
 
   return (
     <AnimatePresence>
@@ -35,17 +35,19 @@ export default function OptionBar(props: IProps) {
           exit="closed"
           position="fixed"
           left={leftOffset}
-          transition="left 150ms"
+          transition="left 150ms ease-in-out, padding-right 150ms ease-in-out"
           w="100%"
           h={optionBarHeight + 'px'}
-          // bgColor="pale.dark"
           borderBottom={'1px solid'}
           borderBottomColor={'blackAlpha.200'}
           zIndex="dropdown !important"
           textColor="white"
           alignItems="center"
           px={[2, 3, 4, 5]}
-          overflow="visible"
+          pr={sideNavIsOpen ? leftOffset : 0}
+          overflowY="hidden"
+          overflowX="auto"
+          color="shade.main"
         >
           {optionBar}
         </Flex>

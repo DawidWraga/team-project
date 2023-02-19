@@ -2,11 +2,18 @@
 import { useUrlData } from 'lib-client/hooks/useUrlData';
 import { useUrlDateToPrismaOptions } from 'lib-client/hooks/useUrlDateToPrismaOptions';
 import { controller } from 'lib-client/controllers';
+import { ICustomUseQueryOptions } from 'lib-client/controllers/types/Controller';
+import { CompleteTask } from 'prisma/zod';
 
-export function useFilteredTasks() {
+type IUseFilteredTasksProps = Omit<
+  ICustomUseQueryOptions<CompleteTask[]>,
+  'query' | 'model'
+>;
+
+export function useFilteredTasks(props?: IUseFilteredTasksProps) {
   const { projectId } = useUrlData<{ projectId: number }>('dynamicPath');
 
-  return controller.useQuery({
+  return controller.useQuery<'findMany', 'task', CompleteTask, CompleteTask[]>({
     model: 'task',
     query: 'findMany',
     prismaProps: {
@@ -23,6 +30,7 @@ export function useFilteredTasks() {
       },
     },
     enabled: Boolean(projectId),
+    ...(props as any),
   });
 }
 
