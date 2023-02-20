@@ -150,7 +150,8 @@ Invitation {
 
 ```mermaid
 sequenceDiagram
-User->>Controller: Triggers event (view)
+User->>View: Triggers event (view)
+View->>Controller: Triggers event (view)
 Controller->>ApiController: Sends request (query/mutation)
 ApiController->>Prisma: Executes prisma query
 Prisma->>Database: Interacts with database
