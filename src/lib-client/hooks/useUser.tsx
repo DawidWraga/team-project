@@ -16,7 +16,12 @@ export function useUser() {
       },
       include: {
         role: true,
-        tasksAssigned: true,
+        tasksAssigned: {
+          include: {
+            // project: true,
+            status: true,
+          },
+        },
         projectsAssigned: {
           select: {
             statuses: true,
@@ -24,6 +29,7 @@ export function useUser() {
         },
       },
     },
+    staleTime: 1000 * 60, // 1 minute
     enabled: Boolean(session.status === 'authenticated') && Boolean(userEmail),
   });
 

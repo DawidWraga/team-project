@@ -89,6 +89,7 @@ export default function ProjectKanbanPage() {
 
   if (!currentProject) return <Loader />;
 
+  // =================== MAIN DRAG AND DROP HANDLER FUNCTION ===================
   async function onDragEnd({ draggableId, source, destination }) {
     // GUARD CLAUSES
     const isDroppedOutsideList = !destination;

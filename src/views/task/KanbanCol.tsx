@@ -53,9 +53,6 @@ export function KanbanCol(props: IProps) {
           textTransform="uppercase"
           fontWeight="semibold"
           textAlign="center"
-          onClick={() => {
-            console.log(JSON.stringify(status));
-          }}
         >
           {status.label}
         </Text>
@@ -73,13 +70,18 @@ export function KanbanCol(props: IProps) {
       <DroppableWrapper
         id={status.id.toString()}
         dropContainerProps={({ isDraggingOver }) => ({
+          // ========= can implement custom styles based on dragging state here
+
           // background: isDraggingOver ? 'lightblue' : '#eeeced99',
           // boxShadow: isDraggingOver ? 'darklg' : 'sm',
           background: '#eeeced33',
           padding: 1,
           width: 'auto',
           flexDir: 'column',
+          display: 'flex',
+          my: 1,
           h: '100%',
+          gap: 2,
         })}
       >
         {Boolean(tasks.length) &&

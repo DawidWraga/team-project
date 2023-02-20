@@ -1,4 +1,4 @@
-import { Box, Text, Flex } from '@chakra-ui/react';
+import { Box, Text, Flex, Tooltip } from '@chakra-ui/react';
 import { FaClock } from 'react-icons/fa';
 import moment from 'moment';
 import { DraggableWrapper } from 'components/DragNDrop';
@@ -83,24 +83,24 @@ export const Task = memo(
                     flexDir={'column-reverse'}
                     py="1.5"
                     px="1"
-                    w="40px"
+                    w="45px"
                     gap={2}
                   >
                     <CustomAvatarGroup users={task.assignees} />
 
-                    <Flex flex={1} gap={1}>
+                    {/* <Flex flex={1} gap={1}> */}
+                    <Tooltip label="due date">
                       <Text
-                        as={Flex}
-                        alignItems="center"
-                        fontSize="sm"
+                        fontSize="xs"
                         fontWeight="normal"
                         textColor="gray.600"
                         gap={1}
                       >
                         {moment(task.dueDate).format('DD/MM/YYYY')}
-                        <FaClock display="inline" />
+                        {/* <FaClock display="inline" /> */}
                       </Text>
-                    </Flex>
+                    </Tooltip>
+                    {/* </Flex> */}
                   </Flex>
 
                   <Flex flex={1} flexDir="column">

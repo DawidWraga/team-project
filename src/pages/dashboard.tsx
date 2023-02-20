@@ -16,15 +16,21 @@ import {
   getClosedTasks,
   getTasksGroupedByStatuses,
 } from 'utils/getTasksGroupedByStatuses';
-
+import { Loader } from '@saas-ui/react';
+import { CustomEmptyState } from 'components/CustomEmptyState';
+import { UrgentTasksList } from 'views/dashboard/UrgentTasksList';
 export default function DashboardPage(props) {
   const {} = props;
 
   const user = useUser();
   const tasks = user?.tasksAssigned;
   const projects = user?.projectsAssigned;
-  const closedStatuses = getClosedStatuses(projects as any);
 
+  if (!user?.id) return <Loader />;
+  if (!tasks?.length) return <CustomEmptyState title="no assinged tasks found" />;
+  if (!projects?.length) return <CustomEmptyState title="no assigned projects found" />;
+
+  const closedStatuses = getClosedStatuses(projects as any);
   const tasksByDate = getTasksGroupedByDates(tasks, 3, 'month');
 
   const linechartData = tasksByDate.map(({ date, tasks }) => {
@@ -64,13 +70,16 @@ export default function DashboardPage(props) {
       deltaType: workloadData.deltaType,
     },
   ];
-  console.log('🔷 >> linechartData >> linechartData', linechartData);
-  // console.log('🔷 >> DashboardPage >> relevantTasks', relevantTasks);
 
   return (
     <Box as="main" w="100%" h="100%" p={2}>
-      <Heading>Dashboard</Heading>
-      <Text>Lorem ipsum dolor sit amet, consetetur sadipscing elitr.</Text>
+      <Heading>
+        <Box as="span" textTransform={'capitalize'} mr="1.5">
+          {user?.fullName.split(' ')[0]}'s
+        </Box>
+        productivity dashboard
+      </Heading>
+      <Text>A summary of your performance during the past 3 months</Text>
 
       <Grid
         h="calc(100% - 4rem)"
@@ -81,7 +90,8 @@ export default function DashboardPage(props) {
         {/* Main section */}
         <GridItem colSpan={1} rowSpan={2}>
           <Card hFull={true}>
-            <Box w="100%" h="100%"></Box>
+            {/* <Box w="100%" h="100%"></Box> */}
+            <UrgentTasksList tasks={tasks} closedStatuses={closedStatuses} />
           </Card>
         </GridItem>
 
@@ -89,14 +99,7 @@ export default function DashboardPage(props) {
         {categories.map((d) => {
           return (
             <GridItem colSpan={1} rowSpan={1} key={JSON.stringify(d)}>
-              <LinechartCard
-                {...d}
-                linechartData={linechartData}
-                // linechartProps={{ valueFormatter }}
-              />
-              {/* <Card hFull={true}>
-                <Box h="full"></Box>
-              </Card> */}
+              <LinechartCard {...d} linechartData={linechartData} />
             </GridItem>
           );
         })}

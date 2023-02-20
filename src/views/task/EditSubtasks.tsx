@@ -87,6 +87,7 @@ function EditSubtasksUnwrapped(props: IProps) {
           variant="unstyled"
           size="xs"
           onClick={() => {
+            // console.log('clicked');
             setSubTasks((prev) => [...prev, { description: '', completed: false }]);
           }}
         >
@@ -134,9 +135,9 @@ export function TaskDivider(props: { subTasks: any }) {
       }}
     >
       <Tooltip
-        label={`${completedSubtaskCount} subtask${
-          completedSubtaskCount > 1 ? 's' : ''
-        } remaining (${widthValues.complete})`}
+        label={`${incompleteSubtaskCount} subtask${
+          incompleteSubtaskCount > 1 ? 's' : ''
+        } remaining (${widthValues.incomplete})`}
       >
         <Box
           bgColor="green.500"
@@ -148,9 +149,9 @@ export function TaskDivider(props: { subTasks: any }) {
         />
       </Tooltip>
       <Tooltip
-        label={`${incompleteSubtaskCount} subtask${
-          incompleteSubtaskCount > 1 ? 's' : ''
-        } completed (${widthValues.incomplete})`}
+        label={`${completedSubtaskCount} subtask${
+          completedSubtaskCount > 1 ? 's' : ''
+        } completed (${widthValues.complete})`}
       >
         <Box
           bgColor="green.100"

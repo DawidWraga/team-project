@@ -15,10 +15,10 @@ export default createApiHandler('project', {
       );
 
       if (editStatuses && editStatuses.length) {
-        console.log(editStatuses);
+        // console.log(editStatuses);
         Promise.all(
           editStatuses.map(async ({ id, ...data }) => {
-            return await prisma.subTask.update({ where: { id }, data: { ...data } });
+            return await prisma.taskStatus.update({ where: { id }, data: { ...data } });
           })
         );
       }

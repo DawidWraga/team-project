@@ -20,6 +20,10 @@ interface IProps {
   linechartProps?: Partial<React.ComponentProps<typeof AreaChart>>;
 }
 
+const defaultProps: Partial<IProps> = {
+  linechartProps: {},
+};
+
 export function LinechartCard(props: IProps) {
   const {
     title,
@@ -29,7 +33,7 @@ export function LinechartCard(props: IProps) {
     metricPrev,
     linechartData,
     linechartProps: { categories, ...lineChartProps },
-  } = { linechartProps: {}, ...props };
+  } = { ...defaultProps, ...props };
 
   return (
     <Card hFull={true}>
