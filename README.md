@@ -10,13 +10,23 @@
 * 4. ApiController returns Prisma response to Controller
 
 ```mermaid
-erDiagram
-  Example {
-    Int id
-    DateTime dateCreated
-    String text  
-  }
+  erDiagram
 
+Document {
+  id        Int     
+  createdAt DateTime
+  updatedAt DateTime 
+  title     String
+  content   Bytes
+  tags      Tag[]
+  authors   User[]
+}
+
+Tag {
+  id    Int    
+  label String 
+  color String 
+}
 
   Post {
     Int id
@@ -49,9 +59,14 @@ erDiagram
     String label  
   }
 
+Invitation {
+  id        Int  
+  email     String 
+  createdAt DateTime
+}
 
   Task {
-    Int id
+    id Int 
     String title
     DateTime createdDate
     DateTime dueDate
@@ -99,9 +114,11 @@ erDiagram
 
 
   Session {
-    String id
-    String sessionToken
-    DateTime expires  
+  id           String 
+  sessionToken String  
+  userId       Int      
+  expires      DateTime
+  user         User
   }
 
 
@@ -123,6 +140,9 @@ erDiagram
     TaskStatus o{--|| Project : ""
     Account o{--|| User : ""
     Session o{--|| User : ""
+    Document o{--|| User : "author"
+    Post o{--|| Tag : "Tag"
+    Invitation ||--|| User : "author"
 
 
 ```
@@ -130,14 +150,15 @@ erDiagram
 
 ```mermaid
 sequenceDiagram
-User->>Controller: Triggers event (view)
+User->>View: Triggers event (view)
+View->>Controller: Triggers event (view)
 Controller->>ApiController: Sends request (query/mutation)
 ApiController->>Prisma: Executes prisma query
 Prisma->>Database: Interacts with database
 Database-->>Prisma: Returns response
 Prisma-->>ApiController: Returns response to ApiController
 ApiController-->>Controller: Returns response to Controller
-Controller-->>User: Provides services to client/view
+Controller-->>View: Provides services to client/view
 
 ```
 
