@@ -158,7 +158,7 @@ Prisma->>Database: Interacts with database
 Database-->>Prisma: Returns response
 Prisma-->>ApiController: Returns response to ApiController
 ApiController-->>Controller: Returns response to Controller
-Controller-->>User: Provides services to client/view
+Controller-->>View: Provides services to client/view
 
 ```
 
