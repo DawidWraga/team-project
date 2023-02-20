@@ -1,4 +1,4 @@
-import { User, UserRole } from '@prisma/client';
+import { Project, Task, User, UserRole } from '@prisma/client';
 import { controller } from 'lib-client/controllers';
 import { useSession } from 'next-auth/react';
 
@@ -16,6 +16,12 @@ export function useUser() {
       },
       include: {
         role: true,
+        tasksAssigned: true,
+        projectsAssigned: {
+          select: {
+            statuses: true,
+          },
+        },
       },
     },
     enabled: Boolean(session.status === 'authenticated') && Boolean(userEmail),
@@ -32,6 +38,8 @@ export function useUser() {
 
 type UserWithRoles = User & {
   role: UserRole;
+  tasksAssigned: Task[];
+  projectsAssigned: Project[];
   isAdmin: boolean;
   isManager: boolean;
   isEmp: boolean;
