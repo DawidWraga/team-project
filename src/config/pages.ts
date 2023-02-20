@@ -13,21 +13,6 @@ export interface IPage {
   headerLinks?: IRouteData[];
 }
 
-const forumSideNavLinks: IRouteData[] = require('db/topics.json').map((topic) => {
-  return {
-    label: topic.title,
-    route: `/forums?topicId=${topic.id}`,
-    defaultHeaderLink: '',
-  };
-});
-const usersNavLinks: IRouteData[] = require('db/users.json').map((user) => {
-  return {
-    label: user.fullName,
-    route: `/users/${user.id}`,
-    defaultHeaderLink: '',
-  };
-});
-
 const pages: IPage[] = [
   {
     parentLink: {
@@ -58,38 +43,6 @@ const pages: IPage[] = [
         hasOptionBar: true,
       },
     ],
-  },
-  {
-    parentLink: {
-      label: 'Forums',
-      route: '/forums',
-    },
-    sideNavLinks: forumSideNavLinks,
-    // headerLinks: [
-    //   {
-    //     label: 'unsolved',
-    //     route: '&filter=unsolved',
-    //   },
-    //   {
-    //     label: 'solved',
-    //     route: '&filter=solved',
-    //   },
-    // ],
-  },
-
-  {
-    parentLink: {
-      label: 'Users',
-      route: '/users',
-    },
-    sideNavLinks: usersNavLinks,
-  },
-  {
-    parentLink: {
-      label: 'Example',
-      route: '/example',
-      hasOptionBar: true,
-    },
   },
 ];
 
