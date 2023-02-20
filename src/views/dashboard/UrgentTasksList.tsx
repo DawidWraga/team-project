@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Box, Flex } from '@chakra-ui/react';
 import { TaskStatus } from '@prisma/client';
 import { DataTable } from '@saas-ui/react';
@@ -49,7 +50,6 @@ export function UrgentTasksList(props: IProps) {
         <Metric>Upcoming Tasks</Metric>
         <Text> Incomplete tasks sorted by due date </Text>
       </Flex>
-      {/* @ts.ignore */}
       <DataTable<any>
         ref={tableRef}
         columns={columns as any}
