@@ -30,6 +30,7 @@ export function CustomAvatarGroup(props: IProps) {
                   size="xs"
                   borderColor="grey.50"
                   name={user.fullName}
+                  autoCapitalize={'true'}
                   {...avatarProps}
                 />
               </span>

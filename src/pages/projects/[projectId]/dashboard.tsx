@@ -1,4 +1,4 @@
-import { Flex, Heading, Text } from '@chakra-ui/react';
+import { Flex, Grid, GridItem, Heading, Text, Box } from '@chakra-ui/react';
 import { DateSelector } from 'components/DateSelector';
 import { useLayoutStore } from 'lib-client/stores/LayoutStore';
 import { useCurrentProject } from 'lib-client/hooks/useCurrentProject';
@@ -19,6 +19,8 @@ import {
   Flex as TremorFlex,
   ProgressBar,
 } from '@tremor/react';
+import { UserList } from 'views/dashboard/UserList';
+import { UrgentTasksList } from 'views/dashboard/UrgentTasksList';
 export default function ProjectDashboardPage(props) {
   const {} = props;
 
@@ -52,36 +54,110 @@ export default function ProjectDashboardPage(props) {
   const assigneesTasks = getTasksByAssignee(tasks, 5);
   console.log('🔷 >> ProjectDashboardPage >> assigneesTasks', assigneesTasks);
 
-  return (
-    <Flex flexDir="column" gap={1}>
-      <Flex flexDir="column">
-        <Heading size="lg">Tasks statuses overall </Heading>
-
-        <Text>start status: {tasksInStartStatus.length}</Text>
-        <Text>inbetween status: {}</Text>
-        <Text>end status: {}</Text>
-      </Flex>
-      <Flex flexDir="column">
-        <Heading size="lg">Tasks statuses FOR john smith (id = 5) </Heading>
-
-        <Text>
-          start status: {getTasksByStatus(assigneesTasks, startStatus.id).length}
-        </Text>
-        <Text>inbetween status: {}</Text>
-        <Text>end status: {getTasksByStatus(assigneesTasks, endStatus.id).length}</Text>
-      </Flex>
-
-      <Card maxWidth="max-w-sm">
-        <TremorText>Sales</TremorText>
-        <Metric>$ 71,465</Metric>
-        <TremorFlex marginTop="mt-4">
-          <TremorText>32% of annual target</TremorText>
-          <TremorText>$ 225,000</TremorText>
-        </TremorFlex>
-        <ProgressBar percentageValue={32} marginTop="mt-2" />
-      </Card>
-    </Flex>
+  const OverviewValue = (props) => (
+    <Box fontWeight={'bold'} fontSize={'4xl'} padding={'1'} {...props} />
   );
+
+  const completedTasks = '18';
+  const inProgressTasks = '3';
+  const toDoTasks = '5';
+  const totalTasks = '23';
+
+  return (
+    <Grid
+      templateColumns={'repeat(3, 1fr)'}
+      templateRows={'repeat(4, 1fr)'}
+      gap={3}
+      p={4}
+    >
+      <GridItem colSpan={3} rowSpan={1}>
+        <Box
+        // boxShadow={'lg'}
+        // borderWidth={'thick'}
+        // marginLeft={'10'}
+        // marginRight={'10'}
+        // borderColor={'e7e7e8'}
+        >
+          <Flex justifyContent={'center'}>
+            <Flex bgColor="white" w="100%" h="100px" justifyContent={'space-between'}>
+              <Flex></Flex>
+              <Flex marginLeft={'10px'} marginRight={'10px'}>
+                <Box margin={'1'} textAlign={'center'}>
+                  <OverviewValue>{completedTasks}</OverviewValue>
+                  <Box>COMPLETE</Box>
+                </Box>
+              </Flex>
+              <OrangeSeparator></OrangeSeparator>
+              <Flex marginLeft={'10px'} marginRight={'10px'}>
+                <Box margin={'1'} textAlign={'center'}>
+                  <OverviewValue>{inProgressTasks}</OverviewValue>
+                  <Box>IN PROGRESS</Box>
+                </Box>
+              </Flex>
+              <OrangeSeparator></OrangeSeparator>
+              <Flex marginLeft={'10px'} marginRight={'10px'}>
+                <Box margin={'1'} textAlign={'center'}>
+                  <OverviewValue>{toDoTasks}</OverviewValue>
+                  <Box>TO DO</Box>
+                </Box>
+              </Flex>
+              <OrangeSeparator></OrangeSeparator>
+              <Flex marginLeft={'10px'} marginRight={'10px'}>
+                <Box margin={'1'} textAlign={'center'}>
+                  <OverviewValue>{totalTasks}</OverviewValue>
+                  <Box>TOTAL TASKS</Box>
+                </Box>
+              </Flex>
+              <Flex></Flex>
+            </Flex>
+          </Flex>
+        </Box>
+      </GridItem>
+      <GridItem colSpan={2} rowSpan={3} bgColor="white" rounded="md" p={2}>
+        <UserList
+          users={currentProject?.assignees}
+          project={currentProject}
+          tasks={tasks}
+        />
+      </GridItem>
+      <GridItem colSpan={1} rowSpan={3} bgColor="white" rounded="md" p={2}>
+        <UrgentTasksList
+          tasks={tasks}
+          closedStatuses={[currentProject.statuses[currentProject.statuses.length - 1]]}
+          title="urgent tasks"
+        />
+      </GridItem>
+    </Grid>
+  );
+}
+
+{
+  /* <Flex flexDir="column">
+<Heading size="lg">Tasks statuses overall </Heading>
+
+<Text>start status: {tasksInStartStatus.length}</Text>
+<Text>inbetween status: {}</Text>
+<Text>end status: {}</Text>
+</Flex>
+<Flex flexDir="column">
+<Heading size="lg">Tasks statuses FOR john smith (id = 5) </Heading>
+
+<Text>
+  start status: {getTasksByStatus(assigneesTasks, startStatus.id).length}
+</Text>
+<Text>inbetween status: {}</Text>
+<Text>end status: {getTasksByStatus(assigneesTasks, endStatus.id).length}</Text>
+</Flex>
+
+<Card maxWidth="max-w-sm">
+<TremorText>Sales</TremorText>
+<Metric>$ 71,465</Metric>
+<TremorFlex marginTop="mt-4">
+  <TremorText>32% of annual target</TremorText>
+  <TremorText>$ 225,000</TremorText>
+</TremorFlex>
+<ProgressBar percentageValue={32} marginTop="mt-2" />
+</Card> */
 }
 
 // ========================================================
@@ -142,3 +218,14 @@ export default function ProjectDashboardPage(props) {
 //     </Flex>
 //   </div>
 // );
+const OrangeSeparator = (props) => (
+  <Box
+    marginTop={'10px'}
+    rounded={'2xl'}
+    width={'5px'}
+    height={'80%'}
+    bgColor={'brand.500'}
+    marginRight={'5px'} // add a fixed width and adjust the margin
+    {...props}
+  />
+);

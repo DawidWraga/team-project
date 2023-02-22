@@ -149,7 +149,7 @@ const valueFormatter = (number: number) =>
 function getDelta(a: number, b: number, deltaThreshold = 25) {
   const delta = a - b;
 
-  const percent = Math.round((delta / (a || 1)) * 100);
+  const percent = Math.round((delta / (b || 1)) * 100);
 
   let deltaType: DeltaType;
 

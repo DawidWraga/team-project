@@ -11,10 +11,11 @@ import { getOpenTasks } from 'utils/getTasksGroupedByStatuses';
 interface IProps {
   tasks: Partial<CompleteTask>[];
   closedStatuses: TaskStatus[];
+  title?: string;
 }
 
 export function UrgentTasksList(props: IProps) {
-  const { tasks, closedStatuses } = props;
+  const { tasks, closedStatuses, title } = props;
 
   const incompleteTasksInOrder = useMemo(() => {
     const incompleteTasks = getOpenTasks(tasks as any, closedStatuses);
@@ -47,7 +48,7 @@ export function UrgentTasksList(props: IProps) {
   return (
     <Box w="100%" h="100%" overflowX="auto">
       <Flex gap={2} alignItems="flex-end" mb={4}>
-        <Metric>Upcoming Tasks</Metric>
+        <Metric>{title || 'Upcoming Tasks'}</Metric>
         <Text> Incomplete tasks sorted by due date </Text>
       </Flex>
       <DataTable<any>

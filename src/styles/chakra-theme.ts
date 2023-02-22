@@ -127,9 +127,25 @@ const Form = defineStyleConfig({
   },
 });
 
+const Thead = defineStyleConfig({
+  baseStyle: {
+    fontWeight: 'semiBold',
+    fontSize: '10rem',
+  },
+});
+
+// // Styles for the base style
+// baseStyle: {},
+// // Styles for the size variations
+// sizes: {},
+// // Styles for the visual style variations
+// variants: {},
+// // The default `size` or `variant` values
+// defaultProps: {},
+
 export const theme = extendTheme(saasTheme, {
   colors,
   config,
   fonts,
-  components: { Paper, Form },
+  components: { Paper, Form, Thead },
 });
