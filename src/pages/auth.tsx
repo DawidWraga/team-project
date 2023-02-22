@@ -25,16 +25,24 @@ export default function AuthPage(props: IProps) {
   });
 
   //redirect users back to dashboard if they are already logged in
-  if (status === 'authenticated') {
-    router.replace('/dashboard');
-    return <Loading variant="fullscreen" />;
-  }
+  // if (status === 'authenticated') {
+  //   router.replace('/dashboard');
+  //   return <Loading variant="fullscreen" />;
+  // }
 
   const onSubmit = async (data: any) => {
+    const redirectEmail = `${
+      data.email === 'demo1@make-it-all.co.uk' ? '/docs' : '/dashboard'
+    }`;
+
+
+    
+    console.log(redirectEmail);
+
     const res = await signIn('credentials', {
       email: data.email,
       password: data.password,
-      callbackUrl: 'http://localhost:3000/dashboard',
+      callbackUrl: redirectEmail,
       redirect: false,
     });
 
@@ -50,8 +58,8 @@ export default function AuthPage(props: IProps) {
       throw new Error(message);
     } else {
       setTimeout(() => {
-        router.replace('/dashboard');
-      }, 200);
+        router.replace(redirectEmail);
+      }, 300);
     }
   };
 
