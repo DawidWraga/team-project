@@ -70,6 +70,7 @@ export function NavItem(props: IProps) {
         alignItems="stretch"
         justifyContent={'center'}
         onClick={() => {
+          setActiveSideNavLink(null);
           router.push(route);
           isMobile() && setSideNavIsOpen(false);
         }}
