@@ -39,7 +39,6 @@ const createUserSchema = z
         if (fullMsg !== originalMsg) {
           ctx.addIssue({
             code: 'custom',
-            path: ['password'],
             message: fullMsg.replace(/\,(?=[^,]*$)/, '.'),
           });
         }
