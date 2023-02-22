@@ -51,7 +51,12 @@ export default function DocsPage(props) {
       },
     },
     select: (docs) =>
-      docs.filter((doc) => doc.title.toLowerCase().includes(searchTerm.toLowerCase())),
+      docs
+        .filter((doc) => doc.title.toLowerCase().includes(searchTerm.toLowerCase()))
+        .sort((a, b) => {
+          // sort by createdAt
+          return Number(new Date(b.createdAt)) - Number(new Date(a.createdAt));
+        }),
   });
 
   return (

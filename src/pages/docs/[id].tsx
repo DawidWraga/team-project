@@ -53,7 +53,7 @@ export default function SingleDocumentPage(props: IProps) {
             top={2}
             left={2}
             position="absolute"
-            onClick={() => router.back()}
+            onClick={() => router.push('/docs')}
           />
           <Button
             onClick={() => {
