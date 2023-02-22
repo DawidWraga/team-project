@@ -17,7 +17,7 @@ import { MdOutlineContentCopy } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
 
-const url = 'https://www.localhost:3000/register';
+const url = 'http://35.242.157.207/register';
 
 export function useInviteModal() {
   const { setContent, onClose } = useModalStore();
