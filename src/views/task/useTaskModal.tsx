@@ -103,7 +103,7 @@ export const useTaskModal = () => {
               title: 'title1',
               description: 'description1',
               dueDate: new Date(),
-              assignees: [{ label: 'Dawid Wraga', value: 5 }],
+              assignees: [{ label: 'John Smith', value: 5 }],
               manhours: 1,
               ...(isEditing && {
                 status: formatStatusOption(currentProject.statuses[0]),

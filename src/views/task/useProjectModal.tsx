@@ -50,8 +50,8 @@ export const useProjectModal = () => {
           defaultValues={{
             title: 'title1',
             dueDate: new Date(),
-            assignees: [{ fullName: 'Dawid Wraga', id: 5 }] as any,
 
+            assignees: [{ fullName: 'John Smith', id: 5 }] as any,
             ...(!isEditing && {
               statuses: [{ label: 'todo' }, { label: 'in-progress' }, { label: 'done' }],
             }),
