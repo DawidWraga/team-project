@@ -49,19 +49,14 @@ export default function ProjectDashboardPage(props) {
   const tasksInStartStatus = getTasksByStatus(tasks, startStatus.id);
   const tasksInEndStatus = getTasksByStatus(tasks, endStatus.id);
 
-  console.log({ startStatus, endStatus, tasksInStartStatus, tasksInEndStatus });
-
-  const assigneesTasks = getTasksByAssignee(tasks, 5);
-  console.log('🔷 >> ProjectDashboardPage >> assigneesTasks', assigneesTasks);
-
   const OverviewValue = (props) => (
     <Box fontWeight={'bold'} fontSize={'4xl'} padding={'1'} {...props} />
   );
 
-  const completedTasks = '18';
-  const inProgressTasks = '3';
-  const toDoTasks = '5';
-  const totalTasks = '23';
+  const toDoTasks = tasksInStartStatus?.length;
+  const completedTasks = tasksInEndStatus?.length;
+  const totalTasks = tasks?.length;
+  const inProgressTasks = totalTasks - toDoTasks - completedTasks;
 
   return (
     <Grid
@@ -71,13 +66,7 @@ export default function ProjectDashboardPage(props) {
       p={4}
     >
       <GridItem colSpan={3} rowSpan={1}>
-        <Box
-        // boxShadow={'lg'}
-        // borderWidth={'thick'}
-        // marginLeft={'10'}
-        // marginRight={'10'}
-        // borderColor={'e7e7e8'}
-        >
+        <Box>
           <Flex justifyContent={'center'}>
             <Flex bgColor="white" w="100%" h="100px" justifyContent={'space-between'}>
               <Flex></Flex>
@@ -124,7 +113,7 @@ export default function ProjectDashboardPage(props) {
         <UrgentTasksList
           tasks={tasks}
           closedStatuses={[currentProject.statuses[currentProject.statuses.length - 1]]}
-          title="urgent tasks"
+          title="Urgent tasks"
         />
       </GridItem>
     </Grid>
