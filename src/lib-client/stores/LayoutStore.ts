@@ -48,7 +48,7 @@ export const useLayoutStore = createStore<ILayoutStore>('Layout', (set, get) => 
   activePage: {} as any,
   setActivePage: (page: IPage) => set({ activePage: page }),
   // ======== sidenav ========
-  sideNavIsOpen: false,
+  sideNavIsOpen: true,
   setSideNavIsOpen: (isOpen: boolean) =>
     set({
       sideNavIsOpen: isOpen,
@@ -82,10 +82,11 @@ export const useLayoutStore = createStore<ILayoutStore>('Layout', (set, get) => 
       topOffset: { base: headerHeight + 'px' },
     }),
   // ======== offset ========
-  leftOffset: { base: 0 + 'px', lg: closedSideNavWidth + 'px' },
+  leftOffset: getLeftOffset(true),
+  // leftOffset: { base: 0 + 'px', lg: closedSideNavWidth + 'px' },
   topOffset: { base: headerHeight + 'px' },
   bottomOffset: { base: mobileBottomBarHeight + 'px', lg: 0 + 'px' },
-  openAccordianRoute: '',
+  openAccordianRoute: '/projects',
   setOpenAccordianRoute: (route: string) =>
     set((state) => {
       // toggle open state
