@@ -59,7 +59,7 @@ export default function MyApp({ Component, pageProps: { session, ...pageProps } 
                     </AuthGuard>
 
                     <MainModal />
-                    <ReactQueryDevtools initialIsOpen={false} />
+                    {/* <ReactQueryDevtools initialIsOpen={false} /> */}
                   </Hydrate>
                 </QueryClientProvider>
               </Suspense>

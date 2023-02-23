@@ -517,6 +517,7 @@ export const useChakraForm = <
   };
 
   const DebugPanel = () => {
+    return null;
     if (!isDevEnv) return null;
     return (
       <ButtonGroup

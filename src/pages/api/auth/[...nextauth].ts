@@ -41,7 +41,7 @@ export const authOptions: NextAuthOptions = {
       authorize: async (credentials, request) => {
         if (!credentials) return null;
 
-        console.log('AUTHENTICATING ', credentials, request);
+        console.log('AUTHENTICATING ', { credentials, request });
 
         const user = await prisma.user.findUnique({
           where: {
@@ -64,16 +64,20 @@ export const authOptions: NextAuthOptions = {
 
         // console.log('valid!');
 
-        return {
+        const data = {
           id: user.id,
           email: user.email,
         } as any;
+
+        console.log({ data });
+        return data;
       },
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
+    maxAge: 3000,
   },
   jwt: {
     maxAge: 30 * 24 * 30 * 60, // 30 days
