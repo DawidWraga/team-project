@@ -48,7 +48,7 @@ export const useProjectModal = () => {
             assignees: multiUserOptionsSchema,
           })}
           defaultValues={{
-            title: 'title1',
+            title: '',
             dueDate: new Date(),
 
             assignees: [{ fullName: 'John Smith', id: 5 }] as any,

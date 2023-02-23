@@ -100,8 +100,8 @@ export const useTaskModal = () => {
               }),
             })}
             defaultValues={{
-              title: 'title1',
-              description: 'description1',
+              title: '',
+              description: '',
               dueDate: new Date(),
               assignees: [{ label: 'John Smith', value: 5 }],
               manhours: 1,
