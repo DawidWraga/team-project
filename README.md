@@ -37,7 +37,7 @@
     <!-- <br />
     <a href="https://github.com/DawidWraga/team-project"><strong>Explore the docs »</strong></a> -->
     <br />
-    <br />****
+    <br />
     <a href="https://github.com/DawidWraga/team-project">View Demo</a>
     ·
     <a href="https://github.com/DawidWraga/team-project/issues">Report Bug</a>
@@ -286,20 +286,10 @@ Invitation {
     Document o{--|| User : "author"
     Post o{--|| Tag : "Tag"
     Invitation ||--|| User : "author"
+
+
+
 ```
-
-sequenceDiagram
-User->>View: Triggers event (view)
-View->>Controller: Triggers event (view)
-Controller->>ApiController: Sends request (query/mutation)
-ApiController->>Prisma: Executes prisma query
-Prisma->>Database: Interacts with database
-Database-->>Prisma: Returns response
-Prisma-->>ApiController: Returns response to ApiController
-ApiController-->>Controller: Returns response to Controller
-Controller-->>View: Provides services to client/view
-
-````
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -317,14 +307,18 @@ To get a local copy up and running, follow these simple steps.
 ### Installation
 
 1. Clone the repo
+
    ```sh
    git clone https://github.com/DawidWraga/team-project.git
-````
+   ```
 
 2. Install NPM packages
+
    ```sh
    npm install
+
    ```
+
 3. Run in development mode
    ```sh
    npm run dev
