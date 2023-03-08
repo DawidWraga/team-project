@@ -18,10 +18,11 @@
 -->
 
 [![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
+<!--[![Forks][forks-shield]][forks-url]-->
+<!--[![Stargazers][stars-shield]][stars-url]-->
+
 
 <!-- PROJECT LOGO -->
 <br />
@@ -33,7 +34,7 @@
 <h3 align="center">Make-it-all portal</h3>
 
   <p align="center">
-    Task management and knowledge base employee portal
+    Task management and knowledge base for make-it-all employees
     <!-- <br />
     <a href="https://github.com/DawidWraga/team-project"><strong>Explore the docs »</strong></a> -->
     <br />
@@ -56,7 +57,7 @@
          <li><a href="#overview">Overview</a></li>
         <li><a href="#tech-stack">Tech Stack</a></li>
         <li><a href="#folder-structure">Folder Structure</a></li>
-        <li><a href="#dataflow">Dataflow sequence diagram</a></li>
+        <li><a href="#dataflow-sequence-diagram">Dataflow sequence diagram</a></li>
       </ul>
     </li>
     <li>
@@ -66,10 +67,8 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#contact">Contact</a></li>
-
   </ol>
 </details>
 
@@ -85,7 +84,7 @@
 
 Overview of the project
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 <!-- Tech Stack -->
 
@@ -100,7 +99,7 @@ Overview of the project
 | [![Zustand][zustand-icon]][zustand-url]                         | State management (synchronous state only)               |
 | [![React Query][react-query-icon]][react-query-url]             | State management (async state only)                     |
 | [![React hook form][react-hook-form-icon]][react-hook-form-url] | Form validation & state management                      |
-| [![Next][next-icon]][next-url]                                  | Client & server routing, performance & SEO optimization |
+| [![Next][next-icon]][next-url]                                  | Client & server routing, performance optimization       |
 | [![MySql][mysql-icon]][mysql-url]                               | Database                                                |
 | [![Prisma][prisma-icon]][prisma-url]                            | ORM - improved database interface                       |
 
@@ -152,7 +151,8 @@ src
 
 ```
 
-<!-- DATAFLOW -->
+
+<!-- DATAFLOW-SEQUENCE-DIAGRAM -->
 
 ### Dataflow Sequence Diagram
 
